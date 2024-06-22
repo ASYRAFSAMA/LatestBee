@@ -35,9 +35,9 @@ public class GettingStartedApplication {
         return "index";
     }
 
-    @GetMapping("/logoutViewRoom")
-    public String logoutViewRoom() {
-        return "logoutViewRoom";
+    @GetMapping("/daus")
+    public String daus() {
+        return "try";
     }
 
     @GetMapping("/index")
