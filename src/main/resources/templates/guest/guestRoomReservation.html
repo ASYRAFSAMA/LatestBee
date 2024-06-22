@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Ansonika">
-    <title>D Chalet Ombak Biru</title>
+    <title>Room Reservation
+    </title>
     <!-- Favicons-->
     <link rel="shortcut icon" th:href="@{stylesheets/img/favicon.png}" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon"
@@ -36,9 +37,14 @@
 </head>
 
 <body class="datepicker_mobile_full">
+    <div id="preloader">
+        <div data-loader="circle-side"></div>
+    </div><!-- /Page Preload -->
+
+    <div class="layer"></div>
 
 
-    <header class="reveal_header">
+    <header class="reveal_header bg-dark">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-6">
@@ -99,144 +105,61 @@
     </div>
     <!-- /nav_panel -->
 
+
+
     <main>
-        <div class="slider">
-            <div id="slider" class="flexslider">
-                <ul class="slides">
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/standard-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Standard Room</h3>
-                            <div class="info">
-                                <p>Exquisite furnishings for a cosy ambience</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/deluxe-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Deluxe Room</h3>
-                            <div class="info">
-                                <p>The simple yet comfortable atmosphere</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
 
-                </ul>
-                <div id="icon_drag_mobile"></div>
+        <div class="container mt-5">
+            &nbsp;
+        </div>
+
+        <div class="container mt-5 mb-5 align-items-center">
+
+            <div class="row">
+                <div class="col"></div>
             </div>
-            <div id="carousel_slider_wp">
-                <div id="carousel_slider" class="flexslider">
-                    <ul class="slides">
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/standard-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Standard Room<span>RM150 / Night</span></h3>
-                                <small>4 Guests - 1 Bed</small>
-                            </div>
-                        </li>
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/deluxe-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Deluxe Room <span>RM200 / Night</span></h3>
-                                <small>8 Guests - 2 Bed</small>
-                            </div>
-                        </li>
 
-                    </ul>
+            <div class="col-md card card-body py-5">
+
+                <div class="row my-3 text-center">
+                    <span>
+                        <h2>Your Reservation Records</h2>
+                    </span>
+                </div>
+
+                <div class="row mx-2">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <th class="text-center">Reservation ID</th>
+                            <th class="text-center">Total Room</th>
+                            <th class="text-center">Duration Of Stay</th>
+                            <th class="text-center">Check-in Date</th>
+                            <th class="text-center">Check-out Date</th>
+                            <th class="text-center">Total Amount</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reservation : ${reservations}">
+                                <td th:text="${reservation.reservationID}"></td>
+                                <td th:text="${reservation.totalRoom}"></td>
+                                <td th:text="${reservation.durationOfStay}"></td>
+                                <td th:text="${reservation.dateStart}"></td>
+                                <td th:text="${reservation.dateEnd}"></td>
+                                <td th:text="${reservation.totalPayment}"></td>
+                                <td th:text="${reservation.reserveStatus}"></td>
+                                <td class="text-center"><a th:href="@{/guestViewRoomReservation?reservationID=}+${reservation.reservationID}">
+                                        <div class="bi bi-eye-fill" style="font-size: 20px;"></div>
+                                    </a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
                 </div>
             </div>
         </div>
-        <!-- /slider -->
-
-        <div class="pattern_2">
-            <div class="container margin_120_95" id="first_section">
-                <div class="row justify-content-between flex-lg-row-reverse align-items-center">
-                    <div class="col-lg-5">
-                        <div class="parallax_wrapper">
-                            <img th:src="@{stylesheets/img/owner.jpg}" alt="" class="img-fluid rounded-img">
-
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="intro">
-                            <div class="title">
-                                <small>About us</small>
-                                <h2>Welcome to D'Chalet Ombak Biru!</h2>
-                            </div>
-                            <p class="lead">We are a charming chalet located in Melaka, offering a delightful retreat
-                                for travelers seeking a serene and comfortable stay.</p>
-                            <p>Nestled amidst a picturesque setting, our chalet provides a peaceful atmosphere, perfect
-                                for relaxation and rejuvenation. With our friendly and dedicated staff, we strive to
-                                ensure your stay is memorable and enjoyable. Come and experience the tranquility of
-                                D'Chalet Ombak Biru, where comfort meets natural beauty.</p>
-                            <p><em>Ab Wahab...the Owner</em></p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Row -->
-            </div>
-        </div>
-        <!-- /Pattern  -->
-
-
-
-        <div class="bg_white">
-            <div class="container margin_120_95">
-                <div class="row justify-content-between d-flex align-items-center add_bottom_90">
-                    <div class="col-lg-6">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_1.jpg}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Restaurants</h3>
-                            <p>D'Chalet Ombak Biru in Melaka is surrounded by a lot of restaurants and food stalls,
-                                providing visitors with an abundance of dining options. Click the button for suggestion
-                            </p>
-                            <p><a href="https://www.google.com/maps/search/Food+near+D+Chalet+Ombak+Biru/@2.3312258,102.0625333,17z/data=!3m1!4b1?entry=ttu"
-                                    class="btn_1 mt-1 outline">Click me</a></p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /row-->
-                <div class="row justify-content-between d-flex align-items-center">
-                    <div class="col-lg-6 order-lg-2">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_3.jpg}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 order-lg-1">
-                        <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Masjid</h3>
-                            <p>The distance between D'Chalet Ombak Biru in Melaka and Masjid Aminin in Sungai Tuang is
-                                walking distance.</p>
-                            <p><a href="https://goo.gl/maps/riELFEBme8EJcDyh7" class="btn_1 mt-1 outline">Locate Me</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /row-->
-            </div>
-            <!-- /container-->
-        </div>
-        <!-- /bg_white -->
-
-
-
-       
-
     </main>
-
     <footer class="revealed">
         <div class="footer_bg">
             <div class="gradient_over"></div>
@@ -266,7 +189,7 @@
         <!--/container-->
         <div class="copy">
             <div class="container">
-                © Ombak Biru Chalet - by <a href="#">Ocean Blue Lemond</a>
+                © Ombak Biru Chalet - by <a th:href="@{#}">Ocean Blue Lemond</a>
             </div>
         </div>
     </footer>

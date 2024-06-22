@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Ansonika">
-    <title>D Chalet Ombak Biru</title>
+    <title>Service</title>
     <!-- Favicons-->
     <link rel="shortcut icon" th:href="@{stylesheets/img/favicon.png}" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon"
@@ -36,9 +36,14 @@
 </head>
 
 <body class="datepicker_mobile_full">
+    <div id="preloader">
+        <div data-loader="circle-side"></div>
+    </div><!-- /Page Preload -->
+
+    <div class="layer"></div>
 
 
-    <header class="reveal_header">
+<header class="reveal_header bg-dark">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-6">
@@ -65,7 +70,10 @@
         </div><!-- /container -->
     </header><!-- /Header -->
 
-    <div class="nav_panel">
+
+
+    <!-- -------------------- sidebar panel ------------------------- -->
+<div class="nav_panel">
         <a th:href="@{#}" class="closebt open_close_nav_panel"><i class="bi bi-x"></i></a>
         <div class="logo_panel"><img th:src="@{stylesheets/img/logo_sticky.png}" width="135" height="45" alt=""></div>
         <div class="sidebar-navigation">
@@ -99,145 +107,148 @@
     </div>
     <!-- /nav_panel -->
 
+    <div class="container mt-6">
+        &nbsp;
+    </div>
+
     <main>
-        <div class="slider">
-            <div id="slider" class="flexslider">
-                <ul class="slides">
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/standard-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Standard Room</h3>
-                            <div class="info">
-                                <p>Exquisite furnishings for a cosy ambience</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/deluxe-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Deluxe Room</h3>
-                            <div class="info">
-                                <p>The simple yet comfortable atmosphere</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
 
-                </ul>
-                <div id="icon_drag_mobile"></div>
-            </div>
-            <div id="carousel_slider_wp">
-                <div id="carousel_slider" class="flexslider">
-                    <ul class="slides">
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/standard-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Standard Room<span>RM150 / Night</span></h3>
-                                <small>4 Guests - 1 Bed</small>
-                            </div>
-                        </li>
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/deluxe-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Deluxe Room <span>RM200 / Night</span></h3>
-                                <small>8 Guests - 2 Bed</small>
-                            </div>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
+        <div class="container mt-5">
+            &nbsp;
         </div>
-        <!-- /slider -->
-
-        <div class="pattern_2">
-            <div class="container margin_120_95" id="first_section">
-                <div class="row justify-content-between flex-lg-row-reverse align-items-center">
-                    <div class="col-lg-5">
-                        <div class="parallax_wrapper">
-                            <img th:src="@{stylesheets/img/owner.jpg}" alt="" class="img-fluid rounded-img">
-
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="intro">
-                            <div class="title">
-                                <small>About us</small>
-                                <h2>Welcome to D'Chalet Ombak Biru!</h2>
-                            </div>
-                            <p class="lead">We are a charming chalet located in Melaka, offering a delightful retreat
-                                for travelers seeking a serene and comfortable stay.</p>
-                            <p>Nestled amidst a picturesque setting, our chalet provides a peaceful atmosphere, perfect
-                                for relaxation and rejuvenation. With our friendly and dedicated staff, we strive to
-                                ensure your stay is memorable and enjoyable. Come and experience the tranquility of
-                                D'Chalet Ombak Biru, where comfort meets natural beauty.</p>
-                            <p><em>Ab Wahab...the Owner</em></p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Row -->
-            </div>
-        </div>
-        <!-- /Pattern  -->
-
-
-
-        <div class="bg_white">
+        <div class="bg_white" id="first_section">
             <div class="container margin_120_95">
-                <div class="row justify-content-between d-flex align-items-center add_bottom_90">
+                <div class="row justify-content-between">
+                    <div class="col-lg-4">
+                        <div class="title">
+                            <small>S01</small>
+                            <h2>Barbecue Set -   RM15.00</h2>
+                            <p>Enhance your chalet experience with our exclusive barbecue pit service, 
+                                designed to ignite your taste buds and create unforgettable moments.</p>
+                        </div>
+                            <div class="item col-xl-4 col-lg-6 col-mb-6 mb-4">
+                                <div class="item-img" data-cue="slideInUp">
+                                    <img th:src="@{stylesheets/img/roomService/bbqpit.jpg}" alt="" />
+                                    <div class="content">
+                                        <a  data-fslightbox="gallery_1" data-type="image" th:href="@{stylesheets/img/roomService/bbqpit.jpg}"><i class="bi bi-arrows-angle-expand"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
                     <div class="col-lg-6">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_1.jpg}" alt="">
+                        <div class="room_facilities_list">
+                            <ul data-cues="slideInLeft">
+                                <li>•	2 Kipas</li>
+                                <li>•	2 Penyepit</li>
+                                <li>•	2 Jug Air</li>
+                                <li>•   Arang tidak disediakan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="title">
+                            <small>S02</small>
+                            <h2>Dapur & Gas </h2>
+                            <h2>(Set A) - RM30.00</h2>
+                        </div>
+                        <div class="item col-xl-4 col-lg-6 col-mb-6 mb-4">
+                            <div class="item-img" data-cue="slideInUp">
+                                <img th:src="@{stylesheets/img/roomService/dapurgas.jpg}" alt="" />
+                                <div class="content">
+                                    <a  data-fslightbox="gallery_1" data-type="image" th:href="@{stylesheets/img/roomService/dapurgas.jpg}"><i class="bi bi-arrows-angle-expand"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Restaurants</h3>
-                            <p>D'Chalet Ombak Biru in Melaka is surrounded by a lot of restaurants and food stalls,
-                                providing visitors with an abundance of dining options. Click the button for suggestion
-                            </p>
-                            <p><a href="https://www.google.com/maps/search/Food+near+D+Chalet+Ombak+Biru/@2.3312258,102.0625333,17z/data=!3m1!4b1?entry=ttu"
-                                    class="btn_1 mt-1 outline">Click me</a></p>
+                    <div class="col-lg-6">
+                        <div class="room_facilities_list">
+                            <ul data-cues="slideInLeft">
+                                <li>•	RM30.00 / 2 Hari 1 Malam</li>
+                                <li>•	1 Set Dapur & Gas</li>
+                                <li>•   Peralatan Memasak Tidak Disediakan.</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <!-- /row-->
-                <div class="row justify-content-between d-flex align-items-center">
-                    <div class="col-lg-6 order-lg-2">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_3.jpg}" alt="">
+                    <div class="col-lg-4">
+                        <div class="title">
+                            <small>S03</small>
+                            <h2>Dapur & Gas </h2>
+                            <h2>(Set B) - RM50.00</h2>
+                        </div>
+                            <div class="item col-xl-4 col-lg-6 col-mb-6 mb-4">
+                                <div class="item-img" data-cue="slideInUp">
+                                    <img th:src="@{stylesheets/img/roomService/dapurgas.jpg}" alt="" />
+                                    <div class="content">
+                                        <a  data-fslightbox="gallery_1" data-type="image" th:href="@{stylesheets/img/roomService/dapurgas.jpg}"><i class="bi bi-arrows-angle-expand"></i></a>
+                                    </div>
+                                </div>
                             </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="room_facilities_list">
+                            <ul data-cues="slideInLeft">
+                                <li>•	RM50.00 / 3 Hari 2 Malam</li>
+                                <li>•	1 Set Dapur & Gas</li>
+                                <li>•   Peralatan Memasak Tidak Disediakan.</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="col-lg-5 order-lg-1">
+                    <div class="col-lg-4">
                         <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Masjid</h3>
-                            <p>The distance between D'Chalet Ombak Biru in Melaka and Masjid Aminin in Sungai Tuang is
-                                walking distance.</p>
-                            <p><a href="https://goo.gl/maps/riELFEBme8EJcDyh7" class="btn_1 mt-1 outline">Locate Me</a>
-                            </p>
+                            <small>S04</small>
+                            <h2>Toto </h2>
+                            <h2>(Set A) - RM15.00</h2>
+                        </div>
+                            <div class="item col-xl-4 col-lg-6 col-mb-6 mb-4">
+                                <div class="item-img" data-cue="slideInUp">
+                                    <img th:src="@{stylesheets/img/roomService/toto.jpg}" alt="" />
+                                    <div class="content">
+                                        <a  data-fslightbox="gallery_1" data-type="image" th:href="@{stylesheets/img/roomService/toto.jpg}"><i class="bi bi-arrows-angle-expand"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="room_facilities_list">
+                            <ul data-cues="slideInLeft">
+                                <li>•	1 Set Toto</li>
+                                <li>•   2 Bantal</li>
+                                <li>•   1 Selimut</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <!-- /row-->
+                    <div class="col-lg-4">
+                        <div class="title">
+                            <small>S05</small>
+                            <h2>Toto </h2>
+                            <h2>(Set B) - RM10.00</h2>
+                        </div>
+                            <div class="item col-xl-4 col-lg-6 col-mb-6 mb-4">
+                                <div class="item-img" data-cue="slideInUp">
+                                    <img th:src="@{stylesheets/img/roomService/toto.jpg}" alt="" />
+                                    <div class="content">
+                                        <a  data-fslightbox="gallery_1" data-type="image" th:href="@{stylesheets/img/roomService/toto.jpg}"><i class="bi bi-arrows-angle-expand"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="room_facilities_list">
+                            <ul data-cues="slideInLeft">
+                                <li>•	1 Set Toto</li>
+                                <li>•   2 Bantal</li>
+                            </ul>
+                        </div>
+                    </div>
+                <!-- /row -->
             </div>
-            <!-- /container-->
-        </div>
-        <!-- /bg_white -->
-
-
-
-       
-
+            <!-- /container -->
+            
+         </div>
     </main>
 
-    <footer class="revealed">
+
+<footer class="revealed">
         <div class="footer_bg">
             <div class="gradient_over"></div>
 
@@ -266,7 +277,7 @@
         <!--/container-->
         <div class="copy">
             <div class="container">
-                © Ombak Biru Chalet - by <a href="#">Ocean Blue Lemond</a>
+                © Ombak Biru Chalet - by <a th:href="@{#}">Ocean Blue Lemond</a>
             </div>
         </div>
     </footer>
@@ -278,7 +289,8 @@
         </svg>
     </div>
     <!-- /back to top -->
-    <!-- COMMON SCRIPTS -->
+
+<!-- COMMON SCRIPTS -->
     <script th:src="@{stylesheets/js/common_scripts.js}"></script>
     <script th:src="@{stylesheets/js/common_functions.js}"></script>
     <script th:src="@{stylesheets/js/datepicker_inline.js}"></script>
@@ -287,6 +299,7 @@
     <!-- SPECIFIC SCRIPTS -->
     <script th:src="@{stylesheets/js/jquery.flexslider.min.js}"></script>
     <script th:src="@{stylesheets/js/slider_func.js}"></script>
+
 </body>
 
 </html>

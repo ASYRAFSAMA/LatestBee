@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Ansonika">
-    <title>D Chalet Ombak Biru</title>
+    <title>Rooms</title>
     <!-- Favicons-->
     <link rel="shortcut icon" th:href="@{stylesheets/img/favicon.png}" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon"
@@ -34,11 +34,15 @@
     <!-- YOUR CUSTOM CSS -->
     <link th:href="@{stylesheets/css/custom.css}" rel="stylesheet">
 </head>
+<body> 
 
-<body class="datepicker_mobile_full">
+    <div id="preloader">
+        <div data-loader="circle-side"></div>
+    </div><!-- /Page Preload -->
 
+    <div class="layer"></div><!-- Opacity Mask -->
 
-    <header class="reveal_header">
+  <header class="reveal_header bg-dark">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-6">
@@ -65,7 +69,8 @@
         </div><!-- /container -->
     </header><!-- /Header -->
 
-    <div class="nav_panel">
+     <!-- -------------------- sidebar panel ------------------------- -->
+<div class="nav_panel">
         <a th:href="@{#}" class="closebt open_close_nav_panel"><i class="bi bi-x"></i></a>
         <div class="logo_panel"><img th:src="@{stylesheets/img/logo_sticky.png}" width="135" height="45" alt=""></div>
         <div class="sidebar-navigation">
@@ -99,145 +104,143 @@
     </div>
     <!-- /nav_panel -->
 
-    <main>
-        <div class="slider">
-            <div id="slider" class="flexslider">
-                <ul class="slides">
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/standard-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Standard Room</h3>
-                            <div class="info">
-                                <p>Exquisite furnishings for a cosy ambience</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
-                    <li>
-                        <img th:src="@{stylesheets/img/rooms/deluxe-1.jpg}" alt="">
-                        <div class="meta">
-                            <h3>Deluxe Room</h3>
-                            <div class="info">
-                                <p>The simple yet comfortable atmosphere</p>
-                            </div>
-                            <a th:href="@{guestViewRoom}" class="btn_1 outline white">Read more</a>
-                        </div>
-                    </li>
-
-                </ul>
-                <div id="icon_drag_mobile"></div>
-            </div>
-            <div id="carousel_slider_wp">
-                <div id="carousel_slider" class="flexslider">
-                    <ul class="slides">
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/standard-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Standard Room<span>RM150 / Night</span></h3>
-                                <small>4 Guests - 1 Bed</small>
-                            </div>
-                        </li>
-                        <li>
-                            <img th:src="@{stylesheets/img/rooms/deluxe-2.jpg}" alt="">
-                            <div class="caption">
-                                <h3>Deluxe Room <span>RM200 / Night</span></h3>
-                                <small>8 Guests - 2 Bed</small>
-                            </div>
-                        </li>
-
-                    </ul>
+     <main>
+        <div class="hero full-height jarallax" data-jarallax-video="mp4:./stylesheets/video/sunset.mp4,webm:./stylesheets/video/sunset.webm,ogv:./stylesheets/video/sunset.ogv" data-speed="0.2">
+            <div class="wrapper opacity-mask d-flex align-items-center justify-content-center text-center animate_hero" data-opacity-mask="rgba(0, 0, 0, 0.5)">
+                <div class="container">
+                    <small class="slide-animated one">D'Chalet Ombak Biru</small>
+                    <h1 class="slide-animated two">Rooms</h1>
                 </div>
             </div>
         </div>
-        <!-- /slider -->
+        <!-- /Background Img Parallax -->
 
-        <div class="pattern_2">
-            <div class="container margin_120_95" id="first_section">
-                <div class="row justify-content-between flex-lg-row-reverse align-items-center">
-                    <div class="col-lg-5">
-                        <div class="parallax_wrapper">
-                            <img th:src="@{stylesheets/img/owner.jpg}" alt="" class="img-fluid rounded-img">
+        <div class="container margin_120_95" id="first_section">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 fixed_title">
+                    <div class="title">
+                        <small>D'Chalet Ombak Biru</small>
+                        <h2>Our Rooms</h2>
+                        <p class="lead">Feel free to choose from our two types of rooms: <strong>Standard</strong> and <strong>Deluxe</strong>.</p>
+                        <p><a th:href="@{/guestMakeRoomReservation}" class="btn_1 outline">Book Now</a></p>
+                    </div>
+                </div>
+                <div class="col-xl-7">
+                    <div class="row_list_version_3" data-cue="fadeIn">
+                        <div class="owl-carousel owl-theme carousel_item_1 kenburns rounded-img">
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/standard-2.jpg}" alt=""></a>
+                            </div>
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/standard-1.jpg}" alt=""></a>
+                            </div>
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/standard-3.jpg}" alt=""></a>
+                            </div>
+                        </div>
+                        <!-- /carousel -->
+                        <div class="box_item_info" data-jarallax-element="-25">
+                            <small>From RM150/night</small>
+                            <h2>Standard Room</h2>
+                            <p>Beautiful design with modern furnishings including a glamorous bay window with your own private view of Lucerne.</p>
+                            <div class="facilities clearfix">
+                                <ul>
+                                    <li>
+                                        <i class="customicon-double-bed"></i> Queen Size Bed
+                                    </li>
+                                    <li>
+                                        <i class="customicon-television"></i> 32 Inc TV
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /box_item_info -->
+                    </div>
+                    <!-- /row_list_version_3 -->
 
+                    <div class="row_list_version_3" data-cue="fadeIn">
+                        <div class="owl-carousel owl-theme carousel_item_1 kenburns rounded-img">
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/deluxe-2.jpg}" width="640px" height="480px" alt=""></a>
+                            </div>
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/deluxe-1.jpg}" alt=""></a>
+                            </div>
+                            <div class="item">
+                                <a href=" "><img th:src="@{stylesheets/img/rooms/deluxe-3.jpg}" alt=""></a>
+                            </div>
+                        </div>
+                        <!-- /carousel -->
+                        <div class="box_item_info" data-jarallax-element="-25">
+                            <small>From RM200/night</small>
+                            <h2>Deluxe Room</h2>
+                            <p>Beautiful design with modern furnishings including a glamorous bay window with your own private view of Lucerne.</p>
+                            <div class="facilities clearfix">
+                                <ul>
+                                    <li>
+                                        <i class="customicon-double-bed"></i> Double Queen Size Bed
+                                    </li>
+                                    <li>
+                                        <i class="customicon-television"></i> 32 Inc TV
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /box_item_info -->
+                    </div>
+                    <!-- /row_list_version_3 -->
+
+                </div>
+            </div>
+        </div>
+        <!-- /container-->
+
+        <div class="pinned-image pinned-image--medium">
+            <div class="pinned-image__container">
+                <div class="pinned-image__container-overlay"></div>
+            </div>
+            <div class="pinned_over_content">
+                <div class="title white center mb-5">
+                        <small data-cue="slideInUp">D'Chalet Ombak Biru</small>
+                        <h2 data-cue="slideInUp" data-delay="100">Main Facilities</h2>
+                    </div>
+                <div class="row mt-4">
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="box_facilities white no-border" data-cue="slideInUp">
+                            <i class="customicon-private-parking"></i>
+                            <h3>Private Parking</h3>
                         </div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="intro">
-                            <div class="title">
-                                <small>About us</small>
-                                <h2>Welcome to D'Chalet Ombak Biru!</h2>
-                            </div>
-                            <p class="lead">We are a charming chalet located in Melaka, offering a delightful retreat
-                                for travelers seeking a serene and comfortable stay.</p>
-                            <p>Nestled amidst a picturesque setting, our chalet provides a peaceful atmosphere, perfect
-                                for relaxation and rejuvenation. With our friendly and dedicated staff, we strive to
-                                ensure your stay is memorable and enjoyable. Come and experience the tranquility of
-                                D'Chalet Ombak Biru, where comfort meets natural beauty.</p>
-                            <p><em>Ab Wahab...the Owner</em></p>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="box_facilities white" data-cue="slideInUp">
+                            <i class="customicon-wifi"></i>
+                            <h3>High Speed Wifi</h3>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="box_facilities white" data-cue="slideInUp">
+                            <i class="customicon-cocktail"></i>
+                            <h3>Barbeque Space</h3>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="box_facilities white" data-cue="slideInUp">
+                            <i class="customicon-swimming-pool"></i>
+                            <h3>Swimming Pool</h3>
                         </div>
                     </div>
                 </div>
                 <!-- /Row -->
             </div>
         </div>
-        <!-- /Pattern  -->
+        <!-- /pinned-image -->
 
-
-
-        <div class="bg_white">
-            <div class="container margin_120_95">
-                <div class="row justify-content-between d-flex align-items-center add_bottom_90">
-                    <div class="col-lg-6">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_1.jpg}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Restaurants</h3>
-                            <p>D'Chalet Ombak Biru in Melaka is surrounded by a lot of restaurants and food stalls,
-                                providing visitors with an abundance of dining options. Click the button for suggestion
-                            </p>
-                            <p><a href="https://www.google.com/maps/search/Food+near+D+Chalet+Ombak+Biru/@2.3312258,102.0625333,17z/data=!3m1!4b1?entry=ttu"
-                                    class="btn_1 mt-1 outline">Click me</a></p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /row-->
-                <div class="row justify-content-between d-flex align-items-center">
-                    <div class="col-lg-6 order-lg-2">
-                        <div class="pinned-image rounded_container pinned-image--small mb-4">
-                            <div class="pinned-image__container">
-                                <img th:src="@{stylesheets/img/local_amenities_3.jpg}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 order-lg-1">
-                        <div class="title">
-                            <small>Local Amenities</small>
-                            <h3>Masjid</h3>
-                            <p>The distance between D'Chalet Ombak Biru in Melaka and Masjid Aminin in Sungai Tuang is
-                                walking distance.</p>
-                            <p><a href="https://goo.gl/maps/riELFEBme8EJcDyh7" class="btn_1 mt-1 outline">Locate Me</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /row-->
-            </div>
-            <!-- /container-->
-        </div>
-        <!-- /bg_white -->
-
-
-
-       
+        
+        <!-- /container -->
 
     </main>
 
-    <footer class="revealed">
+   <footer class="revealed">
         <div class="footer_bg">
             <div class="gradient_over"></div>
 
@@ -266,7 +269,7 @@
         <!--/container-->
         <div class="copy">
             <div class="container">
-                © Ombak Biru Chalet - by <a href="#">Ocean Blue Lemond</a>
+                © Ombak Biru Chalet - by <a th:href="@{#}">Ocean Blue Lemond</a>
             </div>
         </div>
     </footer>
@@ -274,11 +277,12 @@
 
     <div class="progress-wrap">
         <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
         </svg>
     </div>
     <!-- /back to top -->
-    <!-- COMMON SCRIPTS -->
+	
+<!-- COMMON SCRIPTS -->
     <script th:src="@{stylesheets/js/common_scripts.js}"></script>
     <script th:src="@{stylesheets/js/common_functions.js}"></script>
     <script th:src="@{stylesheets/js/datepicker_inline.js}"></script>
@@ -287,6 +291,6 @@
     <!-- SPECIFIC SCRIPTS -->
     <script th:src="@{stylesheets/js/jquery.flexslider.min.js}"></script>
     <script th:src="@{stylesheets/js/slider_func.js}"></script>
-</body>
 
+</body>
 </html>
