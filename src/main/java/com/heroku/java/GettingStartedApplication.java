@@ -35,8 +35,8 @@ public class GettingStartedApplication {
         return "index";
     }
 
-    @GetMapping("/daus")
-    public String daus() {
+    @GetMapping("/index")
+    public String index11() {
         return "try";
     }
 
