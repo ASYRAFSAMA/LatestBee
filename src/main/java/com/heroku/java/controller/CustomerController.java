@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.heroku.java.model.Customer;
 
 
-import com.heroku.java.model.Customer;
-
 import jakarta.servlet.http.HttpSession;
 
 import javax.sql.DataSource;
