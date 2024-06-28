@@ -30,12 +30,12 @@ public class GettingStartedApplication {
     public GettingStartedApplication(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
+/*
     @GetMapping("/")
     public String index() {
-        return "register";
+        return "index_logout";
     }
-/* 
+ 
     @GetMapping("/logoutViewRoom")
     public String logoutViewRoom() {
         return "logoutViewRoom";
@@ -58,14 +58,14 @@ public class GettingStartedApplication {
     }
  */
 
- /* 
-    @GetMapping("/register")
+ /* */
+    @GetMapping("/")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/")
     public String registerCustomer(@ModelAttribute("customer") Customer customer, Model model) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "INSERT INTO customer (customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?)";
@@ -85,7 +85,7 @@ public class GettingStartedApplication {
             return "register";
         }
     }
-*/
+
     
     @GetMapping("/database")
     String database(Map<String, Object> model) {
