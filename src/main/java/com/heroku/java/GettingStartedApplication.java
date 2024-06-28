@@ -57,12 +57,12 @@ public class GettingStartedApplication {
         return "index_logout";
     }
 
-    @GetMapping("/register")
+   /*  @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
         return "register";
     }
-
+*/
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") Customer customer, Model model) {
         try (Connection connection = dataSource.getConnection()) {
