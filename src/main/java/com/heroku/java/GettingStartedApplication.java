@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,12 @@ import jakarta.servlet.http.HttpSession;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+
+import com.heroku.java.model.Customer;
 
 @SpringBootApplication
 @Controller
@@ -27,8 +30,6 @@ public class GettingStartedApplication {
     public GettingStartedApplication(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
-// for guest
 
     @GetMapping("/")
     public String index() {
@@ -56,17 +57,15 @@ public class GettingStartedApplication {
         return "index_logout";
     }
 
-        @GetMapping("/guestViewRoom")
+    @GetMapping("/guestViewRoom")
     public String guestViewRoom(HttpSession session) {
         String guestICNumber = (String) session.getAttribute("guestICNumber");
         return "guest/guestViewRoom";
     }
 
-    // for staff
-
     @GetMapping("/staffHome")
     public String staffHome(@RequestParam(name = "success", required = false) Boolean success, HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber") ;
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
         return "staff/staffHome";
     }
 
@@ -77,54 +76,45 @@ public class GettingStartedApplication {
 
     @GetMapping("/staffAddRoom")
     public String staffAddRoom(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "staff/staffAddRoom";
-}
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "staff/staffAddRoom";
+    }
 
-@GetMapping("/staffGenerateReport")
-public String staffGenerateReport(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "staff/staffGenerateReport";
-}
+    @GetMapping("/staffGenerateReport")
+    public String staffGenerateReport(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "staff/staffGenerateReport";
+    }
 
-// for manager
+    @GetMapping("/managerAddRoom")
+    public String managerAddRoom(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "manager/managerAddRoom";
+    }
 
-// @GetMapping("/managerHome")
-// public String managerHome(@RequestParam(name = "success", required = false) Boolean success, HttpSession session) {
-//     String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-//     return "manager/managerHome";
-// }
+    @GetMapping("/managerAddStaff")
+    public String managerAddStaff(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "manager/managerAddStaff";
+    }
 
-@GetMapping("/managerAddRoom")
-public String managerAddRoom(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "manager/managerAddRoom";
-}
+    @GetMapping("/managerGenerateReport")
+    public String managerGenerateReport(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "manager/managerGenerateReport";
+    }
 
-@GetMapping("/managerAddStaff")
-public String managerAddStaff(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "manager/managerAddStaff";
-}
+    @GetMapping("/reservationReport")
+    public String reservationReport(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "manager/reservationReport";
+    }
 
-@GetMapping("/managerGenerateReport")
-public String managerGenerateReport(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "manager/managerGenerateReport";
-}
-
-@GetMapping("/reservationReport")
-public String reservationReport(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "manager/reservationReport";
-}
-
-@GetMapping("/salesReport")
-public String salesReport(HttpSession session) {
-    String staffICNumber = (String) session.getAttribute("staffICNumber") ;
-    return "manager/salesReport";
-}
-
+    @GetMapping("/salesReport")
+    public String salesReport(HttpSession session) {
+        String staffICNumber = (String) session.getAttribute("staffICNumber");
+        return "manager/salesReport";
+    }
 
     @GetMapping("/database")
     String database(Map<String, Object> model) {
@@ -141,10 +131,36 @@ public String salesReport(HttpSession session) {
 
             model.put("records", output);
             return "database";
-
         } catch (Throwable t) {
             model.put("message", t.getMessage());
             return "error";
+        }
+    }
+
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
+        model.addAttribute("customer", new Customer());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String registerCustomer(@ModelAttribute("customer") Customer customer, Model model) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "INSERT INTO customer (customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, customer.getCustomerName());
+            statement.setString(2, customer.getCustomerDob());
+            statement.setString(3, customer.getCustomerEmail());
+            statement.setString(4, customer.getCustomerPhoneNum());
+            statement.setString(5, customer.getCustomerAddress());
+            statement.setString(6, customer.getPassword());
+
+            statement.executeUpdate();
+            return "redirect:/login";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            model.addAttribute("error", "An error occurred while registering the customer.");
+            return "register";
         }
     }
 
