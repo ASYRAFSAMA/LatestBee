@@ -1,6 +1,6 @@
 package com.heroku.java.model;
 
-public class Customer {
+public class customer {
    
     private String customerName;
     private String customerEmail;
@@ -9,7 +9,7 @@ public class Customer {
     private String customerAddress;
     private String password;
 
-    public Customer(){
+    public customer(){
         
     }
 

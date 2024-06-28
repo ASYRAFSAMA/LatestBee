@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.heroku.java.model.Customer;
+import com.heroku.java.model.customer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -25,24 +25,24 @@ public class CustomerController {
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("customer", new Customer());
+        model.addAttribute("customer", new customer());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerCustomer(@ModelAttribute("customer") Customer customer, Model model) {
+    public String registerCustomer(@ModelAttribute("customer") customer customer, Model model) {
 
         try {
             Connection connection = dataSource.getConnection();
             String sql = "INSERT INTO public.customer(customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?);";
             final var statement = connection.prepareStatement(sql);
 
-            String CustomerName = customer.getCustomerName();
-            String CustomerDob = customer.getCustomerDob();
-            String CustomerEmail = customer.getCustomerEmail();
-            String CustomerPhoneNum = customer.getCustomerPhoneNum();
-            String CustomerAddress = customer.getCustomerAddress();
-            String Password = customer.getPassword();
+            String customerName = customer.getCustomerName();
+            String customerDob = customer.getCustomerDob();
+            String customerEmail = customer.getCustomerEmail();
+            String customerPhoneNum = customer.getCustomerPhoneNum();
+            String customerAddress = customer.getCustomerAddress();
+            String password = customer.getPassword();
 
 
             statement.setString(1, customer.getCustomerName());

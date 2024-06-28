@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.heroku.java.model.Customer;
+import com.heroku.java.model.customer;
 
 @SpringBootApplication
 @Controller
