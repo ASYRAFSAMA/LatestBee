@@ -24,6 +24,7 @@ public class CustomerController {
         this.dataSource = dataSource;
     }
 
+ /* 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
@@ -51,3 +52,5 @@ public class CustomerController {
         }
     }
 }
+
+*/
