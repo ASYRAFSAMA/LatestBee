@@ -1,3 +1,5 @@
+/* 
+
 package com.heroku.java.model;
 
 public class CustomerModel {
@@ -59,3 +61,5 @@ public class CustomerModel {
         this.password = password;
     }
 }
+
+*/
