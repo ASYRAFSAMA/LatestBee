@@ -57,86 +57,6 @@ public class GettingStartedApplication {
         return "index_logout";
     }
 
-    @GetMapping("/guestViewRoom")
-    public String guestViewRoom(HttpSession session) {
-        String guestICNumber = (String) session.getAttribute("guestICNumber");
-        return "guest/guestViewRoom";
-    }
-
-    @GetMapping("/staffHome")
-    public String staffHome(@RequestParam(name = "success", required = false) Boolean success, HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "staff/staffHome";
-    }
-
-    @GetMapping("/staffLogin")
-    public String staffLogin() {
-        return "staff/staffLogin";
-    }
-
-    @GetMapping("/staffAddRoom")
-    public String staffAddRoom(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "staff/staffAddRoom";
-    }
-
-    @GetMapping("/staffGenerateReport")
-    public String staffGenerateReport(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "staff/staffGenerateReport";
-    }
-
-    @GetMapping("/managerAddRoom")
-    public String managerAddRoom(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "manager/managerAddRoom";
-    }
-
-    @GetMapping("/managerAddStaff")
-    public String managerAddStaff(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "manager/managerAddStaff";
-    }
-
-    @GetMapping("/managerGenerateReport")
-    public String managerGenerateReport(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "manager/managerGenerateReport";
-    }
-
-    @GetMapping("/reservationReport")
-    public String reservationReport(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "manager/reservationReport";
-    }
-
-    @GetMapping("/salesReport")
-    public String salesReport(HttpSession session) {
-        String staffICNumber = (String) session.getAttribute("staffICNumber");
-        return "manager/salesReport";
-    }
-
-    @GetMapping("/database")
-    String database(Map<String, Object> model) {
-        try (Connection connection = dataSource.getConnection()) {
-            final var statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-            statement.executeUpdate("INSERT INTO ticks VALUES (now())");
-
-            final var resultSet = statement.executeQuery("SELECT tick FROM ticks");
-            final var output = new ArrayList<>();
-            while (resultSet.next()) {
-                output.add("Read from DB: " + resultSet.getTimestamp("tick"));
-            }
-
-            model.put("records", output);
-            return "database";
-        } catch (Throwable t) {
-            model.put("message", t.getMessage());
-            return "error";
-        }
-    }
-
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
@@ -163,6 +83,30 @@ public class GettingStartedApplication {
             return "register";
         }
     }
+
+    
+    @GetMapping("/database")
+    String database(Map<String, Object> model) {
+        try (Connection connection = dataSource.getConnection()) {
+            final var statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
+            statement.executeUpdate("INSERT INTO ticks VALUES (now())");
+
+            final var resultSet = statement.executeQuery("SELECT tick FROM ticks");
+            final var output = new ArrayList<>();
+            while (resultSet.next()) {
+                output.add("Read from DB: " + resultSet.getTimestamp("tick"));
+            }
+
+            model.put("records", output);
+            return "database";
+        } catch (Throwable t) {
+            model.put("message", t.getMessage());
+            return "error";
+        }
+    }
+
+    
 
     public static void main(String[] args) {
         SpringApplication.run(GettingStartedApplication.class, args);
