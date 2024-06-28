@@ -1,62 +1,92 @@
 package com.heroku.java.model;
 
-
-
 public class Customer {
+   
+    private String guestName;
+	private String guestPhoneNumber;
+	private String guestICNumber;
+	private String guestGender;
+	private String guestReligion;
+	private String guestRace;
+	private String guestAddress;
+	private String guestEmail;
+	private String guestPassword;
 
-    private Long customerId;
-    private String customerName;
-    private String customerDob; // Use String here for simplicity, but prefer java.time.LocalDate
-    private String customerEmail;
-    private String customerPhoneNum;
-    private String customerAddress;
-
-    // Getters and Setters
-    public Long getCustomerId() {
-        return customerId;
+    public Customer(){
+        
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+
+    public String getGuestName() {
+        return this.guestName;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public String getGuestPhoneNumber() {
+        return this.guestPhoneNumber;
     }
 
-    public String getCustomerDob() {
-        return customerDob;
+    public void setGuestPhoneNumber(String guestPhoneNumber) {
+        this.guestPhoneNumber = guestPhoneNumber;
     }
 
-    public void setCustomerDob(String customerDob) {
-        this.customerDob = customerDob;
+    public String getGuestICNumber() {
+        return this.guestICNumber;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public void setGuestICNumber(String guestICNumber) {
+        this.guestICNumber = guestICNumber;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public String getGuestGender() {
+        return this.guestGender;
     }
 
-    public String getCustomerPhoneNum() {
-        return customerPhoneNum;
+    public void setGuestGender(String guestGender) {
+        this.guestGender = guestGender;
     }
 
-    public void setCustomerPhoneNum(String customerPhoneNum) {
-        this.customerPhoneNum = customerPhoneNum;
+    public String getGuestReligion() {
+        return this.guestReligion;
     }
 
-    public String getCustomerAddress() {
-        return customerAddress;
+    public void setGuestReligion(String guestReligion) {
+        this.guestReligion = guestReligion;
     }
 
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
+    public String getGuestRace() {
+        return this.guestRace;
     }
+
+    public void setGuestRace(String guestRace) {
+        this.guestRace = guestRace;
+    }
+
+    public String getGuestAddress() {
+        return this.guestAddress;
+    }
+
+    public void setGuestAddress(String guestAddress) {
+        this.guestAddress = guestAddress;
+    }
+
+    public String getGuestEmail() {
+        return this.guestEmail;
+    }
+
+    public void setGuestEmail(String guestEmail) {
+        this.guestEmail = guestEmail;
+    }
+
+    public String getGuestPassword() {
+        return this.guestPassword;
+    }
+
+    public void setGuestPassword(String guestPassword) {
+        this.guestPassword = guestPassword;
+    }
+   
 }
