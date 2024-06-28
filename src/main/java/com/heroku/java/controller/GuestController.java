@@ -148,7 +148,7 @@ public class GuestController {
             statement.setString(6, guest.getGuestReligion());
             statement.setString(7, guest.getGuestRace());
             statement.setString(8, guest.getGuestAddress());
-            statement.setString(9, guest.getGuestPassword());
+           // statement.setString(9, guest.getGuestPassword());
             statement.executeUpdate();
 
             return "redirect:/guestLogin";
@@ -176,8 +176,8 @@ public class GuestController {
                 guest.setGuestReligion(resultSet.getString("guest_religion"));
                 guest.setGuestRace(resultSet.getString("guest_race"));
                 guest.setGuestAddress(resultSet.getString("guest_address"));
-                guest.setGuestEmail(resultSet.getString("guest_email"));
-                guest.setGuestPassword(resultSet.getString("guest_password"));
+              //  guest.setGuestEmail(resultSet.getString("guest_email"));
+              //  guest.setGuestPassword(resultSet.getString("guest_password"));
                 model.addAttribute("guest", guest);
             }
 
@@ -206,8 +206,8 @@ public class GuestController {
                 guest.setGuestReligion(resultSet.getString("guest_religion"));
                 guest.setGuestRace(resultSet.getString("guest_race"));
                 guest.setGuestAddress(resultSet.getString("guest_address"));
-                guest.setGuestEmail(resultSet.getString("guest_email"));
-                guest.setGuestPassword(resultSet.getString("guest_password"));
+              //  guest.setGuestEmail(resultSet.getString("guest_email"));
+              //  guest.setGuestPassword(resultSet.getString("guest_password"));
                 model.addAttribute("guest", guest);
             }
 
