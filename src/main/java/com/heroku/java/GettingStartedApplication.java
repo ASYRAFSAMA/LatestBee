@@ -33,9 +33,9 @@ public class GettingStartedApplication {
 
     @GetMapping("/")
     public String index() {
-        return "index_logout";
+        return "register";
     }
-
+/* 
     @GetMapping("/logoutViewRoom")
     public String logoutViewRoom() {
         return "logoutViewRoom";
@@ -56,7 +56,9 @@ public class GettingStartedApplication {
     public String index_logout() {
         return "index_logout";
     }
+ */
 
+ /* 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
@@ -83,7 +85,7 @@ public class GettingStartedApplication {
             return "register";
         }
     }
-
+*/
     
     @GetMapping("/database")
     String database(Map<String, Object> model) {
