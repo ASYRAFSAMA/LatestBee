@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.heroku.java.model.Customer;
-import com.heroku.java.model.CustomerModel;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -23,8 +22,7 @@ public class CustomerController {
     public CustomerController(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-}
- /* 
+
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("customer", new Customer());
@@ -52,5 +50,3 @@ public class CustomerController {
         }
     }
 }
-
-*/
