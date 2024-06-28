@@ -23,7 +23,7 @@ public class CustomerController {
     public CustomerController(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
+}
  /* 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
