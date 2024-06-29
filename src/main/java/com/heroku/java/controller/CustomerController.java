@@ -29,7 +29,7 @@ public class CustomerController {
         this.dataSource = dataSource;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registerAccount")
     public String register(@ModelAttribute("register")
                                 @RequestParam("customername") String customerName,
                                 @RequestParam("customerdob") String customerDob,
