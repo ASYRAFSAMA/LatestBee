@@ -1,9 +1,11 @@
 package com.heroku.java.model;
 
+import java.time.LocalDate;
+
 public class Customer {
     private String customerName;
     private String customerEmail;
-    private String customerDob;
+    private LocalDate customerDob;
     private String customerPhoneNum;
     private String customerAddress;
     private String password;
@@ -28,11 +30,11 @@ public class Customer {
         this.customerEmail = customerEmail;
     }
 
-    public String getCustomerDob() {
+    public LocalDate getCustomerDob() {
         return customerDob;
     }
 
-    public void setCustomerDob(String customerDob) {
+    public void setCustomerDob(LocalDate customerDob) {
         this.customerDob = customerDob;
     }
 
