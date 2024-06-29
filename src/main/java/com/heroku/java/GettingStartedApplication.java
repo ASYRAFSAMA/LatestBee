@@ -37,10 +37,7 @@ public class GettingStartedApplication {
         return "index";
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
+
 
  /*
     @GetMapping("/logoutViewRoom")
