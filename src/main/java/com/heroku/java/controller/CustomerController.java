@@ -36,7 +36,15 @@ public class CustomerController {
                                 @RequestParam("customerphonenum") String customerPhoneNum,
                                 @RequestParam("customeraddress") String customerAddress,
                                 @RequestParam("password") String Password) throws IOException {
-        
+
+         // Check if required parameters are present
+    if (customerName.isEmpty() || customerDob.isEmpty() || customerEmail.isEmpty() ||
+        customerPhoneNum.isEmpty() || customerAddress.isEmpty() || Password == null) {
+        // Handle missing parameters gracefully
+        // For example, return an error page or redirect to registration page with error message
+        return "redirect:/register?error=missing_params";
+    }
+
         Customer customer = new Customer();
         customer.setCustomerName(customerName);
         customer.setCustomerEmail(customerEmail);
