@@ -32,7 +32,7 @@ public class CustomerController {
     }
 
     @PostMapping("/registerAccount")
-    public String register(@ModelAttribute("register")
+    public String register(@ModelAttribute("registerAccount")
                                 @RequestParam("customername") String customerName,
                                 @RequestParam("customerdob") String customerDob,
                                 @RequestParam("customeremail") String customerEmail,
