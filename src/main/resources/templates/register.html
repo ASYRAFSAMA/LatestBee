@@ -9,7 +9,7 @@
     <div class="wrapper">
         <div class="form-box register">
             <h2>Registration</h2>
-            <form id="register"action="@{/registerAcc}" modelAttribute="registerAcc" method="POST">
+            <form id="register" th:action="@{/registerAcc}" modelAttribute="registerAcc" method="post">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person"></ion-icon></span>
                     <input type="text" id="customername" name="customername" required>
