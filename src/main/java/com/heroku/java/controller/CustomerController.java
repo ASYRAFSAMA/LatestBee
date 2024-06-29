@@ -3,12 +3,9 @@ package com.heroku.java.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.heroku.java.model.Customer;
 
@@ -31,8 +28,8 @@ public class CustomerController {
         this.dataSource = dataSource;
     }
 
-    @PostMapping("/registerAccount")
-    public String register(@ModelAttribute("registerAccount")
+    @PostMapping("/registerAcc")
+    public String register(@ModelAttribute("registerAcc")
                                 @RequestParam("customername") String customerName,
                                 @RequestParam("customerdob") String customerDob,
                                 @RequestParam("customeremail") String customerEmail,
@@ -88,7 +85,7 @@ public class CustomerController {
             throw new RuntimeException("Failed to insert customer", e);
         }
 
-        return "redirect:/login"; // Return the created activity object
+        return "redirect:/register"; // Return the created activity object
     }
 }
 

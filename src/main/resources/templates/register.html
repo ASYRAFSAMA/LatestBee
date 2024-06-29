@@ -9,7 +9,7 @@
     <div class="wrapper">
         <div class="form-box register">
             <h2>Registration</h2>
-            <form id="register"action="@{/registerAccount}" modelAttribute="registerAccount" method="POST">
+            <form id="register"action="@{/registerAcc}" modelAttribute="registerAcc" method="POST">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person"></ion-icon></span>
                     <input type="text" id="customername" name="customername" required>
@@ -65,7 +65,7 @@
                 const formData =new FormData(register);
 
                 try {
-                  const response = await fetch('/registerAccount', {
+                  const response = await fetch('/registerAcc', {
                       method: 'POST',
                       body: formData
                   });
