@@ -37,6 +37,11 @@ public class GettingStartedApplication {
         return "index";
     }
 
+    @GetMapping("/registerAccount")
+    public String registerAccount() {
+        return "register";
+    }
+
 
 
  /*

@@ -29,12 +29,13 @@ public class CustomerController {
         this.dataSource = dataSource;
     }
 
-    @GetMapping("/register")
-    public String register(@ModelAttribute("register")@RequestParam("customername") String customerName,
-                                   @RequestParam("customerdob") String customerDob,
-                                   @RequestParam("customeremail") String customerEmail,
-                                   @RequestParam("customerphonenum") String customerPhoneNum,
-                                   @RequestParam("customeraddress") String customerAddress) throws IOException {
+    @PostMapping("/register")
+    public String register(@ModelAttribute("register")
+                                @RequestParam("customername") String customerName,
+                                @RequestParam("customerdob") String customerDob,
+                                @RequestParam("customeremail") String customerEmail,
+                                @RequestParam("customerphonenum") String customerPhoneNum,
+                                @RequestParam("customeraddress") String customerAddress) throws IOException {
         
         Customer customer = new Customer();
         customer.setCustomerName(customerName);
