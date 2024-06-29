@@ -3,6 +3,7 @@ package com.heroku.java.model;
 import java.time.LocalDate;
 
 public class Customer {
+    private Long customerId;
     private String customerName;
     private String customerEmail;
     private LocalDate customerDob;
@@ -10,8 +11,11 @@ public class Customer {
     private String customerAddress;
     private String password;
 
-    public Customer(){
-        
+    public Long getCustomerId() {
+        return customerId;
+    }
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getCustomerName() {

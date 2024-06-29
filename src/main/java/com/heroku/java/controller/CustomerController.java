@@ -19,6 +19,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class CustomerController {
@@ -35,14 +37,20 @@ public class CustomerController {
                                 @RequestParam("customerdob") String customerDob,
                                 @RequestParam("customeremail") String customerEmail,
                                 @RequestParam("customerphonenum") String customerPhoneNum,
-                                @RequestParam("customeraddress") String customerAddress) throws IOException {
+                                @RequestParam("customeraddress") String customerAddress,
+                                @RequestParam("password") String Password) throws IOException {
         
         Customer customer = new Customer();
         customer.setCustomerName(customerName);
         customer.setCustomerEmail(customerEmail);
-        customer.setCustomerDob(customerDob);
         customer.setCustomerPhoneNum(customerPhoneNum);
+        customer.setCustomerAddress(customerAddress);
+        customer.setPassword(Password);
     
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(customerDob, formatter);
+        customer.setCustomerDob(date);
+
     try (Connection connection = dataSource.getConnection()) {
 
             System.out.println("Received activity details:");
@@ -51,12 +59,13 @@ public class CustomerController {
             System.out.println("Email: " + customer.getCustomerEmail());
             System.out.println("Num: " + customer.getCustomerPhoneNum());
             System.out.println("Address: " + customer.getCustomerAddress());
+            System.out.println("Password: " + customer.getPassword());
 
-            String sql = "INSERT INTO public.customer(customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?);";
+            String RegisterSql = "INSERT INTO public.customer(customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?);";
 
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            try (PreparedStatement statement = connection.prepareStatement(RegisterSql)) {
                 statement.setString(1, customer.getCustomerName());
-                statement.setString(2, customer.getCustomerDob());
+                statement.setDate(2, java.sql.Date.valueOf(customer.getCustomerDob()));
                 statement.setString(3, customer.getCustomerEmail());
                 statement.setString(4, customer.getCustomerPhoneNum());
                 statement.setString(5, customer.getCustomerAddress());
@@ -65,8 +74,8 @@ public class CustomerController {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        String customerId = resultSet.getString("customerid");
-                        customer.setCustomerName(customerId);
+                        long customerId = resultSet.getLong("customerid");
+                        customer.setCustomerId(customerId);
                         System.out.println("Inserted customer with ID: " + customerId);
                     } else {
                         throw new SQLException("Failed to insert activity, no ID obtained.");
