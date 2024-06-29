@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.heroku.java.model.customer;
+import com.heroku.java.model.Customer;
 
 @SpringBootApplication
 @Controller
@@ -36,6 +36,12 @@ public class GettingStartedApplication {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
  /*
     @GetMapping("/logoutViewRoom")
     public String logoutViewRoom() {
@@ -59,34 +65,6 @@ public class GettingStartedApplication {
     }
  */
 
- /* 
-    @GetMapping("/register")
-    public String showRegisterForm(Model model) {
-        model.addAttribute("customer", new Customer());
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String registerCustomer(@ModelAttribute("customer") Customer customer, Model model) {
-        try (Connection connection = dataSource.getConnection()) {
-            String sql = "INSERT INTO customer (customername, customerdob, customeremail, customerphonenum, customeraddress, password) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, customer.getCustomerName());
-            statement.setString(2, customer.getCustomerDob());
-            statement.setString(3, customer.getCustomerEmail());
-            statement.setString(4, customer.getCustomerPhoneNum());
-            statement.setString(5, customer.getCustomerAddress());
-            statement.setString(6, customer.getPassword());
-
-            statement.executeUpdate();
-            return "redirect:/login";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "An error occurred while registering the customer.");
-            return "register";
-        }
-    }
-*/
     
     @GetMapping("/database")
     String database(Map<String, Object> model) {
