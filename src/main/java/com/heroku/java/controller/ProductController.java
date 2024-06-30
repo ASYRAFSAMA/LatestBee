@@ -34,7 +34,7 @@ public class ProductController {
                                 @RequestParam("producttype") String productType,
                                 @RequestParam("productquantity") Integer productQuantity,
                                 @RequestParam("productprice") Double productPrice,
-                                @RequestParam("activityimage") MultipartFile productImage) throws IOException {
+                                @RequestParam("productimage") MultipartFile productImage) throws IOException {
 /* 
          // Check if required parameters are present
     if (customerName.isEmpty() || customerDob.isEmpty() || customerEmail.isEmpty() ||
