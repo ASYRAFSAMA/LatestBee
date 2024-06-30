@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop Products</title>
     <link rel="stylesheet" th:href="@{stylesheets\css\addproduct.css}">
+    <link rel="stylesheet" href="stylesheets\css\addproduct.css">
 </head>
 <body>
     <header>
@@ -17,33 +18,31 @@
             <button class="btnLogin-popup">Login</button>
         </nav>        
         </header>
-
-    <div class="container">
-        <h1>PRODUCTS</h1>
+        <div class="container">
+            <h1>PRODUCTS</h1>
         
-        <div class="add-product-form">
-            <h2>CREATE PRODUCT</h2>
-            <form id="addproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post" enctype="multipart/form-data">
-            <div class="input-container">
-                <label for="producttype">Product Type:</label>
-                <select id="producttype">
-                    <option value="honey">Honey</option>
-                    <option value="soap">Soap</option>
-                    <option value="souvenir">Souvenir</option>
-                </select>
+            <div class="add-product-form">
+                <h2>CREATE PRODUCT</h2>
+                <form id="addproduct" th:action="@{/createProduct}" method="post" enctype="multipart/form-data">
+                    <div class="input-container">
+                        <label for="producttype">Product Type:</label>
+                        <select id="producttype" name="producttype" required>
+                            <option value="honey">Honey</option>
+                            <option value="soap">Soap</option>
+                            <option value="souvenir">Souvenir</option>
+                        </select>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" id="productquantity" name="productquantity" placeholder="Enter product quantity" required>
+                        <input type="text" id="productname" name="productname" placeholder="Enter product name" required>
+                        <input type="number" id="productprice" name="productprice" placeholder="Enter product price" required>
+                        <input type="file" id="productimage" name="productimage" required>
+                        <button type="submit">Create Product</button>
+                    </div>
+                </form>
             </div>
-            <form id="productForm">
-                <input type="text" id="productquantity" name="productquantity" placeholder="Enter product quantity" required>
-                <input type="text" id="productname" name="productname" placeholder="Enter product name" required>
-                <input type="number" id="productprice" name="productprice" placeholder="Enter product price" required>
-                <input type="file" id="productimage" name="productimage" required>
-                <button type="submit">Create Product</button>
-            </form>
         </div>
-    </form>
-   
-        </div>
-    </div>
+        
     <script src="product.js"></script>
     <script>
         documant.addEventListener('DOMContentLoaded', function() {
