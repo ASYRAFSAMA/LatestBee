@@ -23,7 +23,7 @@
         
         <div class="add-product-form">
             <h2>CREATE PRODUCT</h2>
-            <form id="createproduct" th:action="@{/createProduct}" modelAttribute="registerAcc" method="post">
+            <form id="createproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post">
             <div class="input-container">
                 <label for="producttype">Product Type:</label>
                 <select id="producttype">
@@ -88,5 +88,36 @@
         </div>
     </div>
     <script src="product.js"></script>
+    <script>
+        documant.addEventListener('DOMContentLoaded', function() {
+            const register = documnt.getElementById('createproduct');
+            register.addEventListener('submit', async function(event){
+                event.preventDefault();
+                console.log('form submitted');
+
+                const formData =new FormData(register);
+
+                try {
+                  const response = await fetch('/createProduct', {
+                      method: 'post',
+                      body: formData
+                  });
+  
+                  if (response.ok) {
+                      console.log('Create Product successfully');
+                      
+                      location.reload(); // Reload to fetch the new activities
+                  } else {
+                      console.error('Failed to Create Product', response.statusText);
+                  }
+                } catch (error) {
+                  console.error('Error Create Product:', error);
+                }
+  
+              
+            
+            });
+        });
+    </script>
 </body>
 </html>
