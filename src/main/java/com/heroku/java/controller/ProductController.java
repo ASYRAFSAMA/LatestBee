@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.heroku.java.model.Product;
 
@@ -16,7 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Base64;
 
 @Controller
 public class ProductController {
@@ -33,7 +34,7 @@ public class ProductController {
                                 @RequestParam("producttype") String productType,
                                 @RequestParam("productquantity") Integer productQuantity,
                                 @RequestParam("productprice") Double productPrice,
-                                @RequestParam("productimage") String productImage) throws IOException {
+                                @RequestParam("activityimage") MultipartFile productImage) throws IOException {
 /* 
          // Check if required parameters are present
     if (customerName.isEmpty() || customerDob.isEmpty() || customerEmail.isEmpty() ||
@@ -48,9 +49,11 @@ public class ProductController {
         product.setProductType(productType);
         product.setProductQuantity(productQuantity);
         product.setProductPrice(productPrice);
-        product.setProductImage(productImage);
+        
     
-       
+       // Encode image as Base64 string
+       String base64Image = Base64.getEncoder().encodeToString(productImage.getBytes());
+       product.setProductImage(base64Image);
 
 
     try (Connection connection = dataSource.getConnection()) {
@@ -60,7 +63,7 @@ public class ProductController {
             System.out.println("Product Type: " + product.getProductType());
             System.out.println("Product Quantity: " + product.getProductQuantity());
             System.out.println("Product Price: " + product.getProductPrice());
-            System.out.println("Product Image: " + product.getProductImage());
+            System.out.println("Image: " + productImage.getOriginalFilename());
 
 
             String createProductSql = "INSERT INTO public.product(productname, producttype, productquantity, productprice, productimage) VALUES (?, ?, ?, ?, ?);";
