@@ -23,7 +23,7 @@
         
         <div class="add-product-form">
             <h2>CREATE PRODUCT</h2>
-            <form id="addproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post">
+            <form id="addproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post" enctype="multipart/form-data">
             <div class="input-container">
                 <label for="producttype">Product Type:</label>
                 <select id="producttype">
@@ -33,10 +33,10 @@
                 </select>
             </div>
             <form id="productForm">
-                <input type="text" id="productquantity" placeholder="Enter product quantity">
-                <input type="text" id="productname" placeholder="Enter product name">
-                <input type="text" id="productprice" placeholder="Enter product price">
-                <input type="file" id="productimage">
+                <input type="text" id="productquantity" name="productquantity" placeholder="Enter product quantity" required>
+                <input type="text" id="productname" name="productname" placeholder="Enter product name" required>
+                <input type="number" id="productprice" name="productprice" placeholder="Enter product price" required>
+                <input type="file" id="productimage" name="productimage" required>
                 <button type="submit">Create Product</button>
             </form>
         </div>
