@@ -41,7 +41,10 @@ public class GettingStartedApplication {
         return "register";
     }
 
-
+    @GetMapping("/addproduct")
+    public String addproduct() {
+        return "addproduct";
+    }
 
  /*
     @GetMapping("/logoutViewRoom")

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop Products</title>
-    <link rel="stylesheet" href="C:\LatestBee\src\main\resources\public\stylesheets\css\createproduct.css">
+    <link rel="stylesheet" href="C:\LatestBee\src\main\resources\public\stylesheets\css\addproduct.css">
 </head>
 <body>
     <header>
@@ -23,7 +23,7 @@
         
         <div class="add-product-form">
             <h2>CREATE PRODUCT</h2>
-            <form id="createproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post">
+            <form id="addproduct" th:action="@{/createProduct}" modelAttribute="createProduct" method="post">
             <div class="input-container">
                 <label for="producttype">Product Type:</label>
                 <select id="producttype">
@@ -90,12 +90,12 @@
     <script src="product.js"></script>
     <script>
         documant.addEventListener('DOMContentLoaded', function() {
-            const register = documnt.getElementById('createproduct');
-            register.addEventListener('submit', async function(event){
+            const addproduct = documnt.getElementById('addproduct');
+            addproduct.addEventListener('submit', async function(event){
                 event.preventDefault();
                 console.log('form submitted');
 
-                const formData =new FormData(register);
+                const formData =new FormData(addproduct);
 
                 try {
                   const response = await fetch('/createProduct', {
