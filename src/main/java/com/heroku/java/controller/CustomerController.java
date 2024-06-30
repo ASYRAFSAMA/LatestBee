@@ -83,7 +83,7 @@ public class CustomerController {
                         customer.setCustomerId(customerId);
                         System.out.println("Inserted customer with ID: " + customerId);
                     } else {
-                        throw new SQLException("Failed to insert activity, no ID obtained.");
+                        throw new SQLException("Failed to insert customer, no ID obtained.");
                     }
                 }
             }

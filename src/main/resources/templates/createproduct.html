@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Products</title>
+    <link rel="stylesheet" href="C:\LatestBee\src\main\resources\public\stylesheets\css\createproduct.css">
+</head>
+<body>
+    <header>
+        <h2 class="logo">MBG</h2>
+        <nav class="navigation">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="product.html">Product</a>
+            <a href="#">staff</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>        
+        </header>
+
+    <div class="container">
+        <h1>PRODUCTS</h1>
+        
+        <div class="add-product-form">
+            <h2>CREATE PRODUCT</h2>
+            <form id="createproduct" th:action="@{/createProdect}" modelAttribute="registerAcc" method="post">
+            <div class="input-container">
+                <label for="producttype">Product Type:</label>
+                <select id="producttype">
+                    <option value="honey">Honey</option>
+                    <option value="soap">Soap</option>
+                    <option value="souvenir">Souvenir</option>
+                </select>
+            </div>
+            <form id="productForm">
+                <input type="text" id="productquantity" placeholder="Enter product quantity">
+                <input type="text" id="productname" placeholder="Enter product name">
+                <input type="text" id="productprice" placeholder="Enter product price">
+                <input type="file" id="productimage">
+                <button type="submit">Create Product</button>
+            </form>
+        </div>
+    </form>
+        <div class="products">
+            <div class="product" data-id="1001" data-name="Bee Venom Honey" data-price="10" data-quantity="10" data-type="Honey" data-img="HoneyBeeVenom.jpeg">
+                <img src="HoneyBeeVenom.jpeg" alt="Bee Venom Honey">
+                <h3>Bee Venom Honey</h3>
+                <p class="pid">Product ID: 1001</p>
+                <p class="price">RM 10</p>
+                <p class="quantity">Quantity available: 10</p>
+                <p class="product-type">Product Type: Honey</p>
+                <button class="update-btn">Update</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+            <div class="product" data-id="1002" data-name="Pure Honey - Golden" data-price="30" data-quantity="15" data-type="Honey" data-img="PureHoneyGolden.jpeg">
+                <img src="PureHoneyGolden.jpeg" alt="Pure Honey Golden">
+                <h3>Pure Honey - Golden</h3>
+                <p class="pid">Product ID: 1002</p>
+                <p class="price">RM 30</p>
+                <p class="quantity">Quantity available: 15</p>
+                <p class="product-type">Product Type: Honey</p>
+                <button class="update-btn">Update</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+            <div class="product" data-id="1003" data-name="Propolis Soap" data-price="14" data-quantity="35" data-type="Soap" data-img="PropolisSoap.jpeg">
+                <img src="PropolisSoap.jpeg" alt="Propolis Soap">
+                <h3>Propolis Soap</h3>
+                <p class="pid">Product ID: 1003</p>
+                <p class="price">RM 14</p>
+                <p class="quantity">Quantity available: 35</p>
+                <p class="product-type">Product Type: Soap</p>
+                <button class="update-btn">Update</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+
+            <!-- Delete Confirmation Popup -->
+            <div class="confirmation-popup delete-popup">
+                <div class="popup-content">
+                    <span class="icon-close"><ion-icon name="close"></ion-icon></span>
+                    <h2>Delete Confirmation</h2>
+                    <p>Are you sure you want to delete the product?</p>
+                    <button class="btn btn-delete">Delete</button>
+                    <button class="btn btn-cancel">Cancel</button>
+                </div>
+            </div>
+
+        
+        </div>
+    </div>
+    <script src="product.js"></script>
+</body>
+</html>
