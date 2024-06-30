@@ -70,7 +70,7 @@ public class ProductController {
 
             try (PreparedStatement statement = connection.prepareStatement(createProductSql)) {
                 statement.setString(1, product.getProductName());
-                statement.setString(1, product.getProductType());
+                statement.setString(2, product.getProductType());
                 statement.setInt(3, product.getProductQuantity());
                 statement.setDouble(4, product.getProductPrice());
                 statement.setString(5, product.getProductImage());
