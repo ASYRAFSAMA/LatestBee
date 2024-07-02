@@ -47,7 +47,7 @@ public class GettingStartedApplication {
     }
 
     @GetMapping("/listproduct")
-    public String listproduct() {
+    public String listProduct() {
         return "listproduct";
     }
  /*

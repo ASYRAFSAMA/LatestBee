@@ -97,16 +97,15 @@ public class ProductController {
             throw new RuntimeException("Failed to insert product", e);
         }
 
-        return "redirect:/productList"; // Return the created activity object
+        return "redirect:/productList";
     }
 
-  @GetMapping("/productList")
-    public String listproducts(Model model) {
+    @GetMapping("/productList")
+    public String listProducts(Model model) {
         List<Product> products = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             String getProductsSql = "SELECT * FROM public.product";
-
             try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
@@ -117,7 +116,6 @@ public class ProductController {
                         product.setProductQuantity(resultSet.getInt("productquantity"));
                         product.setProductPrice(resultSet.getDouble("productprice"));
                         product.setProductImage(resultSet.getString("productimage"));
-
                         products.add(product);
                     }
                 }
@@ -129,8 +127,9 @@ public class ProductController {
 
         model.addAttribute("products", products);
         return "listproduct";
-    }  
+    }
 }
+
 
 
 
