@@ -97,11 +97,11 @@ public class ProductController {
             throw new RuntimeException("Failed to insert product", e);
         }
 
-        return "redirect:/register"; // Return the created activity object
+        return "redirect:/productList"; // Return the created activity object
     }
 
   @GetMapping("/productList")
-    public String listProducts(Model model) {
+    public String listproducts(Model model) {
         List<Product> products = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {

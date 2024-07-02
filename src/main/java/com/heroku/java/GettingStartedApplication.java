@@ -46,6 +46,10 @@ public class GettingStartedApplication {
         return "addproduct";
     }
 
+    @GetMapping("/listproduct")
+    public String listproduct() {
+        return "listproduct";
+    }
  /*
     @GetMapping("/logoutViewRoom")
     public String logoutViewRoom() {
