@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Products</title>
+    <link rel="stylesheet" th:href="@{stylesheets\css\addproduct.css}">
+    <link rel="stylesheet" href="stylesheets\css\addproduct.css">
+</head>
+<body>
+    <header>
+        <h2 class="logo">MBG</h2>
+        <nav class="navigation">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="product.html">Product</a>
+            <a href="#">staff</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>        
+        </header>
+        <div class="container">
+            <h1>PRODUCTS</h1>
+        
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product Name</th>
+                    <th>Product Type</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.id}">1</td>
+                    <td th:text="${product.productName}">Product Name</td>
+                    <td th:text="${product.productType}">Product Type</td>
+                    <td th:text="${product.productQuantity}">20</td>
+                    <td th:text="${product.productPrice}">100.0</td>
+                    <td>
+                        <img th:src="@{/images/{image}(image=${product.image})}" alt="Product Image" width="100" height="100"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        
+    <script src="product.js"></script>
+    <script>
+        documant.addEventListener('DOMContentLoaded', function() {
+            const addproduct = documnt.getElementById('addproduct');
+            addproduct.addEventListener('submit', async function(event){
+                event.preventDefault();
+                console.log('form submitted');
+
+                const formData =new FormData(addproduct);
+
+                try {
+                  const response = await fetch('/createProduct', {
+                      method: 'post',
+                      body: formData
+                  });
+  
+                  if (response.ok) {
+                      console.log('Create Product successfully');
+                      
+                      location.reload(); // Reload to fetch the new activities
+                  } else {
+                      console.error('Failed to Create Product', response.statusText);
+                  }
+                } catch (error) {
+                  console.error('Error Create Product:', error);
+                }
+  
+              
+            
+            });
+        });
+    </script>
+</body>
+</html>

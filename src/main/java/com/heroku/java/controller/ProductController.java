@@ -3,10 +3,13 @@ package com.heroku.java.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.ui.Model;
+
 
 import com.heroku.java.model.Product;
 
@@ -17,7 +20,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Controller
 public class ProductController {
@@ -94,6 +99,38 @@ public class ProductController {
 
         return "redirect:/register"; // Return the created activity object
     }
+
+  @GetMapping("/productList")
+    public String listProducts(Model model) {
+        List<Product> products = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getProductsSql = "SELECT * FROM public.product";
+
+            try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Product product = new Product();
+                        product.setProductId(resultSet.getLong("productid"));
+                        product.setProductName(resultSet.getString("productname"));
+                        product.setProductType(resultSet.getString("producttype"));
+                        product.setProductQuantity(resultSet.getInt("productquantity"));
+                        product.setProductPrice(resultSet.getDouble("productprice"));
+                        product.setProductImage(resultSet.getString("productimage"));
+
+                        products.add(product);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve products", e);
+        }
+
+        model.addAttribute("products", products);
+        return "listproduct";
+    }  
 }
+
 
 
