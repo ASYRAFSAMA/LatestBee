@@ -77,3 +77,165 @@
     </script>
 </body>
 </html>
+
+<style>
+
+    
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: rgb(204, 162, 46);
+    flex-direction: column;
+}
+
+h2.logo {
+    color: white;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+nav.navigation {
+    margin-bottom: 40px;
+}
+
+nav.navigation a {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+nav.navigation a:hover {
+    color: #dddddd;
+}
+
+form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+form input[type="text"], form input[type="number"], form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+form input[type="submit"], form input[type="reset"] {
+    padding: 10px 20px;
+    border: none;
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover, form input[type="reset"]:hover {
+    background-color: #5753c9;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background: #11101d;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: all 0.5s ease;
+}
+
+.sidebar .logo-details {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.sidebar .logo-details .logo-img {
+    height: 100px;
+    margin-right: 10px;
+    margin-top: 30px;
+}
+
+.sidebar .nav-list {
+    margin-top: 30px;
+}
+
+.sidebar .nav-list li {
+    list-style: none;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+}
+
+.sidebar .nav-list li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 20px;
+    transition: 0.4s;
+}
+
+.sidebar .nav-list li a i {
+    font-size: 24px;
+    min-width: 50px;
+}
+
+.sidebar .nav-list li a:hover {
+    background: #575757;
+    color: #fff;
+}
+
+.sidebar .nav-list li .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: #808080;
+    width: 100%;
+    z-index: 101;
+    list-style: none;
+}
+
+.sidebar .nav-list li .dropdown-menu li {
+    height: 40px;
+    line-height: 40px;
+}
+
+.sidebar .nav-list li .dropdown-menu li a {
+    padding-left: 40px;
+}
+
+.sidebar .nav-list li:hover .dropdown-menu {
+    display: block;
+}
+
+
+
+</style>
+</style>
