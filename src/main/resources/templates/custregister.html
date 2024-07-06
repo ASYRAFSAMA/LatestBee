@@ -4,49 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: rgb(204, 162, 46); /* This should set the background color to yellow */
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff; /* White background for the form */
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        input[type="password"], 
+        input[type="number"], 
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .switch-link {
+            position: absolute;
+            bottom: 1px;
+            left: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="container">
         <div class="form-box register">
-            <h2>Registration</h2>
-            <form id="register" th:action="@{/registerAcc}" modelAttribute="registerAcc" method="post">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+            <h1>Registration</h1>
+            <form id="register" action="/registerAcc" method="post">
+                <div class="form-group">
+                    <label for="customername">Username</label>
                     <input type="text" id="customername" name="customername" required>
-                    <label>Username</label>
                 </div>
 
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                <div class="form-group">
+                    <label for="customeremail">Email</label>
                     <input type="email" id="customeremail" name="customeremail" required>
-                    <label>Email</label>
                 </div>
 
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="calendar"></ion-icon></span>
+                <div class="form-group">
+                    <label for="customerdob">Date of Birth</label>
                     <input type="date" id="customerdob" name="customerdob" required>
-                    <label>Date of Birth</label>
                 </div>
 
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="call"></ion-icon></span>
-                    <input type="text"  id="customerphonenum" name="customerphonenum" required>
-                    <label>Phone Number</label>
+                <div class="form-group">
+                    <label for="customerphonenum">Phone Number</label>
+                    <input type="text" id="customerphonenum" name="customerphonenum" required>
                 </div>
 
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="home"></ion-icon></span>
+                <div class="form-group">
+                    <label for="customeraddress">Address</label>
                     <input type="text" id="customeraddress" name="customeraddress" required>
-                    <label>Address</label>
                 </div>
 
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="text" id="password" name="password" required>
-                    <label>Password</label>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
                 </div>
 
-                <div class="remember-forgot">
+                <div class="form-group">
                     <label><input type="checkbox"> Agree with the terms & conditions</label>
                 </div>
 
@@ -62,23 +146,22 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script>
-        documant.addEventListener('DOMContentLoaded', function() {
-            const register = documnt.getElementById('register');
+        document.addEventListener('DOMContentLoaded', function() {
+            const register = document.getElementById('register');
             register.addEventListener('submit', async function(event){
                 event.preventDefault();
                 console.log('form submitted');
 
-                const formData =new FormData(register);
+                const formData = new FormData(register);
 
                 try {
                   const response = await fetch('/registerAcc', {
-                      method: 'post',
+                      method: 'POST',
                       body: formData
                   });
   
                   if (response.ok) {
                       console.log('Register successfully');
-                      
                       location.reload(); // Reload to fetch the new activities
                   } else {
                       console.error('Failed to register', response.statusText);
@@ -86,9 +169,6 @@
                 } catch (error) {
                   console.error('Error register:', error);
                 }
-  
-              
-            
             });
         });
     </script>
