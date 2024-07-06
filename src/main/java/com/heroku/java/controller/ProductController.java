@@ -93,7 +93,43 @@ public class ProductController {
         model.addAttribute("products", products);
         return "listproduct";
     }
+
+    @GetMapping("/updateProduct")
+public String updateTicket(@RequestParam("ticketId") Long ticketId, Model model) {
+
+    try {
+        Connection connection = dataSource.getConnection();
+        String sql = "SELECT ticketid,tickettype,ticketprice FROM public.ticket WHERE ticketid=?";
+        final var statement= connection.prepareStatement(sql);
+        statement.setLong(1,ticketId);
+        final var resultSet = statement.executeQuery();
+
+        if (resultSet.next()){
+            
+            String ticketType = resultSet.getString("tickettype");
+            double ticketPrice = resultSet.getDouble("ticketprice");
+
+            ticket ticket = new ticket();
+            ticket.setTicketId(ticketId);
+            ticket.setTicketPrice(ticketPrice);
+            ticket.setTicketType(ticketType);
+            model.addAttribute("ticket",ticket);
+
+            connection.close();
+        }
+    }
+    catch(Exception e){
+        e.printStackTrace();
+    }
+    return "Ticket/updateTicket";
 }
+
+
+}
+
+
+
+
 
 /**
 package com.heroku.java.controller;

@@ -50,6 +50,11 @@ public class GettingStartedApplication {
     public String listProduct() {
         return "listproduct";
     }
+
+    @GetMapping("/viewproduct")
+    public String viewProduct() {
+        return "viewproduct";
+    }
  /*
     @GetMapping("/logoutViewRoom")
     public String logoutViewRoom() {
