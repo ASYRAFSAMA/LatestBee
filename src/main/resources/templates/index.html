@@ -3,20 +3,113 @@
 <head>
     <meta charset="UTF-8">
     
-    <link th:href="@{/stylesheets/css/style.css}" rel="stylesheet">
+    
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
-<Style>body {
+<Style>
+/* Global styles */
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-color: rgb(204, 162, 46); /* This should set the background color to yellow */
-}</Style>
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background: #11101d;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: all 0.5s ease;
+}
+
+.sidebar .logo-details {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.sidebar .nav-list {
+    margin-top: 30px;
+}
+
+.sidebar .nav-list li {
+    list-style: none;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+}
+
+.sidebar .nav-list li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 20px;
+    transition: 0.4s;
+}
+
+.sidebar .nav-list li a i {
+    font-size: 24px;
+    min-width: 50px;
+}
+
+.sidebar .nav-list li a:hover {
+    background: #575757;
+    color: #fff;
+}
+
+.sidebar .nav-list li .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: #808080;
+    width: 100%;
+    z-index: 101;
+    list-style: none;
+}
+
+.sidebar .nav-list li .dropdown-menu li {
+    height: 40px;
+    line-height: 40px;
+}
+
+.sidebar .nav-list li .dropdown-menu li a {
+    padding-left: 40px;
+}
+
+.sidebar .nav-list li:hover .dropdown-menu {
+    display: block;
+}
+/* end side bar */
+
+
+</Style>
 
 <body>
+    <header>
     <div class="sidebar">
         <div class="logo-details">
             <img src="webapp/css/staffimg.jpeg" alt="Logo" class="logo-img">
@@ -65,6 +158,10 @@
             </li>
         </ul>
     </div>
+</header>
+
+
+
 
 <h1>SIGMA</h1>
 </body>

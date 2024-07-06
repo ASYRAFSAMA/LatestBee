@@ -4,83 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop Products</title>
-  <!--  <link rel="stylesheet" th:href="@{stylesheets\css\addproduct.css}">
-    <link rel="stylesheet" href="stylesheets\css\addproduct.css">  -->
-</head>
-<body>
-    <header>
-        <h2 class="logo">MBG</h2>
-        <nav class="navigation">
-            <a href="index.html">Home</a>
-            <a href="#">About</a>
-            <a href="product.html">Product</a>
-            <a href="#">staff</a>
-            <button class="btnLogin-popup">Login</button>
-        </nav>        
-        </header>
-        <div class="container">
-            <h1>PRODUCTS</h1>
-        
-            <div class="add-product-form">
-                <h2>CREATE PRODUCT</h2>
-                <form id="addproduct" th:action="@{/createProduct}" method="post" enctype="multipart/form-data">
-                    <div class="input-container">
-                        <label for="producttype">Product Type:</label>
-                        <select id="producttype" name="producttype" required>
-                            <option value="honey">Honey</option>
-                            <option value="soap">Soap</option>
-                            <option value="souvenir">Souvenir</option>
-                        </select>
-                    </div>
-                    <div class="input-container">
-                        <input type="text" id="productquantity" name="productquantity" placeholder="Enter product quantity" required>
-                        <input type="text" id="productname" name="productname" placeholder="Enter product name" required>
-                        <input type="number" id="productprice" name="productprice" placeholder="Enter product price" required>
-                        <input type="file" id="productimage" name="productimage" required>
-                        <button type="submit">Create Product</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-    <script src="product.js"></script>
-    <script>
-        documant.addEventListener('DOMContentLoaded', function() {
-            const addproduct = documnt.getElementById('addproduct');
-            addproduct.addEventListener('submit', async function(event){
-                event.preventDefault();
-                console.log('form submitted');
-
-                const formData =new FormData(addproduct);
-
-                try {
-                  const response = await fetch('/createProduct', {
-                      method: 'post',
-                      body: formData
-                  });
   
-                  if (response.ok) {
-                      console.log('Create Product successfully');
-                      
-                      location.reload(); // Reload to fetch the new activities
-                  } else {
-                      console.error('Failed to Create Product', response.statusText);
-                  }
-                } catch (error) {
-                  console.error('Error Create Product:', error);
-                }
-  
-              
-            
-            });
-        });
-    </script>
-</body>
-</html>
+    <style>
 
-<style>
-
-    
 @import url('https://fonts.googleapis.com/css?family=Poppins');
 
 * {
@@ -151,91 +77,205 @@ form input[type="submit"], form input[type="reset"] {
 
 form input[type="submit"]:hover, form input[type="reset"]:hover {
     background-color: #5753c9;
-}
+}               
+        
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            background: #11101d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            transition: all 0.5s ease;
+        }
+        
+        .sidebar .logo-details {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 10px;
+        }
+        
+        .sidebar .logo-details .logo-img {
+            height: 100px;
+            margin-right: 10px;
+            margin-top: 30px;
+        }
+        
+        .sidebar .nav-list {
+            margin-top: 30px;
+        }
+        
+        .sidebar .nav-list li {
+            list-style: none;
+            height: 50px;
+            line-height: 50px;
+            position: relative;
+        }
+        
+        .sidebar .nav-list li a {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding-left: 20px;
+            transition: 0.4s;
+        }
+        
+        .sidebar .nav-list li a i {
+            font-size: 24px;
+            min-width: 50px;
+        }
+        
+        .sidebar .nav-list li a:hover {
+            background: #575757;
+            color: #fff;
+        }
+        
+        .sidebar .nav-list li .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            background: #808080;
+            width: 100%;
+            z-index: 101;
+            list-style: none;
+        }
+        
+        .sidebar .nav-list li .dropdown-menu li {
+            height: 40px;
+            line-height: 40px;
+        }
+        
+        .sidebar .nav-list li .dropdown-menu li a {
+            padding-left: 40px;
+        }
+        
+        .sidebar .nav-list li:hover .dropdown-menu {
+            display: block;
+        }
+        
+        
+        
+        </style>
+</head>
+<body>
+    <header>
+        <div class="sidebar">
+            <div class="logo-details">
+                <img src="webapp/css/staffimg.jpeg" alt="Logo" class="logo-img">
+            </div>
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html">
+                        <i class='bx bx-home'></i>
+                        <span class="links_name">Home</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">
+                        <i class='bx bx-user'></i>
+                        <span class="links_name">Product</span>
+                        <i class='bx bx-chevron-down arrow'></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/addproduct}">Create Product</a></li>
+                        <li><a th:href="@{/addproduct}">View Product</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bx-file'></i>
+                        <span class="links_name">Sales</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/register}">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Register Customer</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mainpage.html">
+                        <i class='bx bx-log-out'></i>
+                        <span class="links_name">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-.sidebar {
-    width: 250px;
-    height: 100%;
-    background: #11101d;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    transition: all 0.5s ease;
-}
-
-.sidebar .logo-details {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 24px;
-    font-weight: 600;
-    padding: 10px;
-}
-
-.sidebar .logo-details .logo-img {
-    height: 100px;
-    margin-right: 10px;
-    margin-top: 30px;
-}
-
-.sidebar .nav-list {
-    margin-top: 30px;
-}
-
-.sidebar .nav-list li {
-    list-style: none;
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-}
-
-.sidebar .nav-list li a {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    padding-left: 20px;
-    transition: 0.4s;
-}
-
-.sidebar .nav-list li a i {
-    font-size: 24px;
-    min-width: 50px;
-}
-
-.sidebar .nav-list li a:hover {
-    background: #575757;
-    color: #fff;
-}
-
-.sidebar .nav-list li .dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    background: #808080;
-    width: 100%;
-    z-index: 101;
-    list-style: none;
-}
-
-.sidebar .nav-list li .dropdown-menu li {
-    height: 40px;
-    line-height: 40px;
-}
-
-.sidebar .nav-list li .dropdown-menu li a {
-    padding-left: 40px;
-}
-
-.sidebar .nav-list li:hover .dropdown-menu {
-    display: block;
-}
 
 
 
-</style>
-</style>
+        <div class="container">
+            <h1>PRODUCTS</h1>
+        
+            <div class="add-product-form">
+                <h2>CREATE PRODUCT</h2>
+                <form id="addproduct" th:action="@{/createProduct}" method="post" enctype="multipart/form-data">
+                    <div class="input-container">
+                        <label for="producttype">Product Type:</label>
+                        <select id="producttype" name="producttype" required>
+                            <option value="honey">Honey</option>
+                            <option value="soap">Soap</option>
+                            <option value="souvenir">Souvenir</option>
+                        </select>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" id="productquantity" name="productquantity" placeholder="Enter product quantity" required>
+                        <input type="text" id="productname" name="productname" placeholder="Enter product name" required>
+                        <input type="number" id="productprice" name="productprice" placeholder="Enter product price" required>
+                        <input type="file" id="productimage" name="productimage" required>
+                        <button type="submit">Create Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    <script src="product.js"></script>
+    <script>
+        documant.addEventListener('DOMContentLoaded', function() {
+            const addproduct = documnt.getElementById('addproduct');
+            addproduct.addEventListener('submit', async function(event){
+                event.preventDefault();
+                console.log('form submitted');
+
+                const formData =new FormData(addproduct);
+
+                try {
+                  const response = await fetch('/createProduct', {
+                      method: 'post',
+                      body: formData
+                  });
+  
+                  if (response.ok) {
+                      console.log('Create Product successfully');
+                      
+                      location.reload(); // Reload to fetch the new activities
+                  } else {
+                      console.error('Failed to Create Product', response.statusText);
+                  }
+                } catch (error) {
+                  console.error('Error Create Product:', error);
+                }
+  
+              
+            
+            });
+        });
+    </script>
+</body>
+</html>
