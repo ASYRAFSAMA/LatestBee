@@ -36,9 +36,9 @@ public class GettingStartedApplication {
         return "index";
     }
 
-    @GetMapping("/register")
+    @GetMapping("/custregister")
     public String register() {
-        return "register";
+        return "custregister";
     }
 
     @GetMapping("/addproduct")
