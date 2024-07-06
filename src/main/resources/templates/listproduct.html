@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop Products</title>
-    <link rel="stylesheet" th:href="@{stylesheets/css/addproduct.css}">
-    <link rel="stylesheet" href="stylesheets/css/addproduct.css">
+    
+    
 </head>
 <body>
     <header>
@@ -23,7 +23,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>Product Name</th>
                     <th>Product Type</th>
                     <th>Quantity</th>
@@ -47,3 +47,263 @@
     </div>
 </body>
 </html>
+
+
+
+<style>
+
+    @import url('https://fonts.googleapis.com/css?family=Poppins');
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: rgb(204, 162, 46);
+    }
+    
+    .sidebar {
+        width: 250px;
+        height: 100%;
+        background: #11101d;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        transition: all 0.5s ease;
+    }
+    
+    .sidebar .logo-details {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 24px;
+        font-weight: 600;
+        padding: 10px;
+    }
+    
+    .sidebar .logo-details .logo-img {
+        height: 100px;
+        margin-right: 10px;
+        margin-top: 30px;
+    }
+    
+    .sidebar .nav-list {
+        margin-top: 30px;
+    }
+    
+    .sidebar .nav-list li {
+        list-style: none;
+        height: 50px;
+        line-height: 50px;
+        position: relative;
+    }
+    
+    .sidebar .nav-list li a {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        padding-left: 20px;
+        transition: 0.4s;
+    }
+    
+    .sidebar .nav-list li a i {
+        font-size: 24px;
+        min-width: 50px;
+    }
+    
+    .sidebar .nav-list li a:hover {
+        background: #575757;
+        color: #fff;
+    }
+    
+    .sidebar .nav-list li .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background: #808080;
+        width: 100%;
+        z-index: 101;
+        list-style: none;
+    }
+    
+    .sidebar .nav-list li .dropdown-menu li {
+        height: 40px;
+        line-height: 40px;
+    }
+    
+    .sidebar .nav-list li .dropdown-menu li a {
+        padding-left: 40px;
+    }
+    
+    .sidebar .nav-list li:hover .dropdown-menu {
+        display: block;
+    }
+    
+    .products {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-left: 250px;
+    }
+    
+    .product {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        margin: 10px;
+        text-align: center;
+    }
+    
+    .product .quantity,
+    .product .product-type {
+        font-size: 0.9em;
+        color: #666;
+        margin: 5px 0;
+    }
+    
+    .product img {
+        max-width: 100%;
+        border-radius: 5px;
+    }
+    
+    .product h3 {
+        margin: 10px 0;
+    }
+    
+    .product p {
+        font-size: 1.2em;
+        color: #555;
+    }
+    
+    .product .update-btn,
+    .product .delete-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+    }
+    
+    .product .update-btn {
+        background-color: #ffa500;
+        color: white;
+    }
+    
+    .product .update-btn:hover {
+        background-color: #cc8400;
+    }
+    
+    .product .delete-btn {
+        background-color: #ff6347;
+        color: white;
+    }
+    
+    .product .delete-btn:hover {
+        background-color: #cc5135;
+    }
+    
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        width: calc(100% - 250px);
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 1em;
+        background-color: white;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    table th,
+    table td {
+        padding: 12px 15px;
+    }
+    
+    table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+    
+    table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+    
+    table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+    
+    .btn-primary {
+        background-color: #ffa500;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        background-color: #cc8400;
+    }
+    
+    .btn-danger {
+        background-color: #ff6347;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-danger:hover {
+        background-color: #cc5135;
+    }
+    
+    .buttons {
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .buttons a {
+        text-decoration: none;
+    }
+    
+    .cancel-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #6c63ff;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .cancel-button:hover {
+        background-color: #5753c9;
+    }
+    </style>
+    
+    </style>
