@@ -29,69 +29,48 @@ public class StaffController {
         this.dataSource = dataSource;
     }
 
-    @PostMapping("/registerStaff")
-    public String register(@ModelAttribute("registerStaff")
-                           @RequestParam("staffname") String staffName,
-                           @RequestParam("staffrole") String staffRole,
-                           @RequestParam("staffphonenum") String staffPhoneNum,
-                           @RequestParam("staffemail") String staffEmail,
-                           @RequestParam("staffpass") String staffPass,
-                           @RequestParam("managerid") Integer managerId) throws IOException {
+    @PostMapping("/registerAcc")
+    public String register(@ModelAttribute("registerAcc")
+                                @RequestParam("staffName") String staffName,
+                                @RequestParam("staffEmail") String staffEmail,
+                                @RequestParam("staffPhoneNum") String staffPhoneNum,
+                                @RequestParam("staffRole") String staffRole,
+                                @RequestParam("staffPass") String staffPass,
+                                @RequestParam("managerId") Integer managerId) throws IOException {
 
-        // Check if required parameters are present
-        if (staffName.isEmpty() || staffRole.isEmpty() || staffPhoneNum.isEmpty() ||
-            staffEmail.isEmpty() || staffPass.isEmpty()) {
-            // Handle missing parameters gracefully
-            // For example, return an error page or redirect to registration page with error message
+        if (staffName.isEmpty() || staffEmail.isEmpty() || staffPhoneNum.isEmpty() || staffRole.isEmpty() || staffPass == null || managerId == null) {
             return "redirect:/register?error=missing_params";
         }
 
         Staff staff = new Staff();
         staff.setStaffName(staffName);
-        staff.setStaffRole(staffRole);
-        staff.setStaffPhoneNum(staffPhoneNum);
         staff.setStaffEmail(staffEmail);
+        staff.setStaffPhoneNum(staffPhoneNum);
+        staff.setStaffRole(staffRole);
         staff.setStaffPass(staffPass);
         staff.setManagerId(managerId);
 
         try (Connection connection = dataSource.getConnection()) {
-
-            System.out.println("Received staff details:");
-            System.out.println("Name: " + staff.getStaffName());
-            System.out.println("Role: " + staff.getStaffRole());
-            System.out.println("PhoneNum: " + staff.getStaffPhoneNum());
-            System.out.println("Email: " + staff.getStaffEmail());
-            System.out.println("Password: " + staff.getStaffPass());
-            System.out.println("ManagerId: " + staff.getManagerId());
-
-            String registerSql = "INSERT INTO public.staff(staffname, staffrole, staffphonenum, staffemail, staffpass, managerid) VALUES (?, ?, ?, ?, ?, ?) RETURNING staffid;";
+            String registerSql = "INSERT INTO public.staff (staffname, staffemail, staffphonenum, staffrole, staffpass, managerid) VALUES (?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(registerSql)) {
                 statement.setString(1, staff.getStaffName());
-                statement.setString(2, staff.getStaffRole());
+                statement.setString(2, staff.getStaffEmail());
                 statement.setString(3, staff.getStaffPhoneNum());
-                statement.setString(4, staff.getStaffEmail());
+                statement.setString(4, staff.getStaffRole());
                 statement.setString(5, staff.getStaffPass());
                 statement.setInt(6, staff.getManagerId());
 
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        long staffId = resultSet.getLong("staffid");
-                        staff.setStaffId(staffId);
-                        System.out.println("Inserted staff with ID: " + staffId);
-                    } else {
-                        throw new SQLException("Failed to insert staff, no ID obtained.");
-                    }
-                }
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle exception appropriately, e.g., log error or rethrow as runtime exception
             throw new RuntimeException("Failed to insert staff", e);
         }
 
-        return "redirect:/staffLogin";
+        return "redirect:/login";
     }
+
 
     @GetMapping("/staffLogin")
     public String staffLogin() {
