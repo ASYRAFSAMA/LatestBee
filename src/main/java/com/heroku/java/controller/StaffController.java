@@ -33,20 +33,20 @@ public class StaffController {
     public String registerStaffs() {
         return "registerStaffs";
     }
-
+    
     @PostMapping("/registerStaff")
-    public String registerStaff(@ModelAttribute("/registerStaff")
-                                @RequestParam("staffName") String staffName,
-                                @RequestParam("staffEmail") String staffEmail,
-                                @RequestParam("staffPhoneNum") String staffPhoneNum,
-                                @RequestParam("staffRole") String staffRole,
-                                @RequestParam("staffPass") String staffPass,
-                                @RequestParam("managerId") Integer managerId) throws IOException {
-
-        if (staffName.isEmpty() || staffEmail.isEmpty() || staffPhoneNum.isEmpty() || staffRole.isEmpty() || staffPass == null || managerId == null) {
-            return "redirect:/register?error=missing_params";
+    public String registerStaff(
+            @RequestParam("staffname") String staffName,
+            @RequestParam("staffemail") String staffEmail,
+            @RequestParam("staffphonenum") String staffPhoneNum,
+            @RequestParam("staffrole") String staffRole,
+            @RequestParam("staffpass") String staffPass,
+            @RequestParam("managerid") Integer managerId) throws IOException {
+    
+        if (staffName.isEmpty() || staffEmail.isEmpty() || staffPhoneNum.isEmpty() || staffRole.isEmpty() || staffPass.isEmpty() || managerId == null) {
+            return "redirect:/registerStaffs?error=missing_params";
         }
-
+    
         Staff staff = new Staff();
         staff.setStaffName(staffName);
         staff.setStaffEmail(staffEmail);
@@ -54,10 +54,10 @@ public class StaffController {
         staff.setStaffRole(staffRole);
         staff.setStaffPass(staffPass);
         staff.setManagerId(managerId);
-
+    
         try (Connection connection = dataSource.getConnection()) {
             String registerSql = "INSERT INTO public.staff (staffname, staffemail, staffphonenum, staffrole, staffpass, managerid) VALUES (?, ?, ?, ?, ?, ?)";
-
+    
             try (PreparedStatement statement = connection.prepareStatement(registerSql)) {
                 statement.setString(1, staff.getStaffName());
                 statement.setString(2, staff.getStaffEmail());
@@ -65,16 +65,17 @@ public class StaffController {
                 statement.setString(4, staff.getStaffRole());
                 statement.setString(5, staff.getStaffPass());
                 statement.setInt(6, staff.getManagerId());
-
+    
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to insert staff", e);
         }
-
+    
         return "redirect:/login";
     }
+    
 
 
     @GetMapping("/staffLogin")

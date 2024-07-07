@@ -96,89 +96,82 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-box register">
-            <h1>Staff Registration</h1>
-            <form id="register" th:action="@{/registerStaff}" modelAttribute="registerStaff" method="post">
-                <div class="form-group">
-                    <label for="staffname">Name</label>
-                    <input type="text" id="staffname" name="staffname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="staffEmail">Email</label>
-                    <input type="email" id="staffemail" name="staffemail" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="staffPhoneNum">Phone Number</label>
-                    <input type="text" id="staffphonenum" name="staffphonenum" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="staffRole">Role</label>
-                    <input type="text" id="staffrole" name="staffrole" required>
-                </div>
-           <!--     <div class="form-group">
-                    <label for="staffRole">Role:</label>
-                    <select id="producttype" name="producttype" required>
-                        <option value="honey">Honey</option>
-                        <option value="soap">Soap</option>
-                        <option value="souvenir">Souvenir</option>
-                    </select>
-                </div>
--->
-                <div class="form-group">
-                    <label for="staffPass">Password</label>
-                    <input type="password" id="staffpass" name="staffpass" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="managerId">Manager ID</label>
-                    <input type="number" id="managerid" name="managerid" required>
-                </div>
-
-                <div class="form-group">
-                    <label><input type="checkbox"> Agree with the terms & conditions</label>
-                </div>
-
-                <button type="submit" class="btn">Register</button>
-
-                <div class="login-register">
-                    <p>Already have an account? <a href="/login" class="login-link">Login</a></p>
-                </div>
-            </form>
+    
+        <div class="container">
+            <div class="form-box register">
+                <h1>Staff Registration</h1>
+                <form id="register" action="/registerStaff" method="post">
+                    <div class="form-group">
+                        <label for="staffname">Name</label>
+                        <input type="text" id="staffname" name="staffname" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="staffemail">Email</label>
+                        <input type="email" id="staffemail" name="staffemail" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="staffphonenum">Phone Number</label>
+                        <input type="text" id="staffphonenum" name="staffphonenum" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="staffrole">Role</label>
+                        <input type="text" id="staffrole" name="staffrole" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="staffpass">Password</label>
+                        <input type="password" id="staffpass" name="staffpass" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="managerid">Manager ID</label>
+                        <input type="number" id="managerid" name="managerid" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label><input type="checkbox" required> Agree with the terms & conditions</label>
+                    </div>
+    
+                    <button type="submit" class="btn">Register</button>
+    
+                    <div class="login-register">
+                        <p>Already have an account? <a href="/login" class="login-link">Login</a></p>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const register = document.getElementById('register');
-            register.addEventListener('submit', async function(event){
-                event.preventDefault();
-                console.log('form submitted');
-
-                const formData = new FormData(register);
-
-                try {
-                  const response = await fetch('/registerStaff', {
-                      method: 'POST',
-                      body: formData
-                  });
-  
-                  if (response.ok) {
-                      console.log('Registered successfully');
-                      location.reload(); // Reload to fetch the new activities
-                  } else {
-                      console.error('Failed to register', response.statusText);
-                  }
-                } catch (error) {
-                  console.error('Error registering:', error);
-                }
+    
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const register = document.getElementById('register');
+                register.addEventListener('submit', async function(event){
+                    event.preventDefault();
+                    console.log('form submitted');
+    
+                    const formData = new FormData(register);
+    
+                    try {
+                        const response = await fetch('/registerStaff', {
+                            method: 'POST',
+                            body: formData
+                        });
+    
+                        if (response.ok) {
+                            console.log('Registered successfully');
+                            window.location.href = "/login";
+                        } else {
+                            console.error('Failed to register', response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Error registering:', error);
+                    }
+                });
             });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>
