@@ -98,15 +98,16 @@ public class CustomerController {
             throw new RuntimeException("Failed to insert customer", e);
         }
 
-        return "custLogin"; // Return the created activity object
+        return "redirect:/custLogin"; // Return the created activity object
         
     }
 
 
     @GetMapping("/custLogin")
     public String custLogin() {
-        return "custLogin"; 
-    }
+        return "custLogin"; // Ensure this view exists
+}
+
     
 
    /*  @GetMapping("/customerLogin")
