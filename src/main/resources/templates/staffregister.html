@@ -99,7 +99,7 @@
     <div class="container">
         <div class="form-box register">
             <h1>Staff Registration</h1>
-            <form id="register" th:action="@{/registerAcc}" modelAttribute="registerAcc" method="post">
+            <form id="register" th:action="@{/registerStaff}" modelAttribute="registerStaff" method="post">
                 <div class="form-group">
                     <label for="staffName">Name</label>
                     <input type="text" id="staffName" name="staffName" required>
@@ -155,7 +155,7 @@
                 const formData = new FormData(register);
 
                 try {
-                  const response = await fetch('/registerAcc', {
+                  const response = await fetch('/registerStaff', {
                       method: 'POST',
                       body: formData
                   });
