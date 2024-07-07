@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .profile-container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            margin-bottom: 15px;
+        }
+        .profile-info label {
+            font-weight: bold;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h2>Customer Profile</h2>
+        <div class="profile-info">
+            <label>Customer Name:</label>
+            <span th:text="${customer.customerName}"></span>
+        </div>
+        <div class="profile-info">
+            <label>Date of Birth:</label>
+            <span th:text="${customer.customerDob}"></span>
+        </div>
+        <div class="profile-info">
+            <label>Email:</label>
+            <span th:text="${customer.customerEmail}"></span>
+        </div>
+        <div class="profile-info">
+            <label>Phone Number:</label>
+            <span th:text="${customer.customerPhoneNum}"></span>
+        </div>
+        <div class="profile-info">
+            <label>Address:</label>
+            <span th:text="${customer.customerAddress}"></span>
+        </div>
+        <div class="btn-container">
+            <a href="updateCustomerProfile.html" class="btn btn-info">Update</a>
+            <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+
+    <script>
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+            window.location.href = "/CustomerController?action=delete";
+        }
+    }
+    </script>
+</body>
+</html>
