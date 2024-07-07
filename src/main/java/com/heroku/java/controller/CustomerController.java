@@ -98,18 +98,22 @@ public class CustomerController {
             throw new RuntimeException("Failed to insert customer", e);
         }
 
-        //return "redirect:/custLogin"; // Return the created activity object
-        return "redirect:/productList";
+        return "redirect:/custLogin"; // Return the created activity object
+        
     }
 
 
+    @GetMapping("/custLogin")
+    public String custLogin() {
+        return "custLogin"; 
+    }
+    
 
-@GetMapping("/customerLogin")
+   /*  @GetMapping("/customerLogin")
         public String customerLogin(){
-            
             return "Customer/CustomerLogin";
         }
-
+*/
 
         @PostMapping("/customerLogins")
         public String customerLogin(HttpSession session, 

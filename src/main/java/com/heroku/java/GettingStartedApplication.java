@@ -41,10 +41,8 @@ public class GettingStartedApplication {
         return "custregister";
     }
 
-    @GetMapping("/custLogin")
-    public String custLogin() {
-        return "custLogin";
-    }
+    
+
 
     @GetMapping("/custProfile")
     public String custProfile() {
