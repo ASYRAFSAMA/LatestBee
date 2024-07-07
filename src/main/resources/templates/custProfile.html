@@ -221,8 +221,9 @@ body {
             <span th:text="${customer.customerAddress}"></span>
         </div>
         <div class="btn-container">
-            <a href="updateCustomerProfile.html" class="btn btn-info">Update</a>
-            <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            <a th:href="@{/customerUpdate(customerId=${customer.customerId})}" class="btn btn-info">Update</a>
+            <button class="btn btn-danger" th:id="${customer.customerId}" onclick="confirmDelete(this.id)">Delete</button>
+
         </div>
     </div>
 
