@@ -5,39 +5,199 @@
     <title>Customer Profile</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f5f5f5;
-        }
-        .profile-container {
-            max-width: 600px;
-            width: 100%;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .profile-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-info {
-            margin-bottom: 15px;
-        }
-        .profile-info label {
-            font-weight: bold;
-        }
-        .btn-container {
-            text-align: center;
-            margin-top: 20px;
-        }
+        /* Global styles */
+    @import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: rgb(204, 162, 46);
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background: #11101d;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: all 0.5s ease;
+}
+
+.sidebar .logo-details {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.sidebar .nav-list {
+    margin-top: 30px;
+}
+
+.sidebar .nav-list li {
+    list-style: none;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+}
+
+.sidebar .nav-list li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 20px;
+    transition: 0.4s;
+}
+
+.sidebar .nav-list li a i {
+    font-size: 24px;
+    min-width: 50px;
+}
+
+.sidebar .nav-list li a:hover {
+    background: #575757;
+    color: #fff;
+}
+
+.sidebar .nav-list li .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: #808080;
+    width: 100%;
+    z-index: 101;
+    list-style: none;
+}
+
+.sidebar .nav-list li .dropdown-menu li {
+    height: 40px;
+    line-height: 40px;
+}
+
+.sidebar .nav-list li .dropdown-menu li a {
+    padding-left: 40px;
+}
+
+.sidebar .nav-list li:hover .dropdown-menu {
+    display: block;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 250px; /* Adjusted to match sidebar width */
+    padding: 20px;
+    width: calc(100% - 250px); /* Adjusted to match sidebar width */
+}
+
+.main-content .profile-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.main-content .profile-container h2 {
+    text-align: center;
+    color: #333; /* Adjust text color */
+}
+
+.main-content .profile-container .profile-info {
+    margin: 20px 0;
+}
+
+.main-content .profile-container .profile-info label {
+    font-weight: bold;
+    color: #555; /* Adjust label color */
+}
+
+.main-content .profile-container .profile-info span {
+    color: #777; /* Adjust span color */
+}
+
+.main-content .btn-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.main-content .btn-container .btn {
+    margin: 0 10px;
+}
     </style>
 </head>
 <body>
+
+    <header>
+        <div class="sidebar">
+            <div class="logo-details">
+                <img src="webapp/css/staffimg.jpeg" alt="Logo" class="logo-img">
+            </div>
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html">
+                        <i class='bx bx-home'></i>
+                        <span class="links_name">Home</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">
+                        <i class='bx bx-user'></i>
+                        <span class="links_name">Product</span>
+                        <i class='bx bx-chevron-down arrow'></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/addproduct}">Create Product</a></li>
+                        <li><a th:href="@{/addproduct}">View Product</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bx-file'></i>
+                        <span class="links_name">Sales</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/custregister}">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Register Customer</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mainpage.html">
+                        <i class='bx bx-log-out'></i>
+                        <span class="links_name">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
     <div class="profile-container">
         <h2>Customer Profile</h2>
         <div class="profile-info">

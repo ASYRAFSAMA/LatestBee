@@ -135,7 +135,7 @@ public class CustomerController {
                             if (custpassword.equals(storedPassword)) {
                                 session.setAttribute("customername", customerName);
                                 session.setAttribute("customerid", customerId);
-                                return "redirect:/custProfile";
+                                return "redirect:/customerProfile";
                             } else {
                                 // Incorrect password
                                 return "redirect:/customerLoginError?error=incorrect_password";
