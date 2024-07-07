@@ -110,40 +110,47 @@ public class CustomerController {
         }
 
 
-    @PostMapping("/customerLogins")
-        public String customerLogin(HttpSession session,@RequestParam("customeremail") String custemail,@RequestParam("custPassword") String custpassword, Model model,Customer customer){
-            try {
-                Connection connection = dataSource.getConnection();
-                String sql = "SELECT custid,custname,custemail,custphonenum,custaddress,custpassword FROM public.customers WHERE custemail=?";
-                final var statement = connection.prepareStatement(sql);
-                statement.setString(1,custemail);
-
-                final var resultSet = statement.executeQuery();
-
-                if (resultSet.next()){
-
-                    Long custId = resultSet.getLong("custid");
-                    String custName = resultSet.getString("custName");
-                    String custEmail = resultSet.getString("custEmail");
-                    String custPassword = resultSet.getString("custPassword");
-
-                    if (custEmail.equals(custemail)&&custPassword.equals(custpassword)){
-                        session.setAttribute("custname", custName);
-                        session.setAttribute("custid", custId);
-
-                        return "redirect:/accLogin";
+        @PostMapping("/customerLogins")
+        public String customerLogin(HttpSession session, 
+                                    @RequestParam("customeremail") String customerEmail, 
+                                    @RequestParam("password") String custpassword, 
+                                    Model model) {
+            // Check if required parameters are present
+            if (customerEmail.isEmpty() || custpassword.isEmpty()) {
+                // Handle missing parameters gracefully
+                return "redirect:/customerLoginError?error=missing_params";
+            }
+        
+            try (Connection connection = dataSource.getConnection()) {
+                String sql = "SELECT customerid, customername, customeremail, customerphonenum, customeraddress, password FROM public.customer WHERE customeremail=?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setString(1, customerEmail);
+        
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (resultSet.next()) {
+                            Long customerId = resultSet.getLong("customerid");
+                            String customerName = resultSet.getString("customername");
+                            String storedPassword = resultSet.getString("password");
+        
+                            if (custpassword.equals(storedPassword)) {
+                                session.setAttribute("customername", customerName);
+                                session.setAttribute("customerid", customerId);
+                                return "redirect:/accLogin";
+                            } else {
+                                // Incorrect password
+                                return "redirect:/customerLoginError?error=incorrect_password";
+                            }
+                        } else {
+                            // No user found with that email
+                            return "redirect:/customerLoginError?error=user_not_found";
+                        }
                     }
-
-                   
-
                 }
-                 connection.close();
-                 return "redirect:/customerLoginError";
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return "redirect:/error";
             }
         }
-
+        
 
 }

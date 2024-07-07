@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Error</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Login Error</h2>
+        <c:if test="${param.error == 'missing_params'}">
+            <p class="error">Error: Missing email or password. Please try again.</p>
+        </c:if>
+        <c:if test="${param.error == 'incorrect_password'}">
+            <p class="error">Error: Incorrect password. Please try again.</p>
+        </c:if>
+        <c:if test="${param.error == 'user_not_found'}">
+            <p class="error">Error: No user found with that email. Please try again.</p>
+        </c:if>
+        <a href="/customerLogin">Go back to login</a>
+    </div>
+</body>
+</html>
