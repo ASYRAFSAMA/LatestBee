@@ -170,4 +170,22 @@ public String updateProduct(@RequestParam("productId") Long productId,
     return "redirect:/productList";
 }
 
+@PostMapping("/deleteProduct")
+public String deleteProduct(@RequestParam("productId") Long productId){
+    try {
+        Connection connection = dataSource.getConnection();
+        String sql = "DELETE FROM public.product WHERE productid=?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1,productId);
+        statement.executeUpdate();
+
+        connection.close();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return "redirect:/errorDelete";
+    }
+    return "redirect:/productList";
+}
+
 }
