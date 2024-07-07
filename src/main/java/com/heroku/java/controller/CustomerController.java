@@ -93,7 +93,7 @@ public class CustomerController {
             throw new RuntimeException("Failed to insert customer", e);
         }
 
-        return "redirect:/register"; // Return the created activity object
+        return "redirect:/custregister"; // Return the created activity object
     }
 }
 
