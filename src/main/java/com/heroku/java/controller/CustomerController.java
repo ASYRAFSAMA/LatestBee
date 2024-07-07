@@ -159,125 +159,136 @@ public class CustomerController {
         }
         
 
-        
-    @GetMapping("/customerProfile")
+        @GetMapping("/customerProfile")
         public String customerProfile(HttpSession session, Model model) {
-        Long custId = (Long) session.getAttribute("customerid");
-
-    if (custId == null) {
-        return "redirect:/customerLogin"; // redirect to login if custId is not in session
-    }
-
-    try (Connection connection = dataSource.getConnection()) {
-        String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
-                     "FROM public.customer " +
-                     "WHERE customerid = ?";
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, custId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String customerName = resultSet.getString("customername");
-                    LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
-                    String customerEmail = resultSet.getString("customeremail");
-                    String customerPhoneNum = resultSet.getString("customerphonenum");
-                    String customerAddress = resultSet.getString("customeraddress");
-                    String password = resultSet.getString("password");
-
-                    Customer customer = new Customer();
-                    customer.setCustomerName(customerName);
-                    customer.setCustomerDob(customerDob);
-                    customer.setCustomerEmail(customerEmail);
-                    customer.setCustomerPhoneNum(customerPhoneNum);
-                    customer.setCustomerAddress(customerAddress);
-                    customer.setPassword(password);
-
-                    model.addAttribute("customer", customer);
-                }
-            }
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        return "redirect:/error";
-    }
-
-    return "custProfile";
-            }
-
+            Long custId = (Long) session.getAttribute("customerid");
     
-        @GetMapping("/customerUpdate")
-            public String customerUpdate(HttpSession session, Model model) {
-                Long custId = (Long) session.getAttribute("customerid");
-        
-                if (custId == null) {
-                    return "redirect:/customerLogin"; // redirect to login if custId is not in session
-                }
-        
-                try (Connection connection = dataSource.getConnection()) {
-                    String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
-                                 "FROM public.customer " +
-                                 "WHERE customerid = ?";
-        
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setLong(1, custId);
-        
-                        try (ResultSet resultSet = statement.executeQuery()) {
-                            if (resultSet.next()) {
-                                String customerName = resultSet.getString("customername");
-                                String customerEmail = resultSet.getString("customeremail");
-                                String customerAddress = resultSet.getString("customeraddress");
-                                String customerPhoneNum = resultSet.getString("customerphonenum");
-                                String password = resultSet.getString("password");
-        
-                                Customer customer = new Customer();
-                                customer.setCustomerName(customerName);
-                                customer.setCustomerEmail(customerEmail);
-                                customer.setCustomerPhoneNum(customerPhoneNum);
-                                customer.setCustomerAddress(customerAddress);
-                                customer.setPassword(password);
-        
-                                model.addAttribute("customer", customer);
-                            }
+            if (custId == null) {
+                return "redirect:/customerLogin"; // redirect to login if custId is not in session
+            }
+    
+            try (Connection connection = dataSource.getConnection()) {
+                String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
+                             "FROM public.customer " +
+                             "WHERE customerid = ?";
+    
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setLong(1, custId);
+    
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (resultSet.next()) {
+                            String customerName = resultSet.getString("customername");
+                            LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
+                            String customerEmail = resultSet.getString("customeremail");
+                            String customerPhoneNum = resultSet.getString("customerphonenum");
+                            String customerAddress = resultSet.getString("customeraddress");
+                            String password = resultSet.getString("password");
+    
+                            Customer customer = new Customer();
+                            customer.setCustomerName(customerName);
+                            customer.setCustomerDob(customerDob);
+                            customer.setCustomerEmail(customerEmail);
+                            customer.setCustomerPhoneNum(customerPhoneNum);
+                            customer.setCustomerAddress(customerAddress);
+                            customer.setPassword(password);
+    
+                            model.addAttribute("customer", customer);
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return "redirect:/error";
                 }
-        
-                return "Customer/CustomerUpdate";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "redirect:/error";
             }
-        
-        @PostMapping("/customerUpdate")
-            public String customerUpdate(HttpSession session, @ModelAttribute("customer") Customer customer) {
-                Long custId = (Long) session.getAttribute("customerid");
-        
-                if (custId == null) {
-                    return "redirect:/customerLogin"; // redirect to login if custId is not in session
-                }
-        
-                try (Connection conn = dataSource.getConnection()) {
-                    String sql = "UPDATE public.customer SET customername=?, customerdob=?, customeremail=?, customerphonenum=?, customeraddress=?, password=? WHERE customerid=?";
-                    PreparedStatement statement = conn.prepareStatement(sql);
-                    statement.setString(1, customer.getCustomerName());
-                    statement.setDate(2, java.sql.Date.valueOf(customer.getCustomerDob()));
-                    statement.setString(3, customer.getCustomerEmail());
-                    statement.setString(4, customer.getCustomerPhoneNum());
-                    statement.setString(5, customer.getCustomerAddress());
-                    statement.setString(6, customer.getPassword());
-                    statement.setLong(7, custId);
-                    statement.executeUpdate();
-        
-                    conn.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-        
-                return "redirect:/customerProfile";
-            }
+    
+            return "custProfile";
         }
-               
- 
-
-
+    
+        @GetMapping("/customerUpdate")
+        public String customerUpdate(HttpSession session, Model model) {
+            Long custId = (Long) session.getAttribute("customerid");
+    
+            if (custId == null) {
+                return "redirect:/customerLogin"; // redirect to login if custId is not in session
+            }
+    
+            try (Connection connection = dataSource.getConnection()) {
+                String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
+                             "FROM public.customer " +
+                             "WHERE customerid = ?";
+    
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setLong(1, custId);
+    
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (resultSet.next()) {
+                            String customerName = resultSet.getString("customername");
+                            LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
+                            String customerEmail = resultSet.getString("customeremail");
+                            String customerPhoneNum = resultSet.getString("customerphonenum");
+                            String customerAddress = resultSet.getString("customeraddress");
+                            String password = resultSet.getString("password");
+    
+                            Customer customer = new Customer();
+                            customer.setCustomerName(customerName);
+                            customer.setCustomerDob(customerDob);
+                            customer.setCustomerEmail(customerEmail);
+                            customer.setCustomerPhoneNum(customerPhoneNum);
+                            customer.setCustomerAddress(customerAddress);
+                            customer.setPassword(password);
+    
+                            model.addAttribute("customer", customer);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "redirect:/error";
+            }
+    
+            return "Customer/CustomerUpdate";
+        }
+    
+        @PostMapping("/customerUpdate")
+        public String customerUpdate(HttpSession session, @ModelAttribute("customer") Customer customer) {
+            Long custId = (Long) session.getAttribute("customerid");
+    
+            if (custId == null) {
+                return "redirect:/customerLogin"; // redirect to login if custId is not in session
+            }
+    
+            try (Connection conn = dataSource.getConnection()) {
+                String sql = "UPDATE public.customer SET customername=?, customerdob=?, customeremail=?, customerphonenum=?, customeraddress=?, password=? WHERE customerid=?";
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setString(1, customer.getCustomerName());
+                statement.setDate(2, java.sql.Date.valueOf(customer.getCustomerDob()));
+                statement.setString(3, customer.getCustomerEmail());
+                statement.setString(4, customer.getCustomerPhoneNum());
+                statement.setString(5, customer.getCustomerAddress());
+                statement.setString(6, customer.getPassword());
+                statement.setLong(7, custId);
+                statement.executeUpdate();
+    
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    
+            return "redirect:/customerProfile";
+        }
+    
+        @GetMapping("/deleteCustomer")
+        public String deleteCustomer(@RequestParam("customerId") Long customerId) {
+            try (Connection connection = dataSource.getConnection()) {
+                String sql = "DELETE FROM public.customer WHERE customerid = ?";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setLong(1, customerId);
+                statement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "redirect:/error";
+            }
+    
+            return "redirect:/customerProfile";
+        }
+    }
