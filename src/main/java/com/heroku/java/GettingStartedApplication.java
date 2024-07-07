@@ -51,6 +51,13 @@ public class GettingStartedApplication {
         return "custProfile";
     }
 
+    @GetMapping("/staffregister")
+    public String staffregister() {
+        return "staffregister";
+    }
+
+
+
     @GetMapping("/addproduct")
     public String addproduct() {
         return "addproduct";
