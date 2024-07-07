@@ -1,10 +1,7 @@
 package com.heroku.java.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -173,23 +170,22 @@ public String updateProduct(@RequestParam("productId") Long productId,
     return "redirect:/productList";
 }
 
-@DeleteMapping("/deleteProduct")
-    public ResponseEntity<String> deleteProduct(@RequestParam("productId") Long productId) {
-        try (Connection connection = dataSource.getConnection()) {
-            String deleteSql = "DELETE FROM public.product WHERE productid = ?";
-            try (PreparedStatement statement = connection.prepareStatement(deleteSql)) {
-                statement.setLong(1, productId);
-                int rowsAffected = statement.executeUpdate();
-                if (rowsAffected > 0) {
-                    return ResponseEntity.ok("Product deleted successfully");
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete product");
-        }
+@PostMapping("/deleteProduct")
+public String deleteProduct(@RequestParam("productId") Long productId) {
+    try {
+        Connection connection = dataSource.getConnection();
+        String sql = "DELETE FROM public.product WHERE productid=?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, productId);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return "redirect:/errorDelete";
     }
+    return "redirect:/productList";
+}
+
 
 }

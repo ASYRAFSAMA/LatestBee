@@ -358,8 +358,9 @@ table tbody tr:last-of-type {
                             <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
 
                             <a th:href="@{/updateProduct(productId=${product.productId})}" class="btn btn-info">Update</a>
-                            <button class="btn-danger" id="${product.productId}" onclick="confirmation(this.id)">Delete</button>
-    
+                            <button class="btn btn-danger" th:id="${product.productId}" onclick="confirmDelete(this.id)">Delete</button>
+
+                            
                         </td>
                     </tr>
                 </tbody>
@@ -370,9 +371,23 @@ table tbody tr:last-of-type {
 </html>
 
 <script>
-    function confirmDelete() {
-        if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
-            window.location.href = "ProductController?action=delete";
-        }
+    function confirmDelete(productId) {
+    if (confirm("Are you sure you want to delete this product?")) {
+        fetch(`/deleteProduct?productId=${productId}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                alert('Failed to delete the product');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting the product');
+        });
     }
+}
+
     </script>
