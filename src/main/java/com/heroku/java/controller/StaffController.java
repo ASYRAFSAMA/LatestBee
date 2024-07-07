@@ -29,8 +29,13 @@ public class StaffController {
         this.dataSource = dataSource;
     }
 
-    @PostMapping("/registerAcc")
-    public String register(@ModelAttribute("registerAcc")
+    @GetMapping("/registerStaffs")
+    public String registerStaffs() {
+        return "registerStaffs";
+    }
+
+    @PostMapping("/registerStaff")
+    public String registerStaff(@ModelAttribute("/registerStaff")
                                 @RequestParam("staffName") String staffName,
                                 @RequestParam("staffEmail") String staffEmail,
                                 @RequestParam("staffPhoneNum") String staffPhoneNum,
