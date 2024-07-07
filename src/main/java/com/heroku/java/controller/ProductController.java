@@ -130,4 +130,44 @@ public String showUpdateProductForm(@RequestParam("productId") Long productId, M
     return "updateproduct";
 }
 
+@PostMapping("/updateProduct")
+public String updateProduct(@RequestParam("productId") Long productId,
+                            @RequestParam("productname") String productName,
+                            @RequestParam("producttype") String productType,
+                            @RequestParam("productquantity") Integer productQuantity,
+                            @RequestParam("productprice") Double productPrice,
+                            @RequestParam(value = "productimage", required = false) MultipartFile productImage) throws IOException {
+    try (Connection connection = dataSource.getConnection()) {
+        StringBuilder sql = new StringBuilder("UPDATE public.product SET productname = ?, producttype = ?, productquantity = ?, productprice = ?");
+
+        // Only include product image update if an image is provided
+        if (productImage != null && !productImage.isEmpty()) {
+            sql.append(", productimage = ?");
+        }
+
+        sql.append(" WHERE productid = ?");
+
+        try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            statement.setString(1, productName);
+            statement.setString(2, productType);
+            statement.setInt(3, productQuantity);
+            statement.setDouble(4, productPrice);
+
+            if (productImage != null && !productImage.isEmpty()) {
+                String base64Image = Base64.getEncoder().encodeToString(productImage.getBytes());
+                statement.setString(5, base64Image);
+                statement.setLong(6, productId);
+            } else {
+                statement.setLong(5, productId);
+            }
+
+            statement.executeUpdate();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "redirect:/error";
+    }
+    return "redirect:/productList";
+}
+
 }
