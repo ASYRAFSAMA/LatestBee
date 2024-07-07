@@ -137,7 +137,7 @@
                 <button type="submit" class="btn">Register</button>
 
                 <div class="login-register">
-                    <p>Already have an account? <a href="/login" class="login-link">Login</a></p>
+                    <p>Already have an account? <a href="@{/custLogin}" class="login-link">Login</a></p>
                 </div>
             </form>
         </div>
@@ -145,32 +145,5 @@
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script> /*
-        document.addEventListener('DOMContentLoaded', function() {
-            const register = document.getElementById('register');
-            register.addEventListener('submit', async function(event){
-                event.preventDefault();
-                console.log('form submitted');
-
-                const formData = new FormData(register);
-
-                try {
-                  const response = await fetch('/registerAcc', {
-                      method: 'POST',
-                      body: formData
-                  });
-  
-                  if (response.ok) {
-                      console.log('Register successfully');
-                      location.reload(); // Reload to fetch the new activities
-                  } else {
-                      console.error('Failed to register', response.statusText);
-                  }
-                } catch (error) {
-                  console.error('Error register:', error);
-                }
-            });
-        }); */
-    </script>
 </body>
 </html>
