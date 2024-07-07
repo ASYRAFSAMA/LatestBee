@@ -98,7 +98,8 @@ public class CustomerController {
             throw new RuntimeException("Failed to insert customer", e);
         }
 
-        return "redirect:/custLogin"; // Return the created activity object
+        //return "redirect:/custLogin"; // Return the created activity object
+        return "redirect:/productList";
     }
 
 
