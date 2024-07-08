@@ -7,73 +7,100 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <style>
-     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
-    header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 20px 100px;
-        background: green;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 99;
-    }
-    .logo {
-        font-size: 2em;
-        color: white;
-        user-select: none;
-    }
-    .navigation a {
-        position: relative;
-        font-size: 1.1em;
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        margin-left: 40px;
-    }
-    .navigation a::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -6px;
-        width: 100%;
-        height: 3px;
-        background: #fff;
-        border-radius: 5px;
-        transform-origin: right;
-        transform: scaleX(0);
-        transition: transform .5s;
-    }
-    .navigation a:hover::after {
-        transform-origin: left;
-        transform: scaleX(1);
-    }
-    .navigation .btnlogin-popup {
-        width: 130px;
-        height: 50px;
-        background: transparent;
-        border: 2px solid #fff;
-        outline: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1.1em;
-        color: #fff;
-        font-weight: 500;
-        margin-left: 40px;
-        transition: .5s;
-    }
-    .navigation .btnlogin-popup:hover {
-        background: #fff;
-        color: #162938;
-    }
+    /* Global styles */
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: rgb(204, 162, 46); /* This should set the background color to yellow */
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background: #11101d;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: all 0.5s ease;
+}
+
+.sidebar .logo-details {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.sidebar .nav-list {
+    margin-top: 30px;
+}
+
+.sidebar .nav-list li {
+    list-style: none;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+}
+
+.sidebar .nav-list li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 20px;
+    transition: 0.4s;
+}
+
+.sidebar .nav-list li a i {
+    font-size: 24px;
+    min-width: 50px;
+}
+
+.sidebar .nav-list li a:hover {
+    background: #575757;
+    color: #fff;
+}
+
+.sidebar .nav-list li .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: #808080;
+    width: 100%;
+    z-index: 101;
+    list-style: none;
+}
+
+.sidebar .nav-list li .dropdown-menu li {
+    height: 40px;
+    line-height: 40px;
+}
+
+.sidebar .nav-list li .dropdown-menu li a {
+    padding-left: 40px;
+}
+
+.sidebar .nav-list li:hover .dropdown-menu {
+    display: block;
+}
     body {
         display: flex;
         height: 100vh;
@@ -160,16 +187,52 @@
 
 
 <header>
-    <h2 class="logo">Iman's Rabbit Farm</h2>
-    <nav class="navigation">
-        <a th:href="@{/indexStaff}">Home</a>
-        <a th:href="@{/staffProfile}">Account</a>
-        <a th:href="@{/staffCustomerList}">Customer</a>
-        <a th:href="@{/staffBookingList}">Booking</a>
-        <a th:href="@{/ticketList}">Ticket</a>
-        <button class="btnlogin-popup">Login</button>
-    </nav>
-</header>
+
+        <div class="sidebar">
+            <div class="logo-details">
+                <img src="webapp/css/staffimg.jpeg" alt="Logo" class="logo-img">
+            </div>
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html">
+                        <i class='bx bx-home'></i>
+                        <span class="links_name">Home</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">
+                        <i class='bx bx-user'></i>
+                        <span class="links_name">Product</span>
+                        <i class='bx bx-chevron-down arrow'></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/addproduct}">Create Product</a></li>
+                        <li><a th:href="@{/productList}">View Product</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bx-file'></i>
+                        <span class="links_name">Sales</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/StaffProfile}">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@{/}">
+                        <i class='bx bx-log-out'></i>
+                        <span class="links_name">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    
+    </header>
+
 
 <body>
     
@@ -202,15 +265,15 @@
 
         <div class="user-details">
             <div class="input-box">
-                <label for="custAddress" class="details">Address</label>
-                <input type="text" id="staffAddress" name="staffAddress" th:value="${staff.staffAddress}" disabled>
+                <label for="custRole" class="details">Role</label>
+                <input type="text" id="staffRole" name="staffRole" th:value="${staff.staffRole}" disabled>
             </div>
         </div> 
 
         <div class="user-details">
             <div class="input-box">
                 <label for="custPassword" class="details">Password</label>
-                <input type="password" id="staffPassword" name="staffPassword"  th:value="${staff.staffPassword}"  disabled>
+                <input type="password" id="staffPass" name="staff"  th:value="${staff.staffPass}"  disabled>
             </div>
         </div> 
 

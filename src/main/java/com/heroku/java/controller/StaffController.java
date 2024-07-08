@@ -118,13 +118,13 @@ public class StaffController {
     @GetMapping("/indexStaff")
     public String indexStaff(HttpSession session) {
         Long staffid = (Long) session.getAttribute("staffid");
-        return "indexStaff";
+        return "indexstaff";
     }
 
     @GetMapping("/staffLoginError")
     public String staffLoginError(){
         return "Staff/StaffLoginError";
-        
+
     }
 
 //STAFF VIEW PROFILE
