@@ -205,42 +205,44 @@ public class CustomerController {
             }
     
             @GetMapping("/customerUpdate")
-            public String customerUpdate(@RequestParam(required = false) Long customerId, HttpSession session, Model model) {
-                if (customerId == null) {
-                    return "redirect:/customerProfile"; // Redirect to profile if customerId is not provided
+public String customerUpdate(@RequestParam(required = false) Long customerId, HttpSession session, Model model) {
+    if (customerId == null) {
+        // Redirect to an appropriate page or return an error message
+        return "redirect:/customerProfile"; // Redirect to profile if customerId is not provided
+    }
+
+    try (Connection connection = dataSource.getConnection()) {
+        String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
+                     "FROM public.customer " +
+                     "WHERE customerid = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, customerId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Customer customer = new Customer();
+                    customer.setCustomerName(resultSet.getString("customername"));
+                    customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());
+                    customer.setCustomerEmail(resultSet.getString("customeremail"));
+                    customer.setCustomerPhoneNum(resultSet.getString("customerphonenum"));
+                    customer.setCustomerAddress(resultSet.getString("customeraddress"));
+                    customer.setPassword(resultSet.getString("password"));
+
+                    model.addAttribute("customer", customer);
+                } else {
+                    return "redirect:/customerProfile"; // Redirect if no customer found
                 }
-            
-                try (Connection connection = dataSource.getConnection()) {
-                    String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
-                                 "FROM public.customer " +
-                                 "WHERE customerid = ?";
-            
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setLong(1, customerId);
-            
-                        try (ResultSet resultSet = statement.executeQuery()) {
-                            if (resultSet.next()) {
-                                Customer customer = new Customer();
-                                customer.setCustomerName(resultSet.getString("customername"));
-                                customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());
-                                customer.setCustomerEmail(resultSet.getString("customeremail"));
-                                customer.setCustomerPhoneNum(resultSet.getString("customerphonenum"));
-                                customer.setCustomerAddress(resultSet.getString("customeraddress"));
-                                customer.setPassword(resultSet.getString("password"));
-            
-                                model.addAttribute("customer", customer);
-                            } else {
-                                return "redirect:/customerProfile"; // Redirect if no customer found
-                            }
-                        }
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return "redirect:/error"; // Redirect to error page
-                }
-            
-                return "Customer/CustomerUpdate";
             }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "redirect:/error"; // Redirect to error page
+    }
+
+    return "Customer/CustomerUpdate";
+}
+
 
     
         @PostMapping("/customerUpdate")
