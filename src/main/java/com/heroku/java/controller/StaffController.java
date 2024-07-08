@@ -185,12 +185,13 @@ return "Staff/StaffProfile";
 @GetMapping("/staffUpdate")
 public String staffUpdate(HttpSession session,Model model){
     session.getAttribute("staffid");
-    Long staffId = (Long) session.getAttribute("staffid");
+    Object staffIdObj = session.getAttribute("staffid");
 
-    if (staffId == null) {
+    if (staffIdObj == null) {
             return "redirect:/staffLogin"; // redirect to login if staffId is not in session
         }
 
+        Long staffId = (Long) staffIdObj;
         try {
             Connection conn = dataSource.getConnection();
             String sql = "Select staffname,staffemail,staffphonenum,staffrole,staffpass,managerid FROM public.staff WHERE staffid=? ";
