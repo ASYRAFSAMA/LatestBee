@@ -98,7 +98,7 @@
     .container h2 {
         font-size: 25px;
         font-weight: 500;
-        color: green;
+        color: rgb(2, 8, 2);
     }
     .container p {
         font-size: 18px;
@@ -109,14 +109,14 @@
         padding: 10px 20px;
         font-size: 16px;
         color: #fff;
-        background-color: green;
+        background-color: rgb(198, 122, 0);
         border: none;
         border-radius: 5px;
         text-decoration: none;
         transition: background-color 0.3s;
     }
     .button:hover {
-        background-color: darkgreen;
+        background-color: rgb(100, 0, 0);
     }
 </style>
 
@@ -125,8 +125,8 @@
     
     <main>
         <div class="container">
-            <h2>Invalid Staff Login</h2>
-            <p>Wrong Email or Password.</p>
+            <h2>Password and Email not match!</h2>
+            <p>Please Change Email or Password!</p>
             <a th:href="@{/staffLogin}" class="button">Return to Login</a>
         </div>
     </main>
