@@ -205,8 +205,8 @@ public class CustomerController {
             }
     
         @GetMapping("/customerUpdate")
-public String customerUpdate(HttpSession session, @RequestParam(value = "customerId", required = false) Long customerId, Model model) {
-    if (customerId == null) {
+public String customerUpdate(HttpSession session, @RequestParam(value = "customerId", required = false) Long custId, Model model) {
+    if (custId == null) {
         return "redirect:/error"; // or handle it gracefully
     }
 
@@ -216,7 +216,7 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
                      "WHERE customerid = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, customerId);
+            statement.setLong(1, custId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -230,7 +230,7 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
 
                     Customer customer = new Customer();
                     
-                    customer.setCustomerId(customerId);
+                    customer.setCustomerId(custId);
                     customer.setCustomerName(customerName);
                     customer.setCustomerDob(customerDob);
                     customer.setCustomerEmail(customerEmail);
@@ -247,7 +247,7 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
         return "redirect:/error";
     }
 
-    return "Customer/CustomerUpdate";
+    return "custProfileUpdate";
 }
 
     
