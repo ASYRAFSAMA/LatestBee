@@ -178,7 +178,7 @@ public class CustomerController {
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.next()) {
                             Customer customer = new Customer();
-                            customer.setCustomerId(resultSet.getLong("customerid"));
+                            
                             customer.setCustomerName(resultSet.getString("customername"));
                             customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());
                             customer.setCustomerEmail(resultSet.getString("customeremail"));
