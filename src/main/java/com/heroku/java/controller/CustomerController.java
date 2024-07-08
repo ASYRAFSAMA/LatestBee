@@ -110,12 +110,7 @@ public class CustomerController {
 
     
 
-   /*  @GetMapping("/customerLogin")
-        public String customerLogin(){
-            return "Customer/CustomerLogin";
-        }
-*/
-
+/** 
         @PostMapping("/customerLogins")
         public String customerLogin(HttpSession session, 
                                     @RequestParam("customeremail") String customerEmail, 
@@ -157,7 +152,43 @@ public class CustomerController {
                 return "redirect:/error";
             }
         }
-        
+        */
+
+
+        @PostMapping("/customerLogins")
+        public String customerLogin(HttpSession session,@RequestParam("customerEmail") String customeremail,@RequestParam("Password") String password, Model model,Customer customer){
+            try {
+                Connection connection = dataSource.getConnection();
+                String sql = "SELECT customerid,customername,customeremail,customerphonenum,customeraddress,password FROM public.customers WHERE customeremail=?";
+                final var statement = connection.prepareStatement(sql);
+                statement.setString(1,customeremail);
+
+                final var resultSet = statement.executeQuery();
+
+                if (resultSet.next()){
+
+                    Long customerId = resultSet.getLong("customerid");
+                    String customerName = resultSet.getString("customerName");
+                    String customerEmail = resultSet.getString("customerEmail");
+                    String Password = resultSet.getString("Password");
+
+                    if (customerEmail.equals(customeremail)&&Password.equals(password)){
+                        session.setAttribute("customername", customerName);
+                        session.setAttribute("customerid", customerId);
+
+                        return "redirect:/customerProfile";
+                    }
+
+                   
+
+                }
+                 connection.close();
+                 return "redirect:/customerLoginError";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "redirect:/error";
+            }
+        }
 
         @GetMapping("/customerProfile")
         public String customerProfile(HttpSession session, Model model) {
