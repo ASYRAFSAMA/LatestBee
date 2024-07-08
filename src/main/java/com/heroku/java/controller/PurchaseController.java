@@ -26,7 +26,7 @@ import com.heroku.java.model.Product;
 
 
 import jakarta.servlet.http.HttpSession;
-
+/* 
 @Controller
 public class PurchaseController {
     private final DataSource dataSource;
@@ -663,3 +663,4 @@ public String checkAvailability(HttpSession session,
 
 
     }
+        */
