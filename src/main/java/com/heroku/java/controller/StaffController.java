@@ -124,6 +124,7 @@ public class StaffController {
     @GetMapping("/staffLoginError")
     public String staffLoginError(){
         return "Staff/StaffLoginError";
+        
     }
 
 //STAFF VIEW PROFILE
