@@ -204,51 +204,43 @@ public class CustomerController {
     return "custProfile";
             }
     
-        @GetMapping("/customerUpdate")
-public String customerUpdate(HttpSession session, @RequestParam(value = "customerId", required = false) Long custId, Model model) {
-    if (custId == null) {
-        return "redirect:/error"; // or handle it gracefully
-    }
-
-    try (Connection connection = dataSource.getConnection()) {
-        String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
-                     "FROM public.customer " +
-                     "WHERE customerid = ?";
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, custId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    
-                    String customerName = resultSet.getString("customername");
-                    LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
-                    String customerEmail = resultSet.getString("customeremail");
-                    String customerPhoneNum = resultSet.getString("customerphonenum");
-                    String customerAddress = resultSet.getString("customeraddress");
-                    String password = resultSet.getString("password");
-
-                    Customer customer = new Customer();
-                    
-                    customer.setCustomerId(custId);
-                    customer.setCustomerName(customerName);
-                    customer.setCustomerDob(customerDob);
-                    customer.setCustomerEmail(customerEmail);
-                    customer.setCustomerPhoneNum(customerPhoneNum);
-                    customer.setCustomerAddress(customerAddress);
-                    customer.setPassword(password);
-
-                    model.addAttribute("customer", customer);
+            @GetMapping("/customerUpdate")
+            public String customerUpdate(@RequestParam(required = false) Long customerId, HttpSession session, Model model) {
+                if (customerId == null) {
+                    return "redirect:/customerProfile"; // Redirect to profile if customerId is not provided
                 }
+            
+                try (Connection connection = dataSource.getConnection()) {
+                    String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
+                                 "FROM public.customer " +
+                                 "WHERE customerid = ?";
+            
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setLong(1, customerId);
+            
+                        try (ResultSet resultSet = statement.executeQuery()) {
+                            if (resultSet.next()) {
+                                Customer customer = new Customer();
+                                customer.setCustomerName(resultSet.getString("customername"));
+                                customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());
+                                customer.setCustomerEmail(resultSet.getString("customeremail"));
+                                customer.setCustomerPhoneNum(resultSet.getString("customerphonenum"));
+                                customer.setCustomerAddress(resultSet.getString("customeraddress"));
+                                customer.setPassword(resultSet.getString("password"));
+            
+                                model.addAttribute("customer", customer);
+                            } else {
+                                return "redirect:/customerProfile"; // Redirect if no customer found
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return "redirect:/error"; // Redirect to error page
+                }
+            
+                return "Customer/CustomerUpdate";
             }
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        return "redirect:/error";
-    }
-
-    return "custProfileUpdate";
-}
 
     
         @PostMapping("/customerUpdate")
