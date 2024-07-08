@@ -183,54 +183,49 @@ return "Staff/StaffProfile";
 
 
 @GetMapping("/staffUpdate")
-public String staffUpdate(HttpSession session,Model model){
-    session.getAttribute("staffid");
-    Object staffIdObj = session.getAttribute("staffid");
+public String staffUpdate(HttpSession session, Model model) {
+    Long staffId = (Long) session.getAttribute("staffid");
 
-    if (staffIdObj == null) {
-            return "redirect:/staffLogin"; // redirect to login if staffId is not in session
-        }
+    if (staffId == null) {
+        return "redirect:/staffLogin"; // redirect to login if staffId is not in session
+    }
 
-        Long staffId = (Long) staffIdObj;
-        try {
-            Connection conn = dataSource.getConnection();
-            String sql = "Select staffname,staffemail,staffphonenum,staffrole,staffpass,managerid FROM public.staff WHERE staffid=? ";
+    try {
+        Connection conn = dataSource.getConnection();
+        String sql = "SELECT staffname, staffemail, staffphonenum, staffrole, staffpass, managerid FROM public.staff WHERE staffid=?";
+        
+        PreparedStatement statement = conn.prepareStatement(sql);
+        statement.setLong(1, staffId);
+        ResultSet resultSet = statement.executeQuery();
+        
+        if (resultSet.next()) {
+            String staffname = resultSet.getString("staffname");
+            String staffemail = resultSet.getString("staffemail");
+            String staffphonenum = resultSet.getString("staffphonenum");
+            String staffrole = resultSet.getString("staffrole");
+            String staffpass = resultSet.getString("staffpass");
+            Integer managerid = resultSet.getInt("managerid");
             
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setLong(1, staffId);
-            ResultSet resultSet = statement.executeQuery();
-            
-            if(resultSet.next()) {
-                String staffname = resultSet.getString("staffname");
-                String staffemail = resultSet.getString("staffemail");
-                String staffphonenum = resultSet.getString("staffphonenum");
-                String staffrole = resultSet.getString("staffrole");
-                String staffpass = resultSet.getString("staffpass");
-                Integer managerid = resultSet.getInt("managerid");
-                
-                 if (resultSet.wasNull()) {
-                        managerid = null;
-                    }
-
-                Staff staff= new Staff();
-                
-                staff.setStaffName(staffname);
-                staff.setStaffEmail(staffemail);
-                staff.setStaffPhoneNum(staffphonenum);
-                staff.setStaffRole(staffrole);
-                staff.setStaffPass(staffpass);
-                staff.setManagerId(managerid);
-
-                 model.addAttribute("staff",staff);
+            if (resultSet.wasNull()) {
+                managerid = null;
             }
 
-            conn.close();
-  
-}catch(SQLException e){
-} 
-return "Staff/StaffUpdate";
-}
+            Staff staff = new Staff();
+            staff.setStaffName(staffname);
+            staff.setStaffEmail(staffemail);
+            staff.setStaffPhoneNum(staffphonenum);
+            staff.setStaffRole(staffrole);
+            staff.setStaffPass(staffpass);
+            staff.setManagerId(managerid);
 
+            model.addAttribute("staff", staff);
+        }
+        conn.close();
+    } catch (SQLException e) {
+        e.printStackTrace();  // Log the exception for debugging
+    }
+    return "Staff/StaffUpdate";
+}
 
 @PostMapping("/staffUpdate")
 public String staffUpdate(HttpSession session,@ModelAttribute("staffUpdate") Staff staff, Model model){
