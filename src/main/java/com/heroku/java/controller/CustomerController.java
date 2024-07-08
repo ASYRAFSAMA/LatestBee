@@ -161,9 +161,9 @@ public class CustomerController {
 
         @GetMapping("/customerProfile")
         public String customerProfile(HttpSession session, Model model) {
-            Long custId = (Long) session.getAttribute("customerid");
+            Long customerId = (Long) session.getAttribute("customerid");
     
-            if (custId == null) {
+            if (customerId == null) {
                 return "redirect:/customerLogin"; // redirect to login if custId is not in session
             }
     
@@ -173,35 +173,29 @@ public class CustomerController {
                              "WHERE customerid = ?";
     
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setLong(1, custId);
+                    statement.setLong(1, customerId);
     
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.next()) {
-                            String customerName = resultSet.getString("customername");
-                            LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
-                            String customerEmail = resultSet.getString("customeremail");
-                            String customerPhoneNum = resultSet.getString("customerphonenum");
-                            String customerAddress = resultSet.getString("customeraddress");
-                            String password = resultSet.getString("password");
-    
                             Customer customer = new Customer();
-                            customer.setCustomerName(customerName);
-                            customer.setCustomerDob(customerDob);
-                            customer.setCustomerEmail(customerEmail);
-                            customer.setCustomerPhoneNum(customerPhoneNum);
-                            customer.setCustomerAddress(customerAddress);
-                            customer.setPassword(password);
-    
+                            customer.setCustomerId(resultSet.getLong("customerid"));
+                            customer.setCustomerName(resultSet.getString("customername"));
+                            customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());
+                            customer.setCustomerEmail(resultSet.getString("customeremail"));
+                            customer.setCustomerPhoneNum(resultSet.getString("customerphonenum"));
+                            customer.setCustomerAddress(resultSet.getString("customeraddress"));
+                            customer.setPassword(resultSet.getString("password"));
+                    
                             model.addAttribute("customer", customer);
                         }
-                    }
+                    }    
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 return "redirect:/error";
             }
     
-            return "custProfile";
+            return "/CustomerProfile";
         }
     
         @GetMapping("/customerUpdate")
@@ -220,6 +214,7 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    
                     String customerName = resultSet.getString("customername");
                     LocalDate customerDob = resultSet.getDate("customerdob").toLocalDate();
                     String customerEmail = resultSet.getString("customeremail");
@@ -228,6 +223,8 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
                     String password = resultSet.getString("password");
 
                     Customer customer = new Customer();
+                    
+                    customer.setCustomerId(customerId);
                     customer.setCustomerName(customerName);
                     customer.setCustomerDob(customerDob);
                     customer.setCustomerEmail(customerEmail);
@@ -250,9 +247,9 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
     
         @PostMapping("/customerUpdate")
         public String customerUpdate(HttpSession session, @ModelAttribute("customer") Customer customer) {
-            Long custId = (Long) session.getAttribute("customerid");
+            Long customerId = (Long) session.getAttribute("customerid");
     
-            if (custId == null) {
+            if (customerId == null) {
                 return "redirect:/customerLogin"; // redirect to login if custId is not in session
             }
     
@@ -265,7 +262,7 @@ public String customerUpdate(HttpSession session, @RequestParam(value = "custome
                 statement.setString(4, customer.getCustomerPhoneNum());
                 statement.setString(5, customer.getCustomerAddress());
                 statement.setString(6, customer.getPassword());
-                statement.setLong(7, custId);
+                statement.setLong(7, customerId);
                 statement.executeUpdate();
     
                 conn.close();
