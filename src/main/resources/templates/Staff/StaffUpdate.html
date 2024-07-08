@@ -3,10 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    
+    <title>Update Staff</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+<style>
+     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px 100px;
+        background: green;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 99;
+    }
+    .logo {
+        font-size: 2em;
+        color: white;
+        user-select: none;
+    }
+    .navigation a {
+        position: relative;
+        font-size: 1.1em;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        margin-left: 40px;
+    }
+    .navigation a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 3px;
+        background: #fff;
+        border-radius: 5px;
+        transform-origin: right;
+        transform: scaleX(0);
+        transition: transform .5s;
+    }
+    .navigation a:hover::after {
+        transform-origin: left;
+        transform: scaleX(1);
+    }
+    .navigation .btnlogin-popup {
+        width: 130px;
+        height: 50px;
+        background: transparent;
+        border: 2px solid #fff;
+        outline: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.1em;
+        color: #fff;
+        font-weight: 500;
+        margin-left: 40px;
+        transition: .5s;
+    }
+    .navigation .btnlogin-popup:hover {
+        background: #fff;
+        color: #162938;
+    }
+    body {
+        display: flex;
+        height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        background: #fd2;
+    }
+    .container {
+        max-width: 1000px;
+        max-height: 800px;
+        height: 100%;
+        width: 100%;
+        background: #fff;
+        padding: 25px 30px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    .container h2 {
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .container form {
+        width: 100%;
+    }
+    .container form .user-details {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 10px;
+        
+    }
+    .user-details .input-box {
+        width: calc(80% - 10px);
+    }
+    .user-details .input-box .details {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    .user-details .input-box input {
+        height: 45px;
+        width: 100%;
+        outline: none;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding-left: 15px;
+        font-size: 16px;
+    }
+    .container form .button {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    .button input {
+        padding: 10px 20px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s;
+    }
+    .button input:hover {
+        background: darkgreen;
+    }
+
+    .radioCitizen{
+        margin-top: 10px;
+    }
+
+    .hidden-input-box {
+        display: none;
+        width: calc(80% - 10px);
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure the popup is on top */
+    }
+
+    .popup {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .popup .btn-container {
+        margin-top: 20px;
+    }
+
+    .popup .btn-container button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+    .popup .btn-container button.primary {
+        background-color: #4CAF50; /* Green button */
+        color: white;
+    }
+
+    .popup .btn-container button.primary:hover {
+        background-color: #45a049; /* Darker shade of green on hover */
+    }
+
+    .popup .btn-container button.secondary {
+        background-color: #f44336; /* Red button */
+        color: white;
+    }
+
+    .popup .btn-container button.secondary:hover {
+        background-color: #d32f2f; /* Darker shade of red on hover */
+    }
+
+    </style>
+
+<header>
+    <h2 class="logo">Iman's Rabbit Farm</h2>
+    <nav class="navigation">
+        <a th:href="@{/indexStaff}">Home</a>
+        <a th:href="@{/staffProfile}">Account</a>
+        <a th:href="@{/staffCustomerList}">Customer</a>
+        <a th:href="@{/staffBookingList}">Booking</a>
+        <a th:href="@{/ticketList}">Ticket</a>
+        <button class="btnlogin-popup">Login</button>
+    </nav>
+</header>
+
 <body>
-    <h1>aaaaa</h1>
+    
+    <main>
+
+        <div class="container">
+            <h2>Update Staff</h2>
+            
+           <form th:action = "@{/staffUpdate}" modelAttribute="staffUpdate" th:object="${staff}" method ="post">
+            <div class="user-details"> 
+            <div class="input-box">
+                <label for="staffName" class="details">Name</label>
+                <input type="text" id="staffName" name="staffName" th:value="${staff.staffName}" >
+            </div>
+        </div>
+
+            <div class="user-details">
+            <div class="input-box">
+                <label for="custEmail" class="details">Email</label>
+                <input type="text" id="staffEmail" name="staffEmail"  th:value="${staff.staffEmail}" >
+            </div>
+            </div>
+
+            <div class="user-details">
+            <div class="input-box">
+                <label for="custPhone" class="details">Phone No.</label>
+                <input type="text" id="staffPhone" name="staffPhoneNum"  th:value="${staff.staffPhoneNum}" >
+            </div>
+        </div> 
+
+        <div class="user-details">
+            <div class="input-box">
+                <label for="custAddress" class="details">Address</label>
+                <input type="text" id="staffAddress" name="staffAddress" th:value="${staff.staffAddress}" >
+            </div>
+        </div> 
+
+        <div class="user-details">
+            <div class="input-box">
+                <label for="custPassword" class="details">Password</label>
+                <input type="password" id="staffPassword" name="staffPassword"  th:value="${staff.staffPassword}"  >
+            </div>
+        </div> 
+
+          <div class="user-details">
+            <div class="input-box">
+                <label for="custPassword" class="details">Manager ID</label>
+                <input type="number" id="managerid" name="managerId"  th:value="${staff.managerId}">
+            </div>
+        </div> 
+   
+
+        <div class="button">
+            <input type="submit" value="Save">
+        </div>
+
+        <a class="button" href="#" onclick="showPopup()">
+            <button type="button">Delete</button>
+        </a>
+        
+        <!-- Confirmation Popup -->
+        <div class="overlay">
+            <div class="popup">
+                <h3>Are you sure you want to delete your account?</h3>
+                <div class="btn-container">
+                    <a class="button" th:href="@{/staffDelete}"> <button type="button">Delete</button>
+            </a>
+                    <button onclick="hidePopup()" class="secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+                
+        </form>
+        
+        </div>
+    </main>
+
+    <script>
+   function showPopup() {
+        var overlay = document.querySelector('.overlay');
+        overlay.style.display = 'flex'; // Display overlay
+
+        // Disable scroll when popup is open
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Function to hide the confirmation popup
+    function hidePopup() {
+        var overlay = document.querySelector('.overlay');
+        overlay.style.display = 'none'; // Hide overlay
+
+        // Enable scroll when popup is closed
+        document.body.style.overflow = 'auto';
+    }
+   </script>
+
 </body>
 </html>
