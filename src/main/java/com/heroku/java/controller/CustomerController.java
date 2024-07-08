@@ -240,7 +240,7 @@ public class CustomerController {
 public String customerUpdate(@RequestParam(required = false) Long customerId, HttpSession session, Model model) {
     if (customerId == null) {
         // Redirect to an appropriate page or return an error message
-        return "redirect:/customerProfile"; // Redirect to profile if customerId is not provided
+        return "redirect:/error"; // Redirect to profile if customerId is not provided
     }
 
     try (Connection connection = dataSource.getConnection()) {
@@ -272,7 +272,7 @@ public String customerUpdate(@RequestParam(required = false) Long customerId, Ht
         return "redirect:/error"; // Redirect to error page
     }
 
-    return "Customer/CustomerUpdate";
+    return "redirect:custProfileUpdate";
 }
 
 
