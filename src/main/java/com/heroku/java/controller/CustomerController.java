@@ -156,10 +156,11 @@ public class CustomerController {
 
 
         @PostMapping("/customerLogins")
-        public String customerLogin(HttpSession session,@RequestParam("customerEmail") String customeremail,@RequestParam("Password") String password, Model model,Customer customer){
+        public String customerLogin(HttpSession session,@RequestParam("customeremail") String customeremail,
+                                                        @RequestParam("password") String password, Model model,Customer customer){
             try {
                 Connection connection = dataSource.getConnection();
-                String sql = "SELECT customerid,customername,customeremail,customerphonenum,customeraddress,password FROM public.customers WHERE customeremail=?";
+                String sql = "SELECT customerid,customername,customeremail,customerphonenum,customeraddress,password FROM public.customer WHERE customeremail=?";
                 final var statement = connection.prepareStatement(sql);
                 statement.setString(1,customeremail);
 
