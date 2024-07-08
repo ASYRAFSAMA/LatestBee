@@ -12,6 +12,7 @@ import com.heroku.java.model.Staff;
 
 import jakarta.servlet.http.HttpSession;
 
+import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import java.io.IOException;
@@ -29,11 +30,271 @@ public class StaffController {
         this.dataSource = dataSource;
     }
 
-    @GetMapping("/registerStaffs")
+    @GetMapping("/registerStaffs")          //boxxde s
     public String registerStaffs() {
         return "registerStaffs";
     }
+
+
+    @PostMapping("/registerStaff")
+    public String registerStaff(@ModelAttribute("registerStaff") Staff staff) {
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "INSERT INTO public.staff (staffname,staffemail,staffphonenum,staffaddress,staffpassword,managerid) VALUES (?,?,?,?,?,?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+			
+			statement.setString(1, staff.getStaffName());
+			statement.setString(2, staff.getStaffEmail());
+            statement.setString(3, staff.getStaffPhoneNum());
+            statement.setString(4, staff.getStaffRole());
+			statement.setString(5, staff.getStaffPass());
+			 if (staff.getManagerId() != null) {
+	                statement.setInt(6, staff.getManagerId());
+	            } else {
+	                statement.setNull(6, java.sql.Types.INTEGER);
+	            }
+			
+			statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/createStaffSuccess";
+    }
+
+    @GetMapping("/createStaffSuccess")
+    public String createstaffSuccess() {
+        return "Staff/CreateStaffSuccess";
+    }
+
+    @GetMapping("/staffLogin")
+    public String staffLogin() {
+        return "Staff/StaffLogin";
+    }
+
+    @PostMapping("/staffLogins")
+    public String staffLogins(HttpSession session,@RequestParam("staffEmail") String staffEmail, @RequestParam("staffPassword") String staffPassword,Staff staff) throws LoginException, SQLException{
+        try {
+            try (Connection conn = dataSource.getConnection()) {
+                String sql = "SELECT staffid,staffname,staffemail,staffphonenum,staffrole,staffpass,managerid FROM public.staff WHERE staffemail=?";
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setString(1,staffEmail);
+                
+                ResultSet resultSet = statement.executeQuery();
+                if(resultSet.next()) {
+                    staff = new Staff();
+                    staff.setStaffId(resultSet.getLong("staffid"));
+                    staff.setStaffName(resultSet.getString("staffname"));
+                    staff.setStaffEmail(resultSet.getString("staffemail"));
+                    staff.setStaffPhoneNum(resultSet.getString("staffphonenum"));
+                    staff.setStaffRole(resultSet.getString("staffrole"));
+                    staff.setStaffPass(resultSet.getString("staffpass"));
+
+                    Long staffId = staff.getStaffId();
+                                                                                                //sinixlehtukar
+                    if(staff.getStaffEmail().equals(staffEmail) && staff.getStaffPass().equals(staffPassword)) {
+                   
+                    session.setAttribute("staffname", staff.getStaffName());
+                    
+                    session.setAttribute("staffid", staffId);
+                    
+                    return "redirect:/indexStaff";
+                   }
+                   
+                }
+                     conn.close();
+                     return "redirect:/staffLoginError";
+
+                }
+
+             
+    }catch(SQLException e){
+        return "redirect:/StaffError";
+    }
+   
+}
+
+
+    @GetMapping("/indexStaff")
+    public String indexStaff(HttpSession session) {
+        Long staffid = (Long) session.getAttribute("staffid");
+        return "indexStaff";
+    }
+
+    @GetMapping("/staffLoginError")
+    public String staffLoginError(){
+        return "Staff/StaffLoginError";
+    }
+
+//STAFF VIEW PROFILE
+
+@GetMapping("/staffProfile")
+public String staffProfile(HttpSession session,Model model){
+    Object staffIdObj = session.getAttribute("staffid");
+
+    if (staffIdObj == null) {
+        // Handle the case where staffid is not found in the session
+        // Redirect to a login page or show an error message
+        return "redirect:/staffLogin"; // Change this to your actual login page
+    }
+
+    Long staffId = (Long) staffIdObj;
     
+        try {
+            
+            Connection conn = dataSource.getConnection();
+            String sql = "Select staffname,staffemail,staffphonenum,staffrole,staffpass,managerid FROM public.staff WHERE staffid=? ";
+            
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(1, staffId);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if(resultSet.next()) {
+                String staffname = resultSet.getString("staffname");
+                String staffemail = resultSet.getString("staffemail");
+                String staffphonenum = resultSet.getString("staffphonenum");
+                String staffrole = resultSet.getString("staffrole");
+                String staffpass = resultSet.getString("staffpass");
+                Integer managerid = resultSet.getInt("managerid");
+                
+                 if (resultSet.wasNull()) {
+                        managerid = null;
+                    }
+
+                Staff staff= new Staff();
+                
+                staff.setStaffName(staffname);
+                staff.setStaffEmail(staffemail);
+                staff.setStaffPhoneNum(staffphonenum);
+                staff.setStaffRole(staffrole);
+                staff.setStaffPass(staffpass);
+                staff.setManagerId(managerid);
+
+                 model.addAttribute("staff",staff);
+            }
+
+            conn.close();
+  
+}catch(SQLException e){
+} 
+return "Staff/StaffProfile";
+}
+
+
+@GetMapping("/staffUpdate")
+public String staffUpdate(HttpSession session,Model model){
+    session.getAttribute("staffid");
+    Long staffId = (Long) session.getAttribute("staffid");
+
+    if (staffId == null) {
+            return "redirect:/staffLogin"; // redirect to login if staffId is not in session
+        }
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "Select staffname,staffemail,staffphonenum,staffrole,staffpass,managerid FROM public.staff WHERE staffid=? ";
+            
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(1, staffId);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if(resultSet.next()) {
+                String staffname = resultSet.getString("staffname");
+                String staffemail = resultSet.getString("staffemail");
+                String staffphonenum = resultSet.getString("staffphonenum");
+                String staffrole = resultSet.getString("staffrole");
+                String staffpass = resultSet.getString("staffpass");
+                Integer managerid = resultSet.getInt("managerid");
+                
+                 if (resultSet.wasNull()) {
+                        managerid = null;
+                    }
+
+                Staff staff= new Staff();
+                
+                staff.setStaffName(staffname);
+                staff.setStaffEmail(staffemail);
+                staff.setStaffPhoneNum(staffphonenum);
+                staff.setStaffRole(staffrole);
+                staff.setStaffPass(staffpass);
+                staff.setManagerId(managerid);
+
+                 model.addAttribute("staff",staff);
+            }
+
+            conn.close();
+  
+}catch(SQLException e){
+} 
+return "Staff/StaffUpdate";
+}
+
+
+@PostMapping("/staffUpdate")
+public String staffUpdate(HttpSession session,@ModelAttribute("staffUpdate") Staff staff, Model model){
+    Long staffId = (Long) session.getAttribute("staffid");
+
+    if (staffId == null) {
+            return "redirect:/staffLogin"; // redirect to login if staffId is not in session
+        }
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "UPDATE public.staff SET staffname=?,staffemail=?,staffphonenum=?,staffrole=?,staffpass=?,managerid=? WHERE staffid=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(7,staffId);
+            statement.setString(1, staff.getStaffName());
+            statement.setString(2, staff.getStaffEmail());
+            statement.setString(3, staff.getStaffPhoneNum());
+            statement.setString(4, staff.getStaffRole());
+            statement.setString(5, staff.getStaffPass());
+            if (staff.getManagerId() != null) {
+                statement.setInt(6, staff.getManagerId());
+            } else {
+                statement.setNull(6, java.sql.Types.INTEGER);
+            }
+            statement.executeUpdate();
+            
+            conn.close();
+
+        } catch (SQLException e) {
+        } return "redirect:/staffProfile";
+}
+
+
+@GetMapping("/staffDelete")
+public String staffDelete(HttpSession session){
+    Long custId = (Long) session.getAttribute("staffid");
+
+    try {
+        Connection conn= dataSource.getConnection();
+        String sql = "Delete From public.staff WHERE staffid=?";
+        PreparedStatement statement = conn.prepareStatement(sql);
+
+        statement.setLong(1, custId);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+    } return "redirect:/deleteStaffSuccess";
+
+}
+
+@GetMapping("/deleteStaffSuccess")
+public String deleteStaffSuccess(){
+    return "Staff/DeleteStaffSuccess";
+}
+
+@GetMapping("/logoutConfirmationStaff")
+    public String logoutConfirmationStaff(HttpSession session){
+        session.getAttribute("staffid");
+        return "Staff/StaffLogout";
+    }   
+
+
+/*   
+    
+
+
     @PostMapping("/registerStaff")
     public String registerStaff(
             @RequestParam("staffname") String staffName,
@@ -203,4 +464,5 @@ public class StaffController {
 
         return null;
     }
+        */
 }

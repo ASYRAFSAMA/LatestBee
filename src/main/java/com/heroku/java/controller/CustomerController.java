@@ -236,23 +236,29 @@ public class CustomerController {
     return "custProfile";
             }
     
-            @GetMapping("/customerUpdate")
-public String customerUpdate(@RequestParam(required = false) Long customerId, HttpSession session, Model model) {
-    if (customerId == null) {
-        // Redirect to an appropriate page or return an error message
-        return "redirect:/error"; // Redirect to profile if customerId is not provided
-    }
+            
 
-    try (Connection connection = dataSource.getConnection()) {
-        String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
+        @GetMapping("/customerUpdate")
+            public String customerUpdate(HttpSession session, Model model) {
+                Long customerId = (Long) session.getAttribute("customerid");
+            
+
+
+        if (customerId == null) {
+            // Redirect to an appropriate page or return an error message
+            return "redirect:/error"; // Redirect to profile if customerId is not provided
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT customername, customerdob, customeremail, customerphonenum, customeraddress, password " +
                      "FROM public.customer " +
                      "WHERE customerid = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, customerId);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, customerId);
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
                     Customer customer = new Customer();
                     customer.setCustomerName(resultSet.getString("customername"));
                     customer.setCustomerDob(resultSet.getDate("customerdob").toLocalDate());

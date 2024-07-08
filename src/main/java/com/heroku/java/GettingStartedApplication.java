@@ -36,6 +36,15 @@ public class GettingStartedApplication {
         return "index";
     }
 
+    @GetMapping("/staff")
+    public String indexstaff() {
+        return "indexstaff";
+    }
+    @GetMapping("/cust")
+    public String indexcust() {
+        return "indexcust";
+    }
+
     @GetMapping("/custregister")
     public String register() {
         return "custregister";
