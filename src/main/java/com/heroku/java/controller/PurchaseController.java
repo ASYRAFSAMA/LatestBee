@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.heroku.java.model.Product;
 import com.heroku.java.model.PurchaseForm;
@@ -25,6 +27,7 @@ import com.heroku.java.model.ProductPurchase;
 
 @Controller
 public class PurchaseController {
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseController.class);
     private final DataSource dataSource;
 
     @Autowired
@@ -53,7 +56,7 @@ public class PurchaseController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to retrieve products", e);
             throw new RuntimeException("Failed to retrieve products", e);
         }
 
@@ -64,6 +67,7 @@ public class PurchaseController {
 
     @PostMapping("/createPurchase")
     public String createPurchase(@ModelAttribute PurchaseForm purchaseForm, Model model) {
+        logger.info("Starting purchase creation process.");
         try (Connection connection = dataSource.getConnection()) {
             double totalPurchaseAmount = 0.0;
 
@@ -88,6 +92,7 @@ public class PurchaseController {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         purchaseId = generatedKeys.getLong(1);
+                        logger.info("Purchase created with ID: " + purchaseId);
                     } else {
                         throw new SQLException("Creating purchase failed, no ID obtained.");
                     }
@@ -104,12 +109,13 @@ public class PurchaseController {
                     statement.addBatch();
                 }
                 statement.executeBatch();
+                logger.info("PurchaseProduct records inserted successfully.");
             }
 
             model.addAttribute("totalPurchaseAmount", totalPurchaseAmount);
             model.addAttribute("purchaseDetails", purchaseForm.getProducts());
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("An error occurred while processing the purchase", e);
             model.addAttribute("errorMessage", "An error occurred while processing your purchase: " + e.getMessage());
             return "error";
         }
@@ -137,7 +143,7 @@ public class PurchaseController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to retrieve product price", e);
             throw new RuntimeException("Failed to retrieve product price", e);
         }
         return productPrice;
