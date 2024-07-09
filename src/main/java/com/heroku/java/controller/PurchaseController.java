@@ -110,9 +110,12 @@ public class PurchaseController {
 
                             totalPurchaseAmount += purchaseProduct.getProductQuantity() * getProductPriceById(purchaseProduct.getProductId(), connection);
                             purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), purchaseProduct.getProductQuantity()));
+                        }else{
+                            SQLException e;
+                            e.printStackTrace();
                         }
                     }
-                    insertPurchaseProductStmt.executeBatch();
+                    insertPurchaseProductStmt.executeUpdate();
                 }
 
                 String updatePurchaseTotalSql = "UPDATE public.purchase SET purchasetotal = ? WHERE purchaseid = ?";
