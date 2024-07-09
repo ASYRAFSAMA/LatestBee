@@ -190,7 +190,9 @@
                 <a href="aboutus.html">About</a>
                 <a href="ViewProductController?action=listProduct">Product</a>
                 <a href="staffLogin">Staff</a>
-                <button class="btnLogin-popup">Login</button>
+                <form th:action="@{/custLogin}" method="get">
+                    <button type="submit" class="btnlogin-popup">Login</button>
+                </form>
             </nav>
         </header>
 
