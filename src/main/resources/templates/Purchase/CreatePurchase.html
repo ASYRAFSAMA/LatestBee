@@ -19,13 +19,13 @@
                 <tbody>
                     <tr th:each="productPurchase : ${purchaseDetails}">
                         <td th:text="${productPurchase.productId}">Product ID</td>
-                        <td th:text="${productPurchase.quantity}">Quantity</td>
-                        <td th:text="${#numbers.formatDecimal(calculateTotalPrice(productPurchase.productId, productPurchase.quantity), 1, 2)}">Total Price</td>
+                        <td th:text="${productPurchase.productQuantity}">Quantity</td>
+                        <td th:text="${#numbers.formatDecimal(productPurchase.productQuantity * ${#purchaseController.getProductPriceById(productPurchase.productId)}, 1, 2)}">Total Price</td>
                     </tr>
                 </tbody>
             </table>
             <div>
-                <h2>Total Purchase Amount: <span th:text="${totalPurchaseAmount}">0.00</span></h2>
+                <h2>Total Purchase Amount: <span th:text="${#numbers.formatDecimal(totalPurchaseAmount, 1, 2)}">0.00</span></h2>
             </div>
             <div class="button">
                 <a href="/purchaseProductList">Back to Products</a>

@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +17,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.heroku.java.model.Purchase;
+import com.heroku.java.model.PurchaseProduct;
 import com.heroku.java.model.Product;
-import com.heroku.java.model.PurchaseForm;
-import com.heroku.java.model.ProductPurchase;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PurchaseController {
-    private static final Logger logger = LoggerFactory.getLogger(PurchaseController.class);
     private final DataSource dataSource;
 
     @Autowired
@@ -36,8 +34,13 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchaseProductList")
-    public String listProducts(Model model) {
+    public String listProducts(Model model, HttpSession session) {
         List<Product> products = new ArrayList<>();
+        Long customerId = (Long) session.getAttribute("customerId");
+
+        if (customerId == null) {
+            return "redirect:/login";
+        }
 
         try (Connection connection = dataSource.getConnection()) {
             String getProductsSql = "SELECT * FROM public.product";
@@ -56,96 +59,317 @@ public class PurchaseController {
                 }
             }
         } catch (SQLException e) {
-            logger.error("Failed to retrieve products", e);
+            e.printStackTrace();
             throw new RuntimeException("Failed to retrieve products", e);
         }
 
+        Purchase purchase = new Purchase();
+        purchase.setCustomerId(customerId);
+        List<PurchaseProduct> purchaseProducts = new ArrayList<>();
+        for (int i = 0; i < products.size(); i++) {
+            purchaseProducts.add(new PurchaseProduct());
+        }
+        purchase.setPurchaseProducts(purchaseProducts);
+
         model.addAttribute("products", products);
-        model.addAttribute("purchaseForm", new PurchaseForm());
+        model.addAttribute("purchase", purchase);
         return "Purchase/CustomerPurchase";
     }
 
     @PostMapping("/createPurchase")
-    public String createPurchase(@ModelAttribute PurchaseForm purchaseForm, Model model) {
-        logger.info("Starting purchase creation process.");
-        try (Connection connection = dataSource.getConnection()) {
-            double totalPurchaseAmount = 0.0;
-
-            for (ProductPurchase productPurchase : purchaseForm.getProducts()) {
-                Long productId = productPurchase.getProductId();
-                int productQuantity = productPurchase.getQuantity();
-                double purchaseTotal = calculateTotalPrice(productId, productQuantity);
-                totalPurchaseAmount += purchaseTotal;
-            }
-
-            // Insert into purchase table
-            String insertPurchaseSql = "INSERT INTO public.purchase (staffid, customerid, purchasetotal, purchasedate, purchasestatus) VALUES (?, ?, ?, ?, ?) RETURNING purchaseid";
-            long purchaseId;
-            try (PreparedStatement statement = connection.prepareStatement(insertPurchaseSql, Statement.RETURN_GENERATED_KEYS)) {
-                statement.setLong(1, purchaseForm.getStaffId());
-                statement.setLong(2, purchaseForm.getCustomerId());
-                statement.setDouble(3, totalPurchaseAmount);
-                statement.setDate(4, Date.valueOf(LocalDate.now()));
-                statement.setString(5, "Pending");
-                statement.executeUpdate();
-
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        purchaseId = generatedKeys.getLong(1);
-                        logger.info("Purchase created with ID: " + purchaseId);
-                    } else {
-                        throw new SQLException("Creating purchase failed, no ID obtained.");
-                    }
-                }
-            }
-
-            // Insert into purchaseproduct table
-            String insertPurchaseProductSql = "INSERT INTO public.purchaseproduct (purchaseid, productid, productquantity) VALUES (?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(insertPurchaseProductSql)) {
-                for (ProductPurchase productPurchase : purchaseForm.getProducts()) {
-                    statement.setLong(1, purchaseId);
-                    statement.setLong(2, productPurchase.getProductId());
-                    statement.setInt(3, productPurchase.getQuantity());
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-                logger.info("PurchaseProduct records inserted successfully.");
-            }
-
-            model.addAttribute("totalPurchaseAmount", totalPurchaseAmount);
-            model.addAttribute("purchaseDetails", purchaseForm.getProducts());
-        } catch (SQLException e) {
-            logger.error("An error occurred while processing the purchase", e);
-            model.addAttribute("errorMessage", "An error occurred while processing your purchase: " + e.getMessage());
-            return "error";
+    public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
+        Long customerId = (Long) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "redirect:/login";
         }
+
+        double totalPurchaseAmount = 0.0;
+        List<PurchaseProduct> purchaseDetails = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            
+            String insertPurchaseSql = "INSERT INTO public.purchase (staffid, customerid, purchasetotal, purchasedate, purchasestatus) VALUES (NULL, ?, ?, ?, 'PENDING') RETURNING purchaseid";
+            try (PreparedStatement insertPurchaseStmt = connection.prepareStatement(insertPurchaseSql)) {
+                insertPurchaseStmt.setLong(1, customerId);
+                insertPurchaseStmt.setDouble(2, totalPurchaseAmount);
+                insertPurchaseStmt.setDate(3, Date.valueOf(LocalDate.now()));
+                ResultSet rs = insertPurchaseStmt.executeQuery();
+                rs.next();
+                Long purchaseId = rs.getLong("purchaseid");
+                rs.close();
+
+                String insertPurchaseProductSql = "INSERT INTO public.purchaseproduct (purchaseid, productid, productquantity) VALUES (?, ?, ?)";
+                try (PreparedStatement insertPurchaseProductStmt = connection.prepareStatement(insertPurchaseProductSql)) {
+                    for (PurchaseProduct purchaseProduct : purchase.getPurchaseProducts()) {
+                        if (purchaseProduct.getProductQuantity() > 0) {
+                            insertPurchaseProductStmt.setLong(1, purchaseId);
+                            insertPurchaseProductStmt.setLong(2, purchaseProduct.getProductId());
+                            insertPurchaseProductStmt.setInt(3, purchaseProduct.getProductQuantity());
+                            insertPurchaseProductStmt.addBatch();
+
+                            totalPurchaseAmount += purchaseProduct.getProductQuantity() * getProductPriceById(purchaseProduct.getProductId(), connection);
+                            purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), purchaseProduct.getProductQuantity()));
+                        }
+                    }
+                    insertPurchaseProductStmt.executeBatch();
+                }
+
+                String updatePurchaseTotalSql = "UPDATE public.purchase SET purchasetotal = ? WHERE purchaseid = ?";
+                try (PreparedStatement updatePurchaseTotalStmt = connection.prepareStatement(updatePurchaseTotalSql)) {
+                    updatePurchaseTotalStmt.setDouble(1, totalPurchaseAmount);
+                    updatePurchaseTotalStmt.setLong(2, purchaseId);
+                    updatePurchaseTotalStmt.executeUpdate();
+                }
+
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create purchase", e);
+        }
+
+        model.addAttribute("purchaseDetails", purchaseDetails);
+        model.addAttribute("totalPurchaseAmount", totalPurchaseAmount);
         return "Purchase/CreatePurchase";
     }
 
-    public double calculateTotalPrice(Long productId, int productQuantity) {
-        double productPrice = retrieveProductPrice(productId);
-        double purchaseTotal = productPrice * productQuantity;
-        return purchaseTotal;
-    }
-
-    public double retrieveProductPrice(Long productId) {
-        double productPrice = 0.0;
-        try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT productprice FROM public.product WHERE productid = ?";
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setLong(1, productId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        productPrice = resultSet.getDouble("productprice");
-                    } else {
-                        throw new SQLException("Product not found for ID: " + productId);
-                    }
+    private double getProductPriceById(Long productId, Connection connection) throws SQLException {
+        String getProductPriceSql = "SELECT productprice FROM public.product WHERE productid = ?";
+        try (PreparedStatement getProductPriceStmt = connection.prepareStatement(getProductPriceSql)) {
+            getProductPriceStmt.setLong(1, productId);
+            try (ResultSet resultSet = getProductPriceStmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("productprice");
                 }
             }
-        } catch (SQLException e) {
-            logger.error("Failed to retrieve product price", e);
-            throw new RuntimeException("Failed to retrieve product price", e);
         }
-        return productPrice;
+        throw new SQLException("Product price not found for product ID: " + productId);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+/* 
+
+package com.heroku.java.controller;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.heroku.java.model.Product;
+import com.heroku.java.model.PurchaseForm;
+import com.heroku.java.model.Customer;
+
+import jakarta.servlet.http.HttpSession;
+
+import com.heroku.java.model.ProductPurchase;
+
+@Controller
+public class PurchaseController {
+    private final DataSource dataSource;
+
+    @Autowired
+    public PurchaseController(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @GetMapping("/purchaseProductList")
+    public String purchaseProductList(HttpSession session, Model model){
+        session.getAttribute("customerid");
+        List<Product> products = new ArrayList<>();
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "SELECT productname,productprice from public.product";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                String productName = resultSet.getString("productname");
+                double productPrice = resultSet.getDouble("productprice");
+                Product product = new Product();
+                product.setProductName(productName);
+                product.setProductPrice(productPrice);
+                products.add(product);
+                
+            }
+            model.addAttribute("product", products);
+            
+            
+        } catch (SQLException e) {
+        } return "Purchase/CustomerPurchase";
+    }
+
+    @GetMapping("/customerPurchase")
+    public String customerPurchase(HttpSession session, Model model) {
+        Long customerid = (Long) session.getAttribute("customerid");
+        int productQuantity = (int) session.getAttribute("productQuantity");
+        LocalDate purchaseDate = (LocalDate) session.getAttribute("purchaseDate");
+        String productName = (String) session.getAttribute("productName");
+        
+
+       
+            //RETRIEVE CUSTOMER TYPE
+
+            try{Connection conn = dataSource.getConnection();
+            String sqlType = "SELECT customername, customeremail, customeraddress, c.customerphonenum, password ";
+            PreparedStatement statementType = conn.prepareStatement(sqlType);
+            statementType.setLong(1,customerid);
+            ResultSet resultSet = statementType.executeQuery();
+            
+            if(resultSet.next()){
+                String customerName = resultSet.getString("customername");
+                String customerEmail = resultSet.getString("customeremail");
+                String customerAddress = resultSet.getString("customeraddress");
+                String customerphonenum= resultSet.getString("customerphonenum");
+                String Password = resultSet.getString("password");
+                Customer customer = null;
+                String customerType =null;
+/* 
+                if (custic != null){
+
+                    customer = new Citizen(custName, custEmail, custphonenum, custAddress, custPassword, custid, custic);
+                    customerType = "Citizen";
+                    } else if (custPassport!= null){
+                        customer = new NonCitizen(custName, custEmail, custphonenum, custAddress, custPassword, custid, custPassport);
+                        customerType = "NonCitizen";
+                    }
+                    
+                   
+                    
+                    model.addAttribute("customer",customer);
+                    model.addAttribute("customerType", customerType);
+
+            }
+             double subtotal = calculateSubTotal(customerid, productName, productQuantity);
+        model.addAttribute("subtotal",subtotal);
+        model.addAttribute("productDate", purchaseDate);
+        model.addAttribute("productQuantity", productQuantity);
+        model.addAttribute("productName", productName);
+    
+        double totalPrice = calculateTotalPrice(customerid, productName, productQuantity);
+        model.addAttribute("totalPrice", totalPrice);
+        }catch(SQLException e){
+
+        }
+
+        return "Booking/CreateBooking";
+    }
+    
+
+    //retrieve price from ticket table
+    public double retrieveProductPrice(String productname){
+        double productprice=0.0;
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "Select productprice from public.product WHERE productname=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setString(1, productname);
+            ResultSet resultSet =statement.executeQuery();
+
+            if(resultSet.next()){
+                 productprice = resultSet.getDouble("productprice");
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+        }
+        return productprice;
+    }
+
+    public Customer retrieveCustomerById(Long customerId) throws Exception {
+        Customer customer = null;
+    
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT c.customerid, c.customername, c.customeremail, c.customeraddress, c.customerphonenum, password " +
+                         "FROM public.customers c " +
+                         "WHERE c.customerid = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(1, customerId);
+            ResultSet resultSet = statement.executeQuery();
+    
+            if (resultSet.next()) {
+                String customername = resultSet.getString("customername");
+                String customeremail = resultSet.getString("customeremail");
+                String customeraddress = resultSet.getString("customeraddress");
+                String customerphonenum = resultSet.getString("customerphonenum");
+                String customerpassword = resultSet.getString("password");
+    
+                // Complete the object creation logic as needed
+                // e.g., customer = new Customer(customername, customeremail, customeraddress, customerphonenum, customerpassword);
+    
+                // Currently commented out incomplete logic
+                // if (custicnum != null) {
+                //     customer = new Citizen(custname, custemail, custphonenum, custaddress, custpassword,custId, custicnum);
+                // } else if (custpassport != null) {
+                //     customer = new NonCitizen(custname, custemail, custphonenum, custaddress, custpassword,custId,custpassport);
+                // }
+            }
+            resultSet.close();
+            statement.close();
+    
+        } catch (Exception e) {
+            e.printStackTrace(); // Better to log the exception
+            throw new Exception("Error retrieving customer with ID: " + customerId, e);
+        }
+    
+        if (customer == null) {
+            throw new Exception("Customer not found for ID: " + customerId);
+        }
+    
+        return customer;
+    }
+    
+
+
+    //CALCULATE SUBTOTAL
+
+    public double calculateSubTotal(Long customerid, String productname, int productQuantity) {
+        double productprice = retrieveProductPrice(productname);
+        double subtotal = productprice * productQuantity;
+        
+        return subtotal;
+    }
+
+
+
+
+    //calculate totalPrice
+    public double calculateTotalPrice(Long customerid, String productname, int productQuantity) {
+        double productprice = retrieveProductPrice(productname);
+        double subtotal = productprice * productQuantity;
+        double total = 0.00;
+    }
+        
+    
+
+}
+
+ */

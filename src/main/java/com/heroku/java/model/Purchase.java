@@ -1,5 +1,93 @@
 package com.heroku.java.model;
 
+import java.sql.Date;
+import java.util.List;
+
+public class Purchase {
+    private Long purchaseId;
+    private Long staffId;
+    private Long customerId;
+    private Double purchaseTotal;
+    private Date purchaseDate;
+    private String purchaseStatus;
+    private List<PurchaseProduct> purchaseProducts;
+
+    // Getters and Setters
+
+    public Long getPurchaseId() {
+        return purchaseId;
+    }
+
+    public void setPurchaseId(Long purchaseId) {
+        this.purchaseId = purchaseId;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Double getPurchaseTotal() {
+        return purchaseTotal;
+    }
+
+    public void setPurchaseTotal(Double purchaseTotal) {
+        this.purchaseTotal = purchaseTotal;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public String getPurchaseStatus() {
+        return purchaseStatus;
+    }
+
+    public void setPurchaseStatus(String purchaseStatus) {
+        this.purchaseStatus = purchaseStatus;
+    }
+
+    public List<PurchaseProduct> getPurchaseProducts() {
+        return purchaseProducts;
+    }
+
+    public void setPurchaseProducts(List<PurchaseProduct> purchaseProducts) {
+        this.purchaseProducts = purchaseProducts;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+package com.heroku.java.model;
+
 
 
 import java.sql.Date;
@@ -68,3 +156,5 @@ public class Purchase{
 
 	
 } 
+
+*/

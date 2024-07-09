@@ -11,6 +11,10 @@ public class Customer {
     private String customerAddress;
     private String password;
 
+    public Customer(String customerName2, String customerEmail2, String customerAddress2, String customerphonenum2,
+            String password2) {
+        //TODO Auto-generated constructor stub
+    }
     public Long getCustomerId() {
         return customerId;
     }
