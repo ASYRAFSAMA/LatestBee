@@ -192,6 +192,11 @@ public class PurchaseController {
             }
         }
 
-        return "redirect:/PurchaseSuccess";
+        return "redirect:/purchaseSuccess";
+    }
+
+    @GetMapping("/purchaseSuccess")
+    public String purchaseSuccess() {
+        return "Purchase/PurchaseSuccess";
     }
 }
