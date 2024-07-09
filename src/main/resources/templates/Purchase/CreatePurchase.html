@@ -5,29 +5,32 @@
     <link rel="stylesheet" type="text/css" href="/path/to/your/css/style.css">
 </head>
 <body>
-<main>
-    <div class="container">
-        <h1>Purchase Summary</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td th:text="${productId}">Product ID</td>
-                    <td th:text="${productQuantity}">Quantity</td>
-                    <td th:text="${purchaseTotal}">Total Price</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="button">
-            <a href="/purchaseProductList">Back to Products</a>
+    <main>
+        <div class="container">
+            <h1>Purchase Summary</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="productPurchase : ${purchaseDetails}">
+                        <td th:text="${productPurchase.productId}">Product ID</td>
+                        <td th:text="${productPurchase.quantity}">Quantity</td>
+                        <td th:text="${#numbers.formatDecimal(calculateTotalPrice(productPurchase.productId, productPurchase.quantity), 1, 2)}">Total Price</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <h2>Total Purchase Amount: <span th:text="${totalPurchaseAmount}">0.00</span></h2>
+            </div>
+            <div class="button">
+                <a href="/purchaseProductList">Back to Products</a>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 </body>
 </html>

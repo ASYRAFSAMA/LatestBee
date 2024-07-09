@@ -349,7 +349,7 @@ table tbody tr:last-of-type {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="product : ${products}">
+                        <tr th:each="product, stat : ${products}">
                             <td th:text="${product.productName}">Product Name</td>
                             <td th:text="${product.productType}">Product Type</td>
                             <td th:text="${product.productQuantity}">20</td>
@@ -360,8 +360,8 @@ table tbody tr:last-of-type {
                             <td>
                                 <div class="input-box">
                                     <label for="productQuantity" class="details">Quantity</label>
-                                    <input type="number" id="productQuantity" name="productQuantity" placeholder="No. of Products" required>
-                                    <input type="hidden" name="productId" th:value="${product.productId}"/>
+                                    <input type="number" id="productQuantity" name="products[${stat.index}].quantity" placeholder="No. of Products" required>
+                                    <input type="hidden" name="products[${stat.index}].productId" th:value="${product.productId}"/>
                                 </div>
                             </td>
                         </tr>

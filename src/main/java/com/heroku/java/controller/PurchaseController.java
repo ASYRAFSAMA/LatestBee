@@ -13,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.heroku.java.model.Purchase;
-import com.heroku.java.model.Customer;
 import com.heroku.java.model.Product;
 
 @Controller
@@ -59,19 +58,19 @@ public class PurchaseController {
     }
 
     @PostMapping("/createPurchase")
-    public String createPurchase(@RequestParam("productId") Long productId,
-                                 @RequestParam("productQuantity") int productQuantity,
-                                 Model model) {
+    public String createPurchase(@ModelAttribute PurchaseForm purchaseForm, Model model) {
         try {
-            // Validate input parameters
-            if (productId == null || productQuantity <= 0) {
-                throw new IllegalArgumentException("Invalid product ID or quantity");
+            double totalPurchaseAmount = 0.0;
+
+            for (ProductPurchase productPurchase : purchaseForm.getProducts()) {
+                Long productId = productPurchase.getProductId();
+                int productQuantity = productPurchase.getQuantity();
+                double purchaseTotal = calculateTotalPrice(productId, productQuantity);
+                totalPurchaseAmount += purchaseTotal;
             }
 
-            double purchaseTotal = calculateTotalPrice(productId, productQuantity);
-            model.addAttribute("productId", productId);
-            model.addAttribute("productQuantity", productQuantity);
-            model.addAttribute("purchaseTotal", purchaseTotal);
+            model.addAttribute("totalPurchaseAmount", totalPurchaseAmount);
+            model.addAttribute("purchaseDetails", purchaseForm.getProducts());
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "An error occurred while processing your purchase: " + e.getMessage());
@@ -105,5 +104,38 @@ public class PurchaseController {
             throw new RuntimeException("Failed to retrieve product price", e);
         }
         return productPrice;
+    }
+}
+
+class PurchaseForm {
+    private List<ProductPurchase> products;
+
+    public List<ProductPurchase> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductPurchase> products) {
+        this.products = products;
+    }
+}
+
+class ProductPurchase {
+    private Long productId;
+    private int quantity;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
