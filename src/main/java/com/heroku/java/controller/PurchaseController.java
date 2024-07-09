@@ -45,18 +45,17 @@ public class PurchaseController {
 
         try (Connection connection = dataSource.getConnection()) {
             String getProductsSql = "SELECT * FROM public.product";
-            try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        Product product = new Product();
-                        product.setProductId(resultSet.getLong("productid"));
-                        product.setProductName(resultSet.getString("productname"));
-                        product.setProductType(resultSet.getString("producttype"));
-                        product.setProductQuantity(resultSet.getInt("productquantity"));
-                        product.setProductPrice(resultSet.getDouble("productprice"));
-                        product.setProductImage(resultSet.getString("productimage"));
-                        products.add(product);
-                    }
+            try (PreparedStatement statement = connection.prepareStatement(getProductsSql);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Product product = new Product();
+                    product.setProductId(resultSet.getLong("productid"));
+                    product.setProductName(resultSet.getString("productname"));
+                    product.setProductType(resultSet.getString("producttype"));
+                    product.setProductQuantity(resultSet.getInt("productquantity"));
+                    product.setProductPrice(resultSet.getDouble("productprice"));
+                    product.setProductImage(resultSet.getString("productimage"));
+                    products.add(product);
                 }
             }
         } catch (SQLException e) {
@@ -78,7 +77,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/createPurchase")
-    public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model, @RequestParam("purchaseQuantity") int purchaseQuantity) {
+    public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
         Long customerId = (Long) session.getAttribute("customerid");
         if (customerId == null) {
             return "redirect:/custLogin";
@@ -89,7 +88,7 @@ public class PurchaseController {
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            
+
             String insertPurchaseSql = "INSERT INTO public.purchase (staffid, customerid, purchasetotal, purchasedate, purchasestatus) VALUES (NULL, ?, ?, ?, 'PENDING') RETURNING purchaseid";
             try (PreparedStatement insertPurchaseStmt = connection.prepareStatement(insertPurchaseSql)) {
                 insertPurchaseStmt.setLong(1, customerId);
@@ -103,17 +102,18 @@ public class PurchaseController {
                 String insertPurchaseProductSql = "INSERT INTO public.purchaseproduct (purchaseid, productid, productquantity) VALUES (?, ?, ?)";
                 try (PreparedStatement insertPurchaseProductStmt = connection.prepareStatement(insertPurchaseProductSql)) {
                     for (PurchaseProduct purchaseProduct : purchase.getPurchaseProducts()) {
-                        if (purchaseProduct.getProductQuantity() > 0) {
+                        int quantity = purchaseProduct.getProductQuantity();
+                        if (quantity > 0) {
                             insertPurchaseProductStmt.setLong(1, purchaseId);
                             insertPurchaseProductStmt.setLong(2, purchaseProduct.getProductId());
-                            insertPurchaseProductStmt.setInt(3, purchaseQuantity);
+                            insertPurchaseProductStmt.setInt(3, quantity);
                             insertPurchaseProductStmt.addBatch();
 
-                            totalPurchaseAmount += purchaseQuantity * getProductPriceById(purchaseProduct.getProductId(), connection);
-                            purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), purchaseProduct.getProductQuantity()));
+                            totalPurchaseAmount += quantity * getProductPriceById(purchaseProduct.getProductId(), connection);
+                            purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), quantity));
                         }
                     }
-                    insertPurchaseProductStmt.executeUpdate();
+                    insertPurchaseProductStmt.executeBatch();
                 }
 
                 String updatePurchaseTotalSql = "UPDATE public.purchase SET purchasetotal = ? WHERE purchaseid = ?";
