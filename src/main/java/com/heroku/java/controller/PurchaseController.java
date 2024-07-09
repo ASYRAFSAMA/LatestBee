@@ -1,9 +1,12 @@
 package com.heroku.java.controller;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.heroku.java.model.Product;
+import com.heroku.java.model.PurchaseForm;
+import com.heroku.java.model.ProductPurchase;
 
 @Controller
 public class PurchaseController {
@@ -53,12 +58,13 @@ public class PurchaseController {
         }
 
         model.addAttribute("products", products);
+        model.addAttribute("purchaseForm", new PurchaseForm());
         return "Purchase/CustomerPurchase";
     }
 
     @PostMapping("/createPurchase")
     public String createPurchase(@ModelAttribute PurchaseForm purchaseForm, Model model) {
-        try {
+        try (Connection connection = dataSource.getConnection()) {
             double totalPurchaseAmount = 0.0;
 
             for (ProductPurchase productPurchase : purchaseForm.getProducts()) {
@@ -68,9 +74,41 @@ public class PurchaseController {
                 totalPurchaseAmount += purchaseTotal;
             }
 
+            // Insert into purchase table
+            String insertPurchaseSql = "INSERT INTO public.purchase (staffid, customerid, purchasetotal, purchasedate, purchasestatus) VALUES (?, ?, ?, ?, ?) RETURNING purchaseid";
+            long purchaseId;
+            try (PreparedStatement statement = connection.prepareStatement(insertPurchaseSql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setLong(1, purchaseForm.getStaffId());
+                statement.setLong(2, purchaseForm.getCustomerId());
+                statement.setDouble(3, totalPurchaseAmount);
+                statement.setDate(4, Date.valueOf(LocalDate.now()));
+                statement.setString(5, "Pending");
+                statement.executeUpdate();
+
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        purchaseId = generatedKeys.getLong(1);
+                    } else {
+                        throw new SQLException("Creating purchase failed, no ID obtained.");
+                    }
+                }
+            }
+
+            // Insert into purchaseproduct table
+            String insertPurchaseProductSql = "INSERT INTO public.purchaseproduct (purchaseid, productid, productquantity) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(insertPurchaseProductSql)) {
+                for (ProductPurchase productPurchase : purchaseForm.getProducts()) {
+                    statement.setLong(1, purchaseId);
+                    statement.setLong(2, productPurchase.getProductId());
+                    statement.setInt(3, productPurchase.getQuantity());
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+            }
+
             model.addAttribute("totalPurchaseAmount", totalPurchaseAmount);
             model.addAttribute("purchaseDetails", purchaseForm.getProducts());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "An error occurred while processing your purchase: " + e.getMessage());
             return "error";
@@ -103,38 +141,5 @@ public class PurchaseController {
             throw new RuntimeException("Failed to retrieve product price", e);
         }
         return productPrice;
-    }
-}
-
-class PurchaseForm {
-    private List<ProductPurchase> products;
-
-    public List<ProductPurchase> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ProductPurchase> products) {
-        this.products = products;
-    }
-}
-
-class ProductPurchase {
-    private Long productId;
-    private int quantity;
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 }
