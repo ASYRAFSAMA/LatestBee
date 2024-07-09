@@ -358,7 +358,7 @@ table tbody tr:last-of-type {
                             </td>
                             <td>
                                 <input type="hidden" th:field="*{purchaseProducts[__${productStat.index}__].productId}" th:value="${product.productId}"/>
-                                <input type="number" th:field="*{purchaseProducts[__${productStat.index}__].productQuantity}" placeholder="No. of Products" min="0" required/>
+                                <input type="number" name="purchaseQuantity" placeholder="No. of Products" min="0" required/>
                             </td>
                         </tr>
                     </tbody>

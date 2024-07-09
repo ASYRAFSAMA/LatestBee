@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.heroku.java.model.Purchase;
 import com.heroku.java.model.PurchaseProduct;
@@ -77,7 +78,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/createPurchase")
-    public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
+    public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model, @RequestParam("purchaseQuantity") int purchaseQuantity) {
         Long customerId = (Long) session.getAttribute("customerid");
         if (customerId == null) {
             return "redirect:/custLogin";
@@ -105,14 +106,11 @@ public class PurchaseController {
                         if (purchaseProduct.getProductQuantity() > 0) {
                             insertPurchaseProductStmt.setLong(1, purchaseId);
                             insertPurchaseProductStmt.setLong(2, purchaseProduct.getProductId());
-                            insertPurchaseProductStmt.setInt(3, purchaseProduct.getProductQuantity());
+                            insertPurchaseProductStmt.setInt(3, purchaseQuantity);
                             insertPurchaseProductStmt.addBatch();
 
-                            totalPurchaseAmount += purchaseProduct.getProductQuantity() * getProductPriceById(purchaseProduct.getProductId(), connection);
+                            totalPurchaseAmount += purchaseQuantity * getProductPriceById(purchaseProduct.getProductId(), connection);
                             purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), purchaseProduct.getProductQuantity()));
-                        }else{
-                            SQLException ef;
-                            ef.printStackTrace();
                         }
                     }
                     insertPurchaseProductStmt.executeUpdate();
