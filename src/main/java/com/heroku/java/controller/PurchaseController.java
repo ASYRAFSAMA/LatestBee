@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.heroku.java.model.Purchase;
-import com.heroku.java.model.PurchaseProduct;
 import com.heroku.java.model.Product;
 
 import jakarta.servlet.http.HttpSession;
@@ -118,76 +117,66 @@ public class PurchaseController {
         double total = subtotal; // Add any other calculations if needed (e.g., tax, discounts)
         return total;
     }
-}
 
-
-
-/* 
     @PostMapping("/createPurchase")
     public String createPurchase(HttpSession session, @ModelAttribute("createPurchase") Purchase purchase,
-                                @RequestParam("productName") String productname,
-                                @RequestParam("purchaseDate") LocalDate purchaseDate,
-                                @RequestParam("productQuantity") int productQuantity,Model model) {
-    
-        Long customerid = (Long) session.getAttribute("customerid");
+                                 @RequestParam("productName") String productName,
+                                 @RequestParam("purchaseDate") LocalDate purchaseDate,
+                                 @RequestParam("productQuantity") int productQuantity, Model model) {
+
+        Long customerId = (Long) session.getAttribute("customerid");
+        if (customerId == null) {
+            return "redirect:/custLogin";
+        }
+
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         PreparedStatement statementCreate = null;
         PreparedStatement statementInsert = null;
         PreparedStatement statementUpdate = null;
-    
-        try {
-            // RETRIEVE TICKET ID
-            Connection conn = dataSource.getConnection();
-            String sqlProductId = "SELECT productid FROM Product WHERE productname=?";
+
+        try (Connection conn = dataSource.getConnection()) {
+            // RETRIEVE PRODUCT ID
+            String sqlProductId = "SELECT productid FROM public.product WHERE productname=?";
             statement = conn.prepareStatement(sqlProductId);
-            statement.setString(1, productname);
+            statement.setString(1, productName);
             resultSet = statement.executeQuery();
-            int productid = -1;
-    
+            int productId = -1;
+
             if (resultSet.next()) {
-                productid = resultSet.getInt("productid");
+                productId = resultSet.getInt("productid");
             }
 
-            
-            // CREATE BOOKING (INSERT TO DATABASE)
-            String sql = "INSERT INTO public.purchase(customerid, productdate, purchasetotal, purchasestatus) VALUES (?, ?, ?, ?) RETURNING purchaseid";
+            // CREATE PURCHASE (INSERT TO DATABASE)
+            String sql = "INSERT INTO public.purchase(customerid, purchasedate, purchasetotal, purchasestatus) VALUES (?, ?, ?, ?) RETURNING purchaseid";
             statementCreate = conn.prepareStatement(sql);
-            statementCreate.setLong(1, customerid);
+            statementCreate.setLong(1, customerId);
             statementCreate.setObject(2, purchaseDate);
             statementCreate.setDouble(3, 0.0); // Initial total price, adjust as needed
             statementCreate.setString(4, "Unpaid");
             resultSet = statementCreate.executeQuery();
-    
+
             if (resultSet.next()) {
-                int purchaseid = resultSet.getInt("purchaseid");
-    
-                // INSERT INTO BRIDGE
+                int purchaseId = resultSet.getInt("purchaseid");
+
+                // INSERT INTO PURCHASEPRODUCT
                 String sqlInsert = "INSERT INTO public.purchaseproduct(purchaseid, productid, productquantity) VALUES (?, ?, ?)";
                 statementInsert = conn.prepareStatement(sqlInsert);
-                statementInsert.setInt(1, purchaseid);
-                statementInsert.setInt(2, productid);
+                statementInsert.setInt(1, purchaseId);
+                statementInsert.setInt(2, productId);
                 statementInsert.setInt(3, productQuantity);
                 statementInsert.executeUpdate();
-    
 
-
-
-                 
-                // Update total price
-                
-                double totalPrice = calculateTotalPrice(customerid, productname, purchaseQuantity);
-                String sqlPrice = "UPDATE public.purchase SET totalprice=? WHERE purchaseid=?";
+                // UPDATE TOTAL PRICE
+                double totalPrice = calculateTotalPrice(productName, productQuantity);
+                String sqlPrice = "UPDATE public.purchase SET purchasetotal=? WHERE purchaseid=?";
                 statementUpdate = conn.prepareStatement(sqlPrice);
                 statementUpdate.setDouble(1, totalPrice);
-                statementUpdate.setInt(2, purchaseid);
+                statementUpdate.setInt(2, purchaseId);
                 statementUpdate.executeUpdate();
-
-                
             }
 
         } catch (SQLException e) {
-            // Handle SQL exceptions
             e.printStackTrace();
             return "redirect:/error"; // Redirect to error page or handle error as needed
         } finally {
@@ -202,10 +191,7 @@ public class PurchaseController {
                 e.printStackTrace();
             }
         }
-    
+
         return "redirect:/purchaseSuccess";
     }
-
-    
-
- */
+}
