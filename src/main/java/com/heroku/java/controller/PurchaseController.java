@@ -36,10 +36,10 @@ public class PurchaseController {
     @GetMapping("/purchaseProductList")
     public String listProducts(Model model, HttpSession session) {
         List<Product> products = new ArrayList<>();
-        Long customerId = (Long) session.getAttribute("customerId");
+        Long customerId = (Long) session.getAttribute("customerid");
 
         if (customerId == null) {
-            return "redirect:/login";
+            return "redirect:/custLogin";
         }
 
         try (Connection connection = dataSource.getConnection()) {
@@ -80,7 +80,7 @@ public class PurchaseController {
     public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
         Long customerId = (Long) session.getAttribute("customerId");
         if (customerId == null) {
-            return "redirect:/login";
+            return "redirect:/custLogin";
         }
 
         double totalPurchaseAmount = 0.0;
