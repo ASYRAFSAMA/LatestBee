@@ -111,8 +111,8 @@ public class PurchaseController {
                             totalPurchaseAmount += purchaseProduct.getProductQuantity() * getProductPriceById(purchaseProduct.getProductId(), connection);
                             purchaseDetails.add(new PurchaseProduct(purchaseProduct.getProductId(), purchaseProduct.getProductQuantity()));
                         }else{
-                            SQLException e;
-                            e.printStackTrace();
+                            SQLException ef;
+                            ef.printStackTrace();
                         }
                     }
                     insertPurchaseProductStmt.executeUpdate();
