@@ -35,107 +35,173 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchaseProductList")
-    public String listProducts(Model model, HttpSession session) {
+    public String purchaseProductList(HttpSession session, Model model){
+        session.getAttribute("customerid");
         List<Product> products = new ArrayList<>();
-        Long customerId = (Long) session.getAttribute("customerid");
-
-        if (customerId == null) {
-            return "redirect:/custLogin";
-        }
-
-        try (Connection connection = dataSource.getConnection()) {
-            String getProductsSql = "SELECT * FROM public.product";
-            try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        Product product = new Product();
-                        product.setProductId(resultSet.getLong("productid"));
-                        product.setProductName(resultSet.getString("productname"));
-                        product.setProductType(resultSet.getString("producttype"));
-                        product.setProductQuantity(resultSet.getInt("productquantity"));
-                        product.setProductPrice(resultSet.getDouble("productprice"));
-                        product.setProductImage(resultSet.getString("productimage"));
-                        products.add(product);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to retrieve products", e);
-        }
-
-        Purchase purchase = new Purchase();
-        purchase.setCustomerId(customerId);
-        List<PurchaseProduct> purchaseProducts = new ArrayList<>();
-        for (int i = 0; i < products.size(); i++) {
-            purchaseProducts.add(new PurchaseProduct());
-        }
-        purchase.setPurchaseProducts(purchaseProducts);
-
-        model.addAttribute("products", products);
-        model.addAttribute("purchase", purchase);
-        return "Purchase/CustomerPurchase";
-    }
-
-    @PostMapping("/createPurchase")
-public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
-    Long customerId = (Long) session.getAttribute("customerid");
-
-    if (customerId == null) {
-        return "redirect:/custLogin";
-    }
-
-    // Set the customerId to the purchase object
-    purchase.setCustomerId(customerId);
-
-    try (Connection connection = dataSource.getConnection()) {
-        // Start a transaction
-        connection.setAutoCommit(false);
 
         try {
-            // Insert the purchase record
-            String insertPurchaseSql = "INSERT INTO public.purchase (customerid) VALUES (?) RETURNING purchaseid";
-            Long purchaseId;
-            try (PreparedStatement purchaseStatement = connection.prepareStatement(insertPurchaseSql)) {
-                purchaseStatement.setLong(1, purchase.getCustomerId());
-                try (ResultSet rs = purchaseStatement.executeQuery()) {
-                    if (rs.next()) {
-                        purchaseId = rs.getLong("purchaseid");
-                    } else {
-                        throw new SQLException("Failed to retrieve purchase ID.");
-                    }
-                }
-            }
+            Connection conn = dataSource.getConnection();
+            String sql = "SELECT productname,productprice from public.product";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
 
-            // Insert the purchase product records
-            String insertPurchaseProductSql = "INSERT INTO public.purchase_product (purchaseid, productid, purchasequantity) VALUES (?, ?, ?)";
-            try (PreparedStatement purchaseProductStatement = connection.prepareStatement(insertPurchaseProductSql)) {
-                for (PurchaseProduct purchaseProduct : purchase.getPurchaseProducts()) {
-                    purchaseProductStatement.setLong(1, purchaseId);
-                    purchaseProductStatement.setLong(2, purchaseProduct.getProductId());
-                    purchaseProductStatement.setInt(3, purchaseProduct.getProductQuantity());
-                    purchaseProductStatement.addBatch();
-                }
-                purchaseProductStatement.executeBatch();
+            while (resultSet.next()){
+                String productName = resultSet.getString("productname");
+                double productPrice = resultSet.getDouble("productprice");
+                Product product = new Product();
+                product.setProductName(productName);
+                product.setProductPrice(productPrice);
+                product.add(product);
+                
             }
-
-            // Commit the transaction
-            connection.commit();
+            model.addAttribute("product", products);
+            
+            
         } catch (SQLException e) {
-            // Rollback the transaction in case of error
-            connection.rollback();
-            e.printStackTrace();
-            throw new RuntimeException("Failed to create purchase", e);
-        } finally {
-            // Restore auto-commit mode
-            connection.setAutoCommit(true);
+        } return "Purchase/CustomerPurchase";
+    }
+}
+/* 
+    @GetMapping("/customerPurchase")
+    public String customerPurchase(HttpSession session, Model model) {
+        Long customerid = (Long) session.getAttribute("customerid");
+        int productQuantity = (int) session.getAttribute("productQuantity");
+        LocalDate purchaseDate = (LocalDate) session.getAttribute("purchaseDate");
+        String productName = (String) session.getAttribute("productName");
+
+
+        double subtotal = calculateSubTotal(customerid, productName, productQuantity);
+        model.addAttribute("subtotal",subtotal);
+        model.addAttribute("bookingDate", bookingDate);
+        model.addAttribute("ticketQuantity", ticketQuantity);
+        model.addAttribute("ticketType", ticketType);
+    
+        double totalPrice = calculateTotalPrice(custid, ticketType, ticketQuantity);
+        model.addAttribute("totalPrice", totalPrice);
+        }catch(SQLException e){
+
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        throw new RuntimeException("Database connection error", e);
+
+        return "Booking/CreateBooking";
+    }
+    
+
+    //retrieve price from ticket table
+    public double retrieveTicketPrice(String tickettype){
+        double ticketprice=0.0;
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "Select ticketprice from public.ticket WHERE tickettype=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setString(1, tickettype);
+            ResultSet resultSet =statement.executeQuery();
+
+            if(resultSet.next()){
+                 ticketprice = resultSet.getDouble("ticketprice");
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+        }
+        return ticketprice;
     }
 
-    return "redirect:/purchaseConfirmation"; // Redirect to a confirmation page or purchase summary
-}
+    //calculate totalPrice
+    public double calculateTotalPrice(Long custid, String tickettype, int ticketQuantity) {
+        double ticketprice = retrieveTicketPrice(tickettype);
+        double subtotal = ticketprice * ticketQuantity;
+        double total = 0.00;
 
-}
+        return total;
+    }
+
+
+
+    @PostMapping("/createPurchase")
+    public String createPurchase(HttpSession session, @ModelAttribute("createPurchase") Purchase purchase,
+                                @RequestParam("productName") String productname,
+                                @RequestParam("purchaseDate") LocalDate purchaseDate,
+                                @RequestParam("productQuantity") int productQuantity,Model model) {
+    
+        Long customerid = (Long) session.getAttribute("customerid");
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        PreparedStatement statementCreate = null;
+        PreparedStatement statementInsert = null;
+        PreparedStatement statementUpdate = null;
+    
+        try {
+            // RETRIEVE TICKET ID
+            Connection conn = dataSource.getConnection();
+            String sqlProductId = "SELECT productid FROM Product WHERE productname=?";
+            statement = conn.prepareStatement(sqlProductId);
+            statement.setString(1, productname);
+            resultSet = statement.executeQuery();
+            int productid = -1;
+    
+            if (resultSet.next()) {
+                productid = resultSet.getInt("productid");
+            }
+
+            
+            // CREATE BOOKING (INSERT TO DATABASE)
+            String sql = "INSERT INTO public.purchase(customerid, productdate, purchasetotal, purchasestatus) VALUES (?, ?, ?, ?) RETURNING purchaseid";
+            statementCreate = conn.prepareStatement(sql);
+            statementCreate.setLong(1, customerid);
+            statementCreate.setObject(2, purchaseDate);
+            statementCreate.setDouble(3, 0.0); // Initial total price, adjust as needed
+            statementCreate.setString(4, "Unpaid");
+            resultSet = statementCreate.executeQuery();
+    
+            if (resultSet.next()) {
+                int purchaseid = resultSet.getInt("purchaseid");
+    
+                // INSERT INTO BRIDGE
+                String sqlInsert = "INSERT INTO public.purchaseproduct(purchaseid, productid, productquantity) VALUES (?, ?, ?)";
+                statementInsert = conn.prepareStatement(sqlInsert);
+                statementInsert.setInt(1, purchaseid);
+                statementInsert.setInt(2, productid);
+                statementInsert.setInt(3, productQuantity);
+                statementInsert.executeUpdate();
+    
+
+
+
+                 
+                // Update total price
+                
+                double totalPrice = calculateTotalPrice(customerid, productname, purchaseQuantity);
+                String sqlPrice = "UPDATE public.purchase SET totalprice=? WHERE purchaseid=?";
+                statementUpdate = conn.prepareStatement(sqlPrice);
+                statementUpdate.setDouble(1, totalPrice);
+                statementUpdate.setInt(2, purchaseid);
+                statementUpdate.executeUpdate();
+
+                
+            }
+
+        } catch (SQLException e) {
+            // Handle SQL exceptions
+            e.printStackTrace();
+            return "redirect:/error"; // Redirect to error page or handle error as needed
+        } finally {
+            // Close resources in finally block
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (statementCreate != null) statementCreate.close();
+                if (statementInsert != null) statementInsert.close();
+                if (statementUpdate != null) statementUpdate.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        return "redirect:/purchaseSuccess";
+    }
+
+    
+
+ */

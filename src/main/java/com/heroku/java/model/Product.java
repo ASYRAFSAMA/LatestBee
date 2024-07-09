@@ -56,5 +56,9 @@ public class Product {
     public void setProductImage(String productImage) {
         this.productImage = productImage;
     }
+    public void add(Product product) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'add'");
+    }
     
 }
