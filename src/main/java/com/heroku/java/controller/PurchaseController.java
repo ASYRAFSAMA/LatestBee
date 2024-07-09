@@ -192,6 +192,6 @@ public class PurchaseController {
             }
         }
 
-        return "redirect:/purchaseSuccess";
+        return "redirect:/PurchaseSuccess";
     }
 }
