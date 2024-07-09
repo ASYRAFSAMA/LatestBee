@@ -6,26 +6,26 @@
 </head>
 <body>
     <main>
-        <h1>Booking Details</h1>
-<div class="container">
-    <div class="title">Booking Details</div>
-    <p>Booking Date : <span th:text="${purchaseDate}"></span></p>
-    <p>Ticket Quantity : <span th:text="${productQuantity}"></span></p>
-    <p>Ticket Type : <span th:text="${productName}"></span></p>
-    <p>Subtotal : RM<span th:text="${#numbers.formatDecimal(subtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
-    
-    <p>Total Price : RM<span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}"></span></p>
-    
-    <form th:action="@{/createPurchase}" method="post">
-        <input type="hidden" name="purchaseDate" th:value="${purchaseDate}">
-        <input type="hidden" name="productQuantity" th:value="${productQuantity}">
-        <input type="hidden" name="productName" th:value="${productName}">
-        <input type="hidden" name="totalPrice" th:value="${totalPrice}">
-        <div class="button">
-            <input type="submit" value="Confirm Purchase">
+        <h1>Purchase Details</h1>
+        <div class="container">
+            <div class="title">Purchase Details</div>
+            <p>Purchase Date: <span th:text="${purchaseDate}"></span></p>
+            <p>Product Quantity: <span th:text="${productQuantity}"></span></p>
+            <p>Product Name: <span th:text="${productName}"></span></p>
+            <p>Subtotal: RM<span th:text="${#numbers.formatDecimal(subtotal, 1, 'COMMA', 2, 'POINT')}"></span></p>
+            <p>Total Price: RM<span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}"></span></p>
+
+            <form th:action="@{/createPurchase}" method="post">
+                <input type="hidden" name="purchaseDate" th:value="${purchaseDate}">
+                <input type="hidden" name="productQuantity" th:value="${productQuantity}">
+                <input type="hidden" name="productName" th:value="${productName}">
+                <input type="hidden" name="totalPrice" th:value="${totalPrice}">
+                <div class="button">
+                    <input type="submit" value="Confirm Purchase">
+                </div>
+            </form>
         </div>
-    </form>
-</div>
-</main>
+    </main>
+</body>
 </body>
 </html>

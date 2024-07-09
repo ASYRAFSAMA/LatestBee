@@ -1,7 +1,6 @@
 package com.heroku.java.controller;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,90 +34,95 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchaseProductList")
-    public String purchaseProductList(HttpSession session, Model model){
-        session.getAttribute("customerid");
+    public String purchaseProductList(HttpSession session, Model model) {
+        Long customerId = (Long) session.getAttribute("customerid");
+        if (customerId == null) {
+            return "redirect:/custLogin";
+        }
+
         List<Product> products = new ArrayList<>();
 
-        try {
-            Connection conn = dataSource.getConnection();
-            String sql = "SELECT productname,productprice from public.product";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()){
-                String productName = resultSet.getString("productname");
-                double productPrice = resultSet.getDouble("productprice");
-                Product product = new Product();
-                product.setProductName(productName);
-                product.setProductPrice(productPrice);
-                product.add(product);
-                
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT productname, productprice FROM public.product";
+            try (PreparedStatement statement = conn.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String productName = resultSet.getString("productname");
+                    double productPrice = resultSet.getDouble("productprice");
+                    Product product = new Product();
+                    product.setProductName(productName);
+                    product.setProductPrice(productPrice);
+                    products.add(product);
+                }
             }
-            model.addAttribute("product", products);
-            
-            
         } catch (SQLException e) {
-        } return "Purchase/CustomerPurchase";
+            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve products", e);
+        }
+
+        model.addAttribute("products", products);
+        return "Purchase/CustomerPurchase";
     }
-}
-/* 
-    @GetMapping("/customerPurchase")
-    public String customerPurchase(HttpSession session, Model model) {
-        Long customerid = (Long) session.getAttribute("customerid");
-        int productQuantity = (int) session.getAttribute("productQuantity");
-        LocalDate purchaseDate = (LocalDate) session.getAttribute("purchaseDate");
-        String productName = (String) session.getAttribute("productName");
 
+    @PostMapping("/customerPurchase")
+    public String customerPurchase(HttpSession session, @RequestParam("productName") String productName,
+                                   @RequestParam("productQuantity") int productQuantity, @RequestParam("purchaseDate") LocalDate purchaseDate,
+                                   Model model) {
+        Long customerId = (Long) session.getAttribute("customerid");
+        if (customerId == null) {
+            return "redirect:/custLogin";
+        }
 
-        double subtotal = calculateSubTotal(customerid, productName, productQuantity);
-        model.addAttribute("subtotal",subtotal);
-        model.addAttribute("bookingDate", bookingDate);
-        model.addAttribute("ticketQuantity", ticketQuantity);
-        model.addAttribute("ticketType", ticketType);
-    
-        double totalPrice = calculateTotalPrice(custid, ticketType, ticketQuantity);
+        session.setAttribute("productName", productName);
+        session.setAttribute("productQuantity", productQuantity);
+        session.setAttribute("purchaseDate", purchaseDate);
+
+        double subtotal = calculateSubTotal(productName, productQuantity);
+        double totalPrice = calculateTotalPrice(productName, productQuantity);
+
+        model.addAttribute("subtotal", subtotal);
+        model.addAttribute("purchaseDate", purchaseDate);
+        model.addAttribute("productQuantity", productQuantity);
+        model.addAttribute("productName", productName);
         model.addAttribute("totalPrice", totalPrice);
-        }catch(SQLException e){
 
-        }
-
-        return "Booking/CreateBooking";
+        return "Purchase/CreatePurchase";
     }
-    
 
-    //retrieve price from ticket table
-    public double retrieveTicketPrice(String tickettype){
-        double ticketprice=0.0;
-        try {
-            Connection conn = dataSource.getConnection();
-            String sql = "Select ticketprice from public.ticket WHERE tickettype=?";
-            PreparedStatement statement = conn.prepareStatement(sql);
-
-            statement.setString(1, tickettype);
-            ResultSet resultSet =statement.executeQuery();
-
-            if(resultSet.next()){
-                 ticketprice = resultSet.getDouble("ticketprice");
+    private double retrieveProductPrice(String productName) {
+        double productPrice = 0.0;
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT productprice FROM public.product WHERE productname = ?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, productName);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        productPrice = resultSet.getDouble("productprice");
+                    }
+                }
             }
-
-            conn.close();
-
         } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve product price", e);
         }
-        return ticketprice;
+        return productPrice;
     }
 
-    //calculate totalPrice
-    public double calculateTotalPrice(Long custid, String tickettype, int ticketQuantity) {
-        double ticketprice = retrieveTicketPrice(tickettype);
-        double subtotal = ticketprice * ticketQuantity;
-        double total = 0.00;
+    private double calculateSubTotal(String productName, int productQuantity) {
+        double productPrice = retrieveProductPrice(productName);
+        return productPrice * productQuantity;
+    }
 
+    private double calculateTotalPrice(String productName, int productQuantity) {
+        double subtotal = calculateSubTotal(productName, productQuantity);
+        double total = subtotal; // Add any other calculations if needed (e.g., tax, discounts)
         return total;
     }
+}
 
 
 
+/* 
     @PostMapping("/createPurchase")
     public String createPurchase(HttpSession session, @ModelAttribute("createPurchase") Purchase purchase,
                                 @RequestParam("productName") String productname,

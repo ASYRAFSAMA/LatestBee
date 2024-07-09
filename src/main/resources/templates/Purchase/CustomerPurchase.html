@@ -333,54 +333,55 @@ table tbody tr:last-of-type {
 
 
     <main>
-        <h2 class="y">BOOK YOUR TICKETS WITH US</h2>
-<div class="container">
-    <div class="title">BOOK YOUR TICKETS</div>
-    <form th:action="@{/purchaseProductList}" method="post">
-        <input type="hidden" name="action" value="create">
-        <div class="user-details">
-            <div class="input-box">
-                <label for="productName" class="details">Product Name</label>
-                <select id="productName" name="productName" required>
-                    <th:block th:each="product : ${product}">
-                    <option th:value="${product.productName}" th:text="${product.productName} + ' (RM' + ${product.productPrice} + ')'"></option>
-                    </th:block>
-                </select>
-            </div>
+        <h2 class="y">BOOK YOUR PRODUCTS WITH US</h2>
+        <div class="container">
+            <div class="title">BOOK YOUR PRODUCTS</div>
+            <form th:action="@{/customerPurchase}" method="post">
+                <input type="hidden" name="action" value="create">
+                <div class="user-details">
+                    <div class="input-box">
+                        <label for="productName" class="details">Product Name</label>
+                        <select id="productName" name="productName" required>
+                            <th:block th:each="product : ${products}">
+                                <option th:value="${product.productName}" th:text="${product.productName} + ' (RM' + ${product.productPrice} + ')'"></option>
+                            </th:block>
+                        </select>
+                    </div>
 
-            <div class="input-box">
-                <label for="purchaseQuantity" class="details">Quantity</label>
-                <input type="number" id="productQuantity" name="productQuantity" placeholder="No. of Product" required>
-            </div>
+                    <div class="input-box">
+                        <label for="productQuantity" class="details">Quantity</label>
+                        <input type="number" id="productQuantity" name="productQuantity" placeholder="No. of Products" required>
+                    </div>
 
-            <div class="input-box">
-                <label for="bookingDate" class="details">Date :</label>
-                <input type="date" id="purchaseDate" name="purchaseDate" required>
-            </div>
+                    <div class="input-box">
+                        <label for="purchaseDate" class="details">Date :</label>
+                        <input type="date" id="purchaseDate" name="purchaseDate" required>
+                    </div>
 
-            <div class="button">
-                <input type="submit" value="Check Availability">
-            </div>
+                    <div class="button">
+                        <input type="submit" value="Check Availability">
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
-<h3 class="y">View Existing Booking Here</h3>
-<a th:href ="@{/customerViewBooking}" style="text-decoration: none;">
-    <button class="update-button" style="text-decoration: none;">View Booking</button>
-</a>
+        <h3 class="y">View Existing Purchase Here</h3>
+        <a th:href="@{/customerViewBooking}" style="text-decoration: none;">
+            <button class="update-button" style="text-decoration: none;">View Purchase</button>
+        </a>
+    </main>
+
+    <script>
+        // Get today's date
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        // Set min attribute of the date input to today
+        document.getElementById('purchaseDate').setAttribute('min', today);
+    </script>
 </body>
-
-<script>
-    // Get today's date
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-    var yyyy = today.getFullYear();
-
-    today = yyyy + '-' + mm + '-' + dd;
-
-    // Set min attribute of the date input to today
-    document.getElementById('bookingDate').setAttribute('min', today);
-</script>
 </body>
 </html>
