@@ -334,43 +334,47 @@ table tbody tr:last-of-type {
 
 
     <main>
-        <div class="container">
-            <h1>PRODUCTS</h1>
-            <table>
-                <thead>
-                    <tr>
-                        
-                        <th>Product Name</th>
-                        <th>Product Type</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Image</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="product : ${products}">
-                        
-                        <td th:text="${product.productName}">Product Name</td>
-                        <td th:text="${product.productType}">Product Type</td>
-                        <td th:text="${product.productQuantity}">20</td>
-                        <td th:text="${product.productPrice}">100.0</td>
-                        <td>
-                            <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
-                            
-                        </td>
-                        <td>
-                        <div class="input-box">
-                            <label for="bookingQuantity" class="details">Quantity</label>
-                            <input type="number" id="productQuantity" name="ProductQuantity" placeholder="No. of Products" required>
-                        </div>
-                    </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <form th:action="@{/createPurchase}" method="post">
+            <div class="container">
+                <h1>PRODUCTS</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Type</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Purchase Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.productName}">Product Name</td>
+                            <td th:text="${product.productType}">Product Type</td>
+                            <td th:text="${product.productQuantity}">20</td>
+                            <td th:text="${product.productPrice}">100.0</td>
+                            <td>
+                                <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
+                            </td>
+                            <td>
+                                <div class="input-box">
+                                    <label for="productQuantity" class="details">Quantity</label>
+                                    <input type="number" id="productQuantity" name="productQuantity" placeholder="No. of Products" required>
+                                    <input type="hidden" name="productId" th:value="${product.productId}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="button">
+                    <input type="submit" value="Purchase">
+                </div>
+            </div>
+        </form>    
     </main>
-</body>
-</html>
+    </body>
+    </html>
 
 <script>
     function confirmDelete(productId) {
