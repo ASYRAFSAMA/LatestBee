@@ -45,17 +45,19 @@ public class PurchaseController {
 
         try {
             Connection conn = dataSource.getConnection();
-            String sql = "SELECT productname,productprice from public.product";
+            String sql = "SELECT * FROM public.product";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
-                String ProductName = resultSet.getString("productname");
-                double ProductPrice = resultSet.getDouble("productprice");
                 Product product = new Product();
-                product.setProductName(ProductName);
-                product.setProductPrice(ProductPrice);
-                products.add(product);
+                        product.setProductId(resultSet.getLong("productid"));
+                        product.setProductName(resultSet.getString("productname"));
+                        product.setProductType(resultSet.getString("producttype"));
+                        product.setProductQuantity(resultSet.getInt("productquantity"));
+                        product.setProductPrice(resultSet.getDouble("productprice"));
+                        product.setProductImage(resultSet.getString("productimage"));
+                        products.add(product);
                 
             }
             model.addAttribute("product", products);
