@@ -26,7 +26,7 @@ import com.heroku.java.model.Product;
 
 
 import jakarta.servlet.http.HttpSession;
-/* 
+
 @Controller
 public class PurchaseController {
     private final DataSource dataSource;
@@ -39,33 +39,162 @@ public class PurchaseController {
 
     //Put all Ticket Type/Price on Booking/Availability Page
     @GetMapping("/purchaseProductList")
-    public String purchaseTicketList(HttpSession session, Model model){
+    public String purchaseProductList(HttpSession session, Model model){
         session.getAttribute("customerid");
-        List<product> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
 
         try {
             Connection conn = dataSource.getConnection();
-            String sql = "SELECT tickettype,ticketprice from public.ticket";
+            String sql = "SELECT productname,productprice from public.product";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
-                String ticketType = resultSet.getString("tickettype");
-                double ticketPrice = resultSet.getDouble("ticketprice");
-                product ticket = new product();
-                ticket.setTicketType(ticketType);
-                ticket.setTicketPrice(ticketPrice);
+                String ProductName = resultSet.getString("productname");
+                double ProductPrice = resultSet.getDouble("productprice");
+                Product product = new Product();
+                product.setProductName(ProductName);
+                product.setProductPrice(ProductPrice);
                 products.add(product);
                 
             }
-            model.addAttribute("ticket", tickets);
+            model.addAttribute("product", products);
             
             
         } catch (SQLException e) {
-        } return "Booking/CustomerBooking";
+        } return "Purchase/CustomerPurchase";
     }
 
+}
+/* 
+    @GetMapping("/customerBooking")
+    public String customerBooking(HttpSession session, Model model) {
+        Long custid = (Long) session.getAttribute("custid");
+        int ticketQuantity = (int) session.getAttribute("ticketQuantity");
+        LocalDate bookingDate = (LocalDate) session.getAttribute("bookingDate");
+        String ticketType = (String) session.getAttribute("ticketType");
+    
+        model.addAttribute("bookingDate", bookingDate);
+        model.addAttribute("ticketQuantity", ticketQuantity);
+        model.addAttribute("ticketType", ticketType);
+    
+        double totalPrice = calculateTotalPrice(custid, ticketType, ticketQuantity);
+        model.addAttribute("totalPrice", totalPrice);
+    
+        return "Purchase/CreatePurchase";
+    }
+    
 
+    //retrieve price from ticket table
+    public double retrieveTicketPrice(String tickettype){
+        double ticketprice=0.0;
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "Select ticketprice from public.ticket WHERE tickettype=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setString(1, tickettype);
+            ResultSet resultSet =statement.executeQuery();
+
+            if(resultSet.next()){
+                 ticketprice = resultSet.getDouble("ticketprice");
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+        }
+        return ticketprice;
+    }
+
+    public Customer retrieveCustomerById(Long custId) throws Exception {
+    Customer customer = null;
+
+    try (Connection conn = dataSource.getConnection()) {
+        String sql = "SELECT c.custid, c.custname, c.custemail, c.custaddress, c.custphonenum, c.custpassword, ct.custicnum, nc.custpassport " +
+                     "FROM public.customers c " +
+                     "LEFT JOIN public.citizen ct ON c.custid = ct.custid " +
+                     "LEFT JOIN public.noncitizen nc ON c.custid = nc.custid " +
+                     "WHERE c.custid = ?";
+        PreparedStatement statement = conn.prepareStatement(sql);
+        statement.setLong(1, custId);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            String custname = resultSet.getString("custname");
+            String custemail = resultSet.getString("custemail");
+            String custaddress = resultSet.getString("custaddress");
+            String custphonenum = resultSet.getString("custphonenum");
+            String custpassword = resultSet.getString("custpassword");
+            String custicnum = resultSet.getString("custicnum");
+            String custpassport = resultSet.getString("custpassport");
+
+            if (custicnum != null) {
+                customer = new Citizen(custname, custemail, custphonenum, custaddress, custpassword,custId, custicnum);
+            } else if (custpassport != null) {
+                customer = new NonCitizen(custname, custemail, custphonenum, custaddress, custpassword,custId,custpassport);
+            }
+        }
+
+        resultSet.close();
+        statement.close();
+
+    } catch (Exception e) {
+        e.printStackTrace(); // Better to log the exception
+        throw new Exception("Error retrieving customer with ID: " + custId, e);
+    }
+
+    if (customer == null) {
+        throw new Exception("Customer not found for ID: " + custId);
+    }
+
+    return customer;
+}
+
+
+
+    //calculate totalPrice
+    public double calculateTotalPrice(Long custid, String tickettype, int ticketQuantity) {
+        double ticketprice = retrieveTicketPrice(tickettype);
+        double subtotal = ticketprice * ticketQuantity;
+        double total = 0.00;
+    
+        try {
+            Customer customer = retrieveCustomerById((long) custid);
+    
+            if (customer instanceof Citizen) {
+                total = subtotal * 0.95; // Apply 5% discount for citizens
+            } else {
+                total = subtotal; // No discount for non-citizens
+            }
+    
+        } catch (Exception e) {
+            e.printStackTrace(); // Better to log the exception
+        }
+    
+        return total;
+    }
+}
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
     //CHECK AVAILABILITY OF TICKET ON THE DATE
     @PostMapping("/checkAvailability")
 public String checkAvailability(HttpSession session,

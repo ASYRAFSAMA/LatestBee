@@ -356,12 +356,14 @@ table tbody tr:last-of-type {
                         <td th:text="${product.productPrice}">100.0</td>
                         <td>
                             <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
-
-                            <a th:href="@{/updateProduct(productId=${product.productId})}" class="btn btn-info">Update</a>
-                            <button class="btn btn-danger" th:id="${product.productId}" onclick="confirmDelete(this.id)">Delete</button>
-
                             
                         </td>
+                        <td>
+                        <div class="input-box">
+                            <label for="bookingQuantity" class="details">Quantity</label>
+                            <input type="number" id="productQuantity" name="ProductQuantity" placeholder="No. of Products" required>
+                        </div>
+                    </td>
                     </tr>
                 </tbody>
             </table>
