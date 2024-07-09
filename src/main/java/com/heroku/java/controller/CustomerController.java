@@ -176,8 +176,10 @@ public class CustomerController {
                     if (customerEmail.equals(customeremail)&&Password.equals(password)){
                         session.setAttribute("customername", customerName);
                         session.setAttribute("customerid", customerId);
-
+                        /* 
                         return "redirect:/customerProfile";
+                        */
+                        return "indexcustomer";
                     }
 
                    
@@ -196,7 +198,7 @@ public class CustomerController {
         Long custId = (Long) session.getAttribute("customerid");
 
     if (custId == null) {
-        return "redirect:/customerLogin"; // redirect to login if custId is not in session
+        return "redirect:/custLogin"; // redirect to login if custId is not in session
     }
 
     try (Connection connection = dataSource.getConnection()) {
