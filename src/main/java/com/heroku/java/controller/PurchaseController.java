@@ -39,18 +39,15 @@ public class PurchaseController {
 
     //Put all Ticket Type/Price on Booking/Availability Page
     @GetMapping("/purchaseProductList")
-    public String purchaseProductList(HttpSession session, Model model){
-        session.getAttribute("customerid");
+    public String listProducts(Model model) {
         List<Product> products = new ArrayList<>();
 
-        try {
-            Connection conn = dataSource.getConnection();
-            String sql = "SELECT * FROM public.product";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()){
-                Product product = new Product();
+        try (Connection connection = dataSource.getConnection()) {
+            String getProductsSql = "SELECT * FROM public.product";
+            try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Product product = new Product();
                         product.setProductId(resultSet.getLong("productid"));
                         product.setProductName(resultSet.getString("productname"));
                         product.setProductType(resultSet.getString("producttype"));
@@ -58,13 +55,16 @@ public class PurchaseController {
                         product.setProductPrice(resultSet.getDouble("productprice"));
                         product.setProductImage(resultSet.getString("productimage"));
                         products.add(product);
-                
+                    }
+                }
             }
-            model.addAttribute("product", products);
-            
-            
         } catch (SQLException e) {
-        } return "Purchase/CustomerPurchase";
+            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve products", e);
+        }
+
+        model.addAttribute("products", products);
+        return "Purchase/CustomerPurchase";
     }
 
 }
