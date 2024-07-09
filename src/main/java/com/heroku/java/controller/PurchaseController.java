@@ -78,7 +78,7 @@ public class PurchaseController {
 
     @PostMapping("/createPurchase")
     public String createPurchase(@ModelAttribute Purchase purchase, HttpSession session, Model model) {
-        Long customerId = (Long) session.getAttribute("customerId");
+        Long customerId = (Long) session.getAttribute("customerid");
         if (customerId == null) {
             return "redirect:/custLogin";
         }
