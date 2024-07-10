@@ -246,4 +246,76 @@ public class PurchaseController {
     }
 
 
+        // CUSTOMER UPDATE BOOKING
+
+    @GetMapping("/customerUpdatePurchaseMap")
+    public String customerUpdate(HttpSession session,Model model,@RequestParam("purchaseId") int purchaseid){
+    session.getAttribute("customerid");
+    List<Product> products = new ArrayList<>();
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql = "SELECT productname,productprice from public.product";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                String productName = resultSet.getString("productname");
+                double productPrice = resultSet.getDouble("productprice");
+                Product product = new Product();
+                product.setProductName(productName);
+                product.setProductPrice(productPrice);
+                products.add(product);
+                
+            }
+            model.addAttribute("product", products);
+            
+            
+        } catch (SQLException e) {
+        }
+   
+    Purchase purchase = new Purchase();
+    
+		
+		try {
+			Connection conn= dataSource.getConnection();
+			String sql = "SELECT b.purchaseid,b.custid, bt.productquantity,b.purchaseDate,b.purchasestatus,b.purchasetotal,t.productname"
+					   + " FROM public.purchase b"
+					   + " Join public.purchaseproduct bt ON bt.purchaseid=b.purchaseid"
+					   + " Join public.product t ON bt.productid=t.productid "
+					   + "WHERE b.purchaseid=?";
+			
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1, purchaseid);
+			ResultSet resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				
+				purchase.setPurchaseId(resultSet.getInt("purchaseid"));
+				purchase.setCustId(resultSet.getInt("customerid"));
+                purchase.setProductQuantity(resultSet.getInt("productquantity"));
+                purchase.setPurchaseTotal(resultSet.getDouble("purchasetotal"));
+                purchase.setPurchaseDate(resultSet.getDate("purchaseDate"));
+                purchase.setProductName(resultSet.getString("productname"));
+                purchase.setPurchaseStatus(resultSet.getString("purchasestatus"));
+
+                String status = resultSet.getString("purchasestatus");
+
+                if(status.equalsIgnoreCase("Unpaid")){
+                model.addAttribute("purchase", purchase);
+                session.setAttribute("purchaseId", purchaseid);
+                }else{
+                    return "Purchase/InvalidUpdatePurchase";
+                }
+			}
+			conn.close();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+    return "Purchase/UpdatePurchase";
+		
+	} 
+
+
 }

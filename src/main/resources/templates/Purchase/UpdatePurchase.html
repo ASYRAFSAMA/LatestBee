@@ -337,114 +337,50 @@ table tbody tr:last-of-type {
     </header>
 
 
-    <main>
-        <div>
-            <h1>Purchase List</h1>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Select</th>
-                    <th>Purchase ID</th>
-                    <th>Purchase Date</th>
-                    <th>Product Name</th>
-                    <th>Product Quantity</th>
-                    <th>Total Price</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="purchase : ${purchase}">
-                    <td>
-                        <input type="checkbox" name="selectedpurchases" th:value="${purchase.purchaseId}">
-                    </td>
-                    <td th:text="${purchase.purchaseId}"></td>
-                    <td th:text="${purchase.purchaseDate}"></td>
-                    <td th:text="${purchase.productName}"></td>
-                    <td th:text="${purchase.productQuantity}"></td>
-                    <td th:text="${purchase.purchaseTotal}"></td>
-                    <td th:text="${purchase.purchaseStatus}"></td>
-                    <td>
-                        <a th:href="@{/customerUpdatePurchaseMap?purchaseId=}+${purchase.purchaseId}">
-                            <button class="update-button">Update Purchase</button>
-                        </a>
-                        <button class="delete-button" th:onclick="'showPopup(' + ${purchase.purchaseId} + ')'">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button class="update-button" onclick="validateAndProceed()">Make Payment</button>
+    <h2 class="y">Update Purchase</h2>
+<div class="container">
+    <div class="title">Purchases Updating</div>
+    <form th:action="@{/checkAvailabilityUpdate}" method="post">
+        <div class="user-details">
+            <div class="input-box">
+                <label for="productName" class="details">Product Name</label>
+                <select id="productName" name="productNameDisabled" disabled>
+                    <option th:each="product : ${product}" th:value="${product.productName}" 
+                        th:text="${product.productName} + ' (RM' + ${product.productPrice} + ')'"
+                        th:selected="${product.productName == purchase.productName}">
+                    </option>
+                </select>
+                <input type="hidden" id="productName" name="productName" th:value="${purchase.productName}" />
+            </div>
 
-        <!-- Confirmation Popup -->
-        <div class="overlay" id="overlay">
-            <div class="popup" id="popup">
-                <h3>Are you sure you want to delete this booking?</h3>
-                <div class="btn-container">
-                    <a id="deleteLink" class="button primary">Delete</a>
-                    <button onclick="hidePopup()" class="button secondary">Cancel</button>
-                </div>
+            <div class="input-box">
+                <label for="productQuantity" class="details">Quantity</label>
+                <input type="number" id="productQuantity" name="productQuantity" th:value="${purchase.productQuantity}" placeholder="No. of Product" readonly>
+            </div>
+
+            <div class="input-box">
+                <label for="purchaseDate" class="details">Date :</label>
+                <input type="date" id="purchaseDate" name="purchaseDate" th:value="${#dates.format(purchase.purchaseDate, 'yyyy-MM-dd')}" >
+            </div>
+
+            <div class="button">
+                <input type="submit" value="Update Purchase">
             </div>
         </div>
-
-         <!-- No Selection Popup -->
-    <div class="overlay" id="noSelectionOverlay">
-        <div class="popup" id="noSelectionPopup">
-            <h3>No bookings selected!</h3>
-            <div class="btn-container">
-                <button onclick="hideNoSelectionPopup()" class="button secondary">OK</button>
-            </div>
-        </div>
-    </div>
-
-
-    </main>
-
-    <script>
-        function showPopup(bookingId) {
-            console.log("Showing popup for booking ID: " + bookingId); // Debugging line
-            var overlay = document.getElementById("overlay");
-            var popup = document.getElementById("popup");
-            var deleteLink = document.getElementById("deleteLink");
-            deleteLink.href = "/customerDeleteBooking?bookingId=" + bookingId;
-            overlay.style.display = "flex";
-        }
-
-        function hidePopup() {
-            var overlay = document.getElementById("overlay");
-            overlay.style.display = "none";
-        }
-
-        function validateAndProceed() {
-        var checkboxes = document.querySelectorAll('input[name="selectedBookings"]:checked');
-        if (checkboxes.length === 0) {
-            showNoSelectionPopup();
-        } else {
-            // Proceed with making payment
-            location.href = '/makePayment?selectedBookings=' + getSelectedBookingIds();
-        }
-    }
-
-    function showNoSelectionPopup() {
-        var overlay = document.getElementById("noSelectionOverlay");
-        overlay.style.display = "flex";
-    }
-
-    function hideNoSelectionPopup() {
-        var overlay = document.getElementById("noSelectionOverlay");
-        overlay.style.display = "none";
-    }
-
-    function getSelectedBookingIds() {
-        var selectedIds = [];
-        var checkboxes = document.querySelectorAll('input[name="selectedBookings"]:checked');
-        checkboxes.forEach(function(checkbox) {
-            selectedIds.push(checkbox.value);
-        });
-        return selectedIds.join(',');
-    }
-    </script>
+    </form>
+</div>
 
 </body>
-</body>
+<script>
+    // Get today's date
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    // Set min attribute of the date input to today
+    document.getElementById('purchaseDate').setAttribute('min', today);
+</script>
 </html>
