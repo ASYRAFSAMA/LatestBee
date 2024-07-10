@@ -6,9 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+
 import javax.sql.DataSource;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.heroku.java.model.Purchase;
 import com.heroku.java.model.Product;
+import com.heroku.java.model.PurchaseProduct;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -199,4 +203,47 @@ public class PurchaseController {
     public String purchaseSuccess() {
         return "Purchase/PurchaseSuccess";
     }
+
+    //VIEW BOOKING BY CUSTID
+
+    @GetMapping("/customerViewPurchase")
+    public String customerViewBooking(HttpSession session, Model model){
+        Long customerid = (Long) session.getAttribute("customerid");
+        List<Purchase> purchaseCustomer = new ArrayList<>();
+
+        try {
+            Connection conn = dataSource.getConnection();
+            String sql ="SELECT b.purchaseid,b.purchasedate,b.purchasetotal,b.purchasestatus,bt.productquantity,t.productname"
+            + " FROM public.purchase b JOIN public.purchaseproduct bt "
+            + " ON b.purchaseid=bt.purchaseid JOIN public.product t"
+            + " ON bt.productid = t.productid WHERE customerid=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(1, customerid);
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                int purchaseid = resultSet.getInt("purchaseid");
+                Date purchaseDate = resultSet.getDate("purchasedate");
+                double purchaseTotal = resultSet.getDouble("purchasetotal");
+                int productQuantity = resultSet.getInt("productquantity");
+                String productName = resultSet.getString("productname");
+                String purchaseStatus = resultSet.getString("purchasestatus");
+
+                Purchase purchase = new Purchase();
+                purchase.setPurchaseId(purchaseid);
+                purchase.setPurchaseDate((java.sql.Date) purchaseDate);
+                purchase.setPurchaseTotal(purchaseTotal);
+                purchase.setProductQuantity(productQuantity);
+                purchase.setPurchaseStatus(purchaseStatus);
+                purchase.setProductName(productName);
+
+                purchaseCustomer.add(purchase);
+                
+                model.addAttribute("purchase", purchaseCustomer);
+            }
+        } catch (Exception e) {
+        } return "Purchase/CustomerPurchaseList";
+    }
+
+
 }

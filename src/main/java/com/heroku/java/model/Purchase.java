@@ -4,16 +4,52 @@ import java.sql.Date;
 import java.util.List;
 
 public class Purchase {
-    private Long purchaseId;
-    private Long staffId;
-    private Long customerId;
+    private int purchaseId;
+    private int staffId;
+    private int customerId;
     private Double purchaseTotal;
     private Date purchaseDate;
     private String purchaseStatus;
     private List<PurchaseProduct> purchaseProducts;
 
-    // Getters and Setters
 
+    private int productQuantity;
+
+    private String productName;
+
+    public Purchase() {}
+	
+	public Purchase(int purchaseId,int customerId,int staffId,double purchaseTotal,Date purchaseDate,String productName,int productQuantity) {
+		
+		this.purchaseId=purchaseId;
+		this.customerId=customerId;
+		this.staffId=staffId;
+		this.purchaseTotal=purchaseTotal;
+		this.purchaseDate=purchaseDate;
+		this.productName=productName;
+        this.productQuantity=productQuantity;
+	}
+
+    public int getPurchaseId() {
+		return purchaseId;
+	}
+	public void setPurchaseId(int purchaseId) {
+		this.purchaseId = purchaseId;
+	}
+	public int getCustomerId() {
+		return customerId;
+	}
+	public void setCustId(int customerId) {
+		this.customerId = customerId;
+	}
+	public int getStaffId() {
+		return staffId;
+	}
+	public void setStaffId(int staffId) {
+		this.staffId = staffId;
+	}
+    // Getters and Setters
+/* 
     public Long getPurchaseId() {
         return purchaseId;
     }
@@ -37,14 +73,15 @@ public class Purchase {
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
-
+    */
     public Double getPurchaseTotal() {
         return purchaseTotal;
     }
 
-    public void setPurchaseTotal(Double purchaseTotal) {
+    public void setPurchaseTotal(double purchaseTotal) {
         this.purchaseTotal = purchaseTotal;
     }
+
 
     public Date getPurchaseDate() {
         return purchaseDate;
@@ -69,10 +106,24 @@ public class Purchase {
     public void setPurchaseProducts(List<PurchaseProduct> purchaseProducts) {
         this.purchaseProducts = purchaseProducts;
     }
+
+
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 }
-
-
-
 
 
 
