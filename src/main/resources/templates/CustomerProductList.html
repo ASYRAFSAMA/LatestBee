@@ -211,11 +211,11 @@ main{
     <header>
         <div class="sidebar">
             <div class="logo-details">
-                <img src="/src/main/resources/templates/staffimg.jpeg" alt="Logo" class="logo-img">
+                <img src="webapp/css/staffimg.jpeg" alt="Logo" class="logo-img">
             </div>
             <ul class="nav-list">
                 <li>
-                    <a href="index.html">
+                    <a th:href="@{/cust}">
                         <i class='bx bx-home'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -227,7 +227,6 @@ main{
                         <i class='bx bx-chevron-down arrow'></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a th:href="@{/addproduct}">Create Product</a></li>
                         <li><a th:href="@{/addproduct}">View Product</a></li>
                     </ul>
                 </li>
@@ -238,19 +237,25 @@ main{
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a th:href="@{/customerProfile}">
                         <i class='bx bx-cog'></i>
                         <span class="links_name">Profile</span>
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/register}">
+                    <a th:href="@{/purchaseProductList}">
                         <i class='bx bx-cog'></i>
-                        <span class="links_name">Register Customer</span>
+                        <span class="links_name">Purchase</span>
                     </a>
                 </li>
                 <li>
-                    <a href="mainpage.html">
+                    <a th:href="@{/customerViewPurchase}">
+                        <i class='bx bx-cog'></i>
+                        <span class="links_name">Purchase List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/}">
                         <i class='bx bx-log-out'></i>
                         <span class="links_name">Logout</span>
                     </a>
