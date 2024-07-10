@@ -173,31 +173,6 @@
                 });
             });
         </script>
-        <script>
-            document.getElementById('emailForm').addEventListener('submit', function(event) {
-                var emailInput = document.getElementById('email');
-                var errorSpan = document.getElementById('error');
-                var emailValue = emailInput.value;
-    
-                if (!emailValue.endsWith('@gmail.com')) {
-                    event.preventDefault(); // Prevent form submission
-                    errorSpan.style.display = 'inline'; // Show error message
-                } else {
-                    errorSpan.style.display = 'none'; // Hide error message if valid
-                }
-            });
-    
-            document.getElementById('email').addEventListener('input', function() {
-                var emailInput = document.getElementById('email');
-                var errorSpan = document.getElementById('error');
-                var emailValue = emailInput.value;
-    
-                if (emailValue.endsWith('@gmail.com')) {
-                    errorSpan.style.display = 'none'; // Hide error message if valid
-                } else {
-                    errorSpan.style.display = 'inline'; // Show error message if invalid
-                }
-            });
-        </script>
+        
     </body>
 </html>
