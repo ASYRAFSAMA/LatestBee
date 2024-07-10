@@ -67,7 +67,7 @@ public class CustomerController {
         return "CustomerProductList";
     }
 
-    @PostMapping("/custregister")
+    @PostMapping("/registerAcc")
     public String register(@ModelAttribute("registerAcc")
                                 @RequestParam("customername") String customerName,
                                 @RequestParam("customerdob") String customerDob,
