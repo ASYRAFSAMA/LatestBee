@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
 import com.heroku.java.model.Customer;
+import com.heroku.java.model.Product;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -22,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -31,6 +34,37 @@ public class CustomerController {
     @Autowired
     public CustomerController(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+
+
+    @GetMapping("/CustomerProductList")
+    public String listProducts(Model model) {
+        List<Product> products = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getProductsSql = "SELECT * FROM public.product";
+            try (PreparedStatement statement = connection.prepareStatement(getProductsSql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Product product = new Product();
+                        product.setProductId(resultSet.getLong("productid"));
+                        product.setProductName(resultSet.getString("productname"));
+                        product.setProductType(resultSet.getString("producttype"));
+                        product.setProductQuantity(resultSet.getInt("productquantity"));
+                        product.setProductPrice(resultSet.getDouble("productprice"));
+                        product.setProductImage(resultSet.getString("productimage"));
+                        products.add(product);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve products", e);
+        }
+
+        model.addAttribute("products", products);
+        return "CustomerProductList";
     }
 
     @PostMapping("/registerAcc")

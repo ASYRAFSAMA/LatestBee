@@ -128,14 +128,14 @@ body {
                     <i class='bx bx-chevron-down arrow'></i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a th:href="@{/addproduct}">Create Product</a></li>
-                    <li><a th:href="@{/productList}">View Product</a></li>
+                    <li><a th:href="@{/CustomerProductList}">View Product</a></li>
+                    <li><a th:href="@{/purchaseProductList}">Buy Product</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">
+                <a th:href="@{/customerViewPurchase}">
                     <i class='bx bx-file'></i>
-                    <span class="links_name">Sales</span>
+                    <span class="links_name">Purchase History</span>
                 </a>
             </li>
             <li>
