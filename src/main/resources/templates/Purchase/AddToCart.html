@@ -70,10 +70,12 @@
         if (result === 'Payment/PaymentSuccessful') {
             alert('Payment successful!');
             localStorage.removeItem('cart');
+            localStorage.clear();
             // Redirect to the specified URL
             window.location.href = 'https://beezgisp-1301ccf8b9a8.herokuapp.com/customerViewPurchase';
         } else {
             alert('Payment Successful. Thank You.');
+            localStorage.clear();
             // Redirect to the specified URL
             window.location.href = 'https://beezgisp-1301ccf8b9a8.herokuapp.com/customerViewPurchase';
         }
