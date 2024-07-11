@@ -58,29 +58,31 @@
         }
     
         function makePayment() {
-            let formData = new FormData(document.getElementById('payment-form'));
-            formData.append('cartItems', JSON.stringify(cart));
-    
-            fetch('/makePayment', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'Payment/PaymentSuccessful') {
-                    alert('Payment successful!');
-                    localStorage.removeItem('cart');
-                    loadCart();
-                } else {
-                    alert('Payment Successful. Thank You.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
+    let formData = new FormData(document.getElementById('payment-form'));
+    formData.append('cartItems', JSON.stringify(cart));
+
+    fetch('/makePayment', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'Payment/PaymentSuccessful') {
+            alert('Payment successful!');
+            localStorage.removeItem('cart');
+            // Redirect to the specified URL
+            window.location.href = 'https://beezgisp-1301ccf8b9a8.herokuapp.com/customerViewPurchase';
+        } else {
+            alert('Payment Successful. Thank You.');
+            // Redirect to the specified URL
+            window.location.href = 'https://beezgisp-1301ccf8b9a8.herokuapp.com/customerViewPurchase';
         }
-    
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+}
         window.onload = loadCart;
     </script>
 </head>
