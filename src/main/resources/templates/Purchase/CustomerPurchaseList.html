@@ -356,9 +356,7 @@ table tbody tr:last-of-type {
             </thead>
             <tbody>
                 <tr th:each="purchase : ${purchase}">
-                    <td>
-                        <input type="checkbox" name="selectedpurchases" th:value="${purchase.purchaseId}">
-                    </td>
+                    
                     <td th:text="${purchase.purchaseId}"></td>
                     <td th:text="${purchase.purchaseDate}"></td>
                     <td th:text="${purchase.productName}"></td>
@@ -371,7 +369,7 @@ table tbody tr:last-of-type {
                 </tr>
             </tbody>
         </table>
-        <button class="update-button" onclick="validateAndProceed()">Make Payment</button>
+        
 
 
 

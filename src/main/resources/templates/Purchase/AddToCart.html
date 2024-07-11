@@ -13,6 +13,123 @@
             display: none;
             margin-top: 20px;
         }
+        @import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: rgb(204, 162, 46);
+}
+
+main {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.container {
+    width: 100%;
+}
+
+h1, h2 {
+    color: #11101d;
+    margin-bottom: 20px;
+}
+
+#cart-container {
+    margin-bottom: 20px;
+}
+
+.cart-product {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f3f3f3;
+}
+
+.cart-product img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.cart-product h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.cart-product p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.cart-product button {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.cart-product button:hover {
+    background-color: #cc5135;
+}
+
+#payment-form {
+    display: none;
+    margin-top: 20px;
+}
+
+#payment-form h2 {
+    margin-bottom: 20px;
+}
+
+#payment-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#payment-form input[type="file"] {
+    display: block;
+    margin-bottom: 20px;
+}
+
+#payment-form button {
+    background-color: #ffa500;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#payment-form button:hover {
+    background-color: #cc8400;
+}
+
     </style>
     <script>
         let cart = [];
