@@ -66,4 +66,9 @@ public class Payment {
         }
         return Base64.getEncoder().encodeToString(paymentReceipt);
     }
+
+	public void setPurchaseId(int int1) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setPurchaseId'");
+	}
 }

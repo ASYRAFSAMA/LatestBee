@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart and Payment</title>
+    <style>
+        .cart-product {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #payment-form {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        let cart = [];
+    
+        function loadCart() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cartContainer = document.getElementById('cart-container');
+            cartContainer.innerHTML = '';
+    
+            cart.forEach((product, index) => {
+                cartContainer.innerHTML += `
+                    <div class="cart-product">
+                        <img src="data:image/jpeg;base64,${product.image}" alt="Product Image" width="100" height="100"/>
+                        <h3>${product.name}</h3>
+                        <p class="product-type">${product.type}</p>
+                        <p>RM<span>${product.price.toFixed(2)}</span></p>
+                        <p>Quantity: ${product.quantity}</p>
+                        <button onclick="removeFromCart(${index})">Remove</button>
+                    </div>
+                `;
+            });
+    
+            if (cart.length > 0) {
+                cartContainer.innerHTML += `<button onclick="showPaymentForm()">Proceed to Payment</button>`;
+            } else {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+            }
+        }
+    
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+    
+        function showPaymentForm() {
+            document.getElementById('payment-form').style.display = 'block';
+            document.getElementById('total-amount').value = calculateTotal();
+        }
+    
+        function calculateTotal() {
+            return cart.reduce((total, product) => total + (product.price * product.quantity), 0);
+        }
+    
+        function makePayment() {
+            let formData = new FormData(document.getElementById('payment-form'));
+            formData.append('cartItems', JSON.stringify(cart));
+    
+            fetch('/makePayment', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'Payment/PaymentSuccessful') {
+                    alert('Payment successful!');
+                    localStorage.removeItem('cart');
+                    loadCart();
+                } else {
+                    alert('Payment Successful. Thank You.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    
+        window.onload = loadCart;
+    </script>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1>Cart</h1>
+            <div id="cart-container"></div>
+            <form id="payment-form" enctype="multipart/form-data">
+                <h2>Payment Details</h2>
+                <input type="hidden" id="total-amount" name="paymentAmount">
+                <label for="paymentReceipt">Upload Payment Receipt:</label>
+                <input type="file" id="paymentReceipt" name="paymentReceipt" required>
+                <button type="button" onclick="makePayment()">Confirm Payment</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

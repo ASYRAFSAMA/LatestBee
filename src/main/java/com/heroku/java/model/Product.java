@@ -56,9 +56,9 @@ public class Product {
     public void setProductImage(String productImage) {
         this.productImage = productImage;
     }
-    public void add(Product product) {
+    public void setProductImage(byte[] bytes) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        throw new UnsupportedOperationException("Unimplemented method 'setProductImage'");
     }
     
 }

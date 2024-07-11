@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.heroku.java.model.Purchase;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroku.java.model.Payment;
 
 import jakarta.servlet.http.HttpSession;
@@ -78,93 +82,101 @@ public class PaymentController {
     }
 
     @PostMapping("/makePayment")
-    public String makePayment(HttpSession session,@RequestParam("paymentAmount") double totalAmount,
-                    @RequestParam("paymentReceipt") MultipartFile paymentReceipt,
-                    @RequestParam("selectedPurchases") List<Integer> selectedPurchases,
-                    Model model)
-        {
-            session.getAttribute("customerid");
-            byte[] receiptData = null;
+public String makePayment(HttpSession session,
+                          @RequestParam("paymentAmount") double totalAmount,
+                          @RequestParam("paymentReceipt") MultipartFile paymentReceipt,
+                          @RequestParam("cartItems") String cartItemsJson) {
+    Long customerId = (Long) session.getAttribute("customerid");
+    if (customerId == null) {
+        return "redirect:/custLogin";
+    }
 
-            try {
-                receiptData = paymentReceipt.getBytes();
-            } catch (IOException e) {
+    List<Map<String, Object>> cartItems;
+    try {
+        cartItems = new ObjectMapper().readValue(cartItemsJson, new TypeReference<List<Map<String, Object>>>(){});
+    } catch (JsonProcessingException e) {
+        e.printStackTrace();
+        return "Payment/PaymentError";
+    }
+
+    byte[] receiptData;
+    try {
+        receiptData = paymentReceipt.getBytes();
+    } catch (IOException e) {
+        e.printStackTrace();
+        return "Payment/PaymentSuccessful";
+    }
+
+    try (Connection conn = dataSource.getConnection()) {
+        conn.setAutoCommit(false);
+
+        // Insert into payment table
+        String paymentSql = "INSERT INTO public.payment (paymentamount, paymentreceipt) VALUES (?, ?) RETURNING paymentid";
+        int paymentId;
+        try (PreparedStatement paymentStatement = conn.prepareStatement(paymentSql)) {
+            paymentStatement.setDouble(1, totalAmount);
+            paymentStatement.setBytes(2, receiptData);
+            ResultSet rs = paymentStatement.executeQuery();
+            if (!rs.next()) {
+                throw new SQLException("Failed to insert payment record");
             }
+            paymentId = rs.getInt(1);
+        }
 
-            try {
-                Connection conn = dataSource.getConnection();
-                
-                String paymentSql = "INSERT INTO public.payment (paymentamount, paymentreceipt, bookingid) VALUES (?, ?, ?)";
-                for (int bookingId : selectedPurchases) {
-
-                    String invalidsql = "SELECT bookingstatus FROM public.booking WHERE bookingid=?";
-                    PreparedStatement statementInvalid = conn.prepareStatement(invalidsql);
-                    statementInvalid.setInt(1, bookingId);
-                    ResultSet resultSet = statementInvalid.executeQuery();
-                    if (resultSet.next()){
-                        String status = resultSet.getString("bookingstatus");
-
-                        if(status.equalsIgnoreCase("Invalid")){
-                            String updateSQL = "UPDATE public.payment SET paymentreceipt=? WHERE bookingid=?";
-                            PreparedStatement statementUpdate = conn.prepareStatement(updateSQL);
-                            statementUpdate.setInt(2, bookingId);
-                            statementUpdate.setBytes(1, receiptData);
-                            statementUpdate.executeUpdate();
-
-                            //CHANGE PAYMENT STATUS
-                            String sqlStatus = "UPDATE public.booking SET bookingStatus=? WHERE bookingid=?";
-                            PreparedStatement statementStatus = conn.prepareStatement(sqlStatus);
-                            statementStatus.setInt(2, bookingId);
-                            statementStatus.setString(1, "Paid");
-                            statementStatus.executeUpdate();
-                        }else{  
-                            
-                            PreparedStatement paymentStatement = conn.prepareStatement(paymentSql);
-                            paymentStatement.setDouble(1, totalAmount);
-                            paymentStatement.setBytes(2, receiptData);
-                            paymentStatement.setInt(3, bookingId);
-                            paymentStatement.executeUpdate();
-
-                            //CHANGE PAYMENT STATUS
-                            String sqlStatus = "UPDATE public.booking SET bookingStatus=? WHERE bookingid=?";
-                            PreparedStatement statementStatus = conn.prepareStatement(sqlStatus);
-                            statementStatus.setInt(2, bookingId);
-                            statementStatus.setString(1, "Paid");
-                            statementStatus.executeUpdate();}
-
-                    }
-
-                    
-                  
-                    
-            } 
-
-            conn.close();
-            }catch (SQLException e) { 
-                e.printStackTrace();
-                return "Payment/PaymentError";
-               
+        // Insert into purchase table
+        String purchaseSql = "INSERT INTO public.purchase (customerid, purchasedate, purchasetotal, purchasestatus, paymentid) VALUES (?, CURRENT_DATE, ?, 'Unpaid', ?) RETURNING purchaseid";
+        int purchaseId;
+        try (PreparedStatement purchaseStatement = conn.prepareStatement(purchaseSql)) {
+            purchaseStatement.setLong(1, customerId);
+            purchaseStatement.setDouble(2, totalAmount);
+            purchaseStatement.setInt(3, paymentId);
+            ResultSet rs = purchaseStatement.executeQuery();
+            if (!rs.next()) {
+                throw new SQLException("Failed to insert purchase record");
             }
-                return "Payment/PaymentSuccessful";
+            purchaseId = rs.getInt(1);
+        }
 
-        }   
+        // Insert into purchaseproduct table
+        String purchaseProductSql = "INSERT INTO public.purchaseproduct (purchaseid, productid, productquantity) VALUES (?, ?, ?)";
+        try (PreparedStatement purchaseProductStatement = conn.prepareStatement(purchaseProductSql)) {
+            for (Map<String, Object> item : cartItems) {
+                int productId = Integer.parseInt(String.valueOf(item.get("id")));
+                int productQuantity = Integer.parseInt(String.valueOf(item.get("quantity")));
+                double productPrice = Double.parseDouble(String.valueOf(item.get("price")));  // If price is sent as string
+                purchaseProductStatement.setInt(1, purchaseId);
+                purchaseProductStatement.setInt(2, productId);
+                purchaseProductStatement.setInt(3, productQuantity);
+                purchaseProductStatement.addBatch();
+            }
+            purchaseProductStatement.executeBatch();
+        }
+
+        conn.commit();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "Payment/PaymentError";
+    }
+
+    return "Payment/PaymentSuccessful";
+}
 
         //STAFF VIEW PAYMENT
         @GetMapping("/viewPayment")
-        public String viewPayment(HttpSession session,@RequestParam("bookingId") int bookingId,Model model){
+        public String viewPayment(HttpSession session,@RequestParam("purchaseId") int purchaseId,Model model){
             session.getAttribute("staffid");
 
             try {
                 Connection conn = dataSource.getConnection();
-                String sql = "SELECT paymentid,paymentreceipt,bookingid FROM public.payment WHERE bookingid=?";
+                String sql = "SELECT paymentid,paymentreceipt,purchaseid FROM public.payment WHERE purchaseid=?";
                 PreparedStatement statement = conn.prepareStatement(sql);
-                statement.setInt(1, bookingId);
+                statement.setInt(1, purchaseId);
                 ResultSet resultSet = statement.executeQuery();
 
                 if(resultSet.next()){
                     Payment payment = new Payment();
                     payment.setPaymentId(resultSet.getInt("paymentid"));
-                    payment.setBookingId(resultSet.getInt("bookingid"));
+                    payment.setPurchaseId(resultSet.getInt("purchaseid"));
                     payment.setPaymentReceipt(resultSet.getBytes("paymentreceipt"));
 
                     model.addAttribute("payments", payment);

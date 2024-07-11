@@ -50,6 +50,11 @@ public class GettingStartedApplication {
         return "custregister";
     }
 
+    @GetMapping("/AddToCart")
+    public String addToCart() {
+        return "Purchase/AddToCart";
+    }
+
     
 
 

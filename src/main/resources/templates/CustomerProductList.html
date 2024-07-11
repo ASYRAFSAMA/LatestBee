@@ -260,6 +260,12 @@ main{
                         <span class="links_name">Logout</span>
                     </a>
                 </li>
+                <li>
+                    <a th:href="@{/AddToCart}">
+                        <i class='bx bx-cart'></i>
+                        <span class="links_name">View Cart</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </header>
@@ -269,36 +275,44 @@ main{
             <h1>PRODUCTS</h1>
             <div class="products">
                 <div class="product" th:each="product : ${products}">
+                    <input type="hidden" th:value="${product.productId}">
                     <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
                     <h3 th:text="${product.productName}">Product Name</h3>
                     <p class="product-type" th:text="${product.productType}">Product Type</p>
+                    Quantity<p class="product-type" th:text="${product.productQuantity}"> left</p>
                     <p>
-                        <span th:text="${product.productPrice}"></span> RM
+                        RM<span th:text="${product.productPrice}"></span>
                     </p>
+                    <button th:attr="data-product-id=${product.productId},
+                 data-product-name=${product.productName},
+                 data-product-type=${product.productType},
+                 data-product-price=${product.productPrice},
+                 data-product-quantity=${product.productQuantity},
+                 data-product-image=${product.productImage}"
+        onclick="addToCart(this)">Add to Cart</button>
                 </div>
             </div>
         </div>
     </main>
+
+    <script>
+        function addToCart(button) {
+            let product = {
+                id: button.getAttribute('data-product-id'),
+                name: button.getAttribute('data-product-name'),
+                type: button.getAttribute('data-product-type'),
+                price: parseFloat(button.getAttribute('data-product-price')),
+                quantity: parseInt(button.getAttribute('data-product-quantity')),
+                image: button.getAttribute('data-product-image')
+            };
+            
+            console.log('Product to add:', product);
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Product added to cart!');
+            console.log('Current cart:', cart);
+        }
+    </script>
 </body>
 </html>
-
-<script>
-    function confirmDelete(productId) {
-        if (confirm("Are you sure you want to delete this product?")) {
-            fetch(`/deleteProduct?productId=${productId}`, {
-                method: 'POST'
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else {
-                    alert('Failed to delete the product');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error deleting the product');
-            });
-        }
-    }
-</script>

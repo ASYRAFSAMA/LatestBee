@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.heroku.java.model.Purchase;
 import com.heroku.java.model.Product;
 import com.heroku.java.model.PurchaseProduct;
+import com.heroku.java.model.Customer;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -317,5 +319,71 @@ public class PurchaseController {
 		
 	} 
 
+
+
+
+    @GetMapping("/staffPurchaseList")
+public String staffPurchaseList(HttpSession session, @RequestParam(value = "status", required = false) String status, Model model) {
+    List<Purchase> purchases = new ArrayList<>();
+
+    try (Connection conn = dataSource.getConnection()) {
+        String sql = "SELECT p.purchaseid, p.purchasedate, p.purchasetotal, p.purchasestatus, " +
+                     "c.customername, pp.productid, pp.productquantity, " +
+                     "pr.productname, pr.producttype, pr.productprice, pr.productimage " +
+                     "FROM purchase p " +
+                     "JOIN customer c ON p.customerid = c.customerid " +
+                     "JOIN purchaseproduct pp ON p.purchaseid = pp.purchaseid " +
+                     "JOIN product pr ON pp.productid = pr.productid";
+
+        if (status != null && !status.isEmpty()) {
+            sql += " WHERE p.purchasestatus = ?";
+        }
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            if (status != null && !status.isEmpty()) {
+                statement.setString(1, status);
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Map<Integer, Purchase> purchaseMap = new HashMap<>();
+
+                while (resultSet.next()) {
+                    int purchaseId = resultSet.getInt("purchaseid");
+                    Purchase purchase = purchaseMap.get(purchaseId);
+
+                    if (purchase == null) {
+                        purchase = new Purchase();
+                        purchase.setPurchaseId(purchaseId);
+                        purchase.setPurchaseDate(resultSet.getDate("purchasedate"));
+                        purchase.setPurchaseTotal(resultSet.getDouble("purchasetotal"));
+                        purchase.setPurchaseStatus(resultSet.getString("purchasestatus"));
+                        purchase.setCustomerName(resultSet.getString("customername"));
+                        purchaseMap.put(purchaseId, purchase);
+                    }
+
+                    Product product = new Product();
+                    product.setProductId(resultSet.getLong("productid"));
+                    product.setProductName(resultSet.getString("productname"));
+                    product.setProductType(resultSet.getString("producttype"));
+                    product.setProductPrice(resultSet.getDouble("productprice"));
+                    product.setProductImage(resultSet.getString("productimage"));
+
+                    int quantity = resultSet.getInt("productquantity");
+                    purchase.addProduct(product, quantity);
+                }
+
+                purchases = new ArrayList<>(purchaseMap.values());
+            }
+        }
+
+        model.addAttribute("purchases", purchases);
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle exception
+    }
+
+    return "Purchase/StaffPurchaseList";
+}
 
 }

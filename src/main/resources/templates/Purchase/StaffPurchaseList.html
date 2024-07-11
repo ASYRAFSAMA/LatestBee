@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- ... existing head content ... -->
+</head>
+<body>
+    <div class="container">
+        <h1>Staff Purchase List</h1>
+        
+        <div th:if="${not #lists.isEmpty(purchases)}">
+            <div th:each="purchase : ${purchases}" class="purchase-item">
+                <div class="purchase-details">
+                    <strong>Purchase ID:</strong> <span th:text="${purchase.purchaseId}"></span><br>
+                    <strong>Customer Name:</strong> <span th:text="${purchase.customerName}"></span><br>
+                    <strong>Purchase Date:</strong> <span th:text="${purchase.purchaseDate}"></span><br>
+                    <strong>Total Amount:</strong> RM <span th:text="${#numbers.formatDecimal(purchase.purchaseTotal, 1, 2)}"></span><br>
+                    <strong>Status:</strong> <span th:text="${purchase.purchaseStatus}"></span>
+                </div>
+                <div class="purchase-products">
+                    <h3>Purchased Products</h3>
+                    <div th:each="purchaseProduct : ${purchase.purchaseProducts}" class="product-item">
+                        <img th:if="${purchaseProduct.product.productImage != null}" th:src="@{'data:image/jpeg;base64,' + ${purchaseProduct.product.productImage}}" alt="Product Image">
+                        <strong>Product Name:</strong> <span th:text="${purchaseProduct.product.productName}"></span><br>
+                        <strong>Quantity:</strong> <span th:text="${purchaseProduct.productQuantity}"></span><br>
+                        <strong>Price:</strong> RM <span th:text="${#numbers.formatDecimal(purchaseProduct.product.productPrice, 1, 2)}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(purchases)}">
+            <p>No purchases found.</p>
+        </div>
+    </div>
+</body>
+</html>

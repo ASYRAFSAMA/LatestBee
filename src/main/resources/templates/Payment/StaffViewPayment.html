@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Payment</title>
+    <style>
+        /* Add your CSS styles here */
+        /* Example styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .payment-details {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .payment-details h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .payment-info {
+            margin-bottom: 10px;
+        }
+        .payment-receipt {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View Payment</h1>
+        <div class="payment-details">
+            <h2>Payment Details</h2>
+            <div class="payment-info">
+                <strong>Payment ID:</strong> <span th:text="${payments.paymentId}"></span><br>
+                <strong>Purchase ID:</strong> <span th:text="${payments.purchaseId}"></span>
+            </div>
+            <div class="payment-receipt">
+                <h3>Payment Receipt</h3>
+                <img th:src="@{'data:image/jpeg;base64,' + ${#strings.encodeBase64(payments.paymentReceipt)}}" alt="Payment Receipt">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

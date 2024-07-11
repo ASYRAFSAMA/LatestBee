@@ -4,6 +4,7 @@ public class PurchaseProduct {
     private Long purchaseId;
     private Long productId;
     private int productQuantity;
+    private Product product;
 
     // Default constructor
     public PurchaseProduct() {}
@@ -15,6 +16,14 @@ public class PurchaseProduct {
     }
 
     // Getters and Setters
+
+    public Product getProduct() {
+        return product;
+    }
+    
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     public Long getPurchaseId() {
         return purchaseId;

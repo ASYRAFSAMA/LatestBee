@@ -1,6 +1,7 @@
 package com.heroku.java.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Purchase {
@@ -11,6 +12,7 @@ public class Purchase {
     private Date purchaseDate;
     private String purchaseStatus;
     private List<PurchaseProduct> purchaseProducts;
+	private String customerName;
 
 
     private int productQuantity;
@@ -29,6 +31,25 @@ public class Purchase {
 		this.productName=productName;
         this.productQuantity=productQuantity;
 	}
+
+
+	public String getCustomerName() {
+        return customerName;
+    }
+    
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+    
+    public void addProduct(Product product, int quantity) {
+        if (this.purchaseProducts == null) {
+            this.purchaseProducts = new ArrayList<>();
+        }
+        PurchaseProduct purchaseProduct = new PurchaseProduct();
+        purchaseProduct.setProductId(product.getProductId());
+        purchaseProduct.setProductQuantity(quantity);
+        this.purchaseProducts.add(purchaseProduct);
+    }
 
     public int getPurchaseId() {
 		return purchaseId;
@@ -123,6 +144,8 @@ public class Purchase {
     public void setProductName(String productName) {
         this.productName = productName;
     }
+
+	
 }
 
 
