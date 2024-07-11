@@ -366,85 +366,18 @@ table tbody tr:last-of-type {
                     <td th:text="${purchase.purchaseTotal}"></td>
                     <td th:text="${purchase.purchaseStatus}"></td>
                     <td>
-                        <a th:href="@{/customerUpdatePurchaseMap?purchaseId=}+${purchase.purchaseId}">
-                            <button class="update-button">Update Purchase</button>
-                        </a>
-                        <button class="delete-button" th:onclick="'showPopup(' + ${purchase.purchaseId} + ')'">Delete</button>
+                        
                     </td>
                 </tr>
             </tbody>
         </table>
         <button class="update-button" onclick="validateAndProceed()">Make Payment</button>
 
-        <!-- Confirmation Popup -->
-        <div class="overlay" id="overlay">
-            <div class="popup" id="popup">
-                <h3>Are you sure you want to delete this booking?</h3>
-                <div class="btn-container">
-                    <a id="deleteLink" class="button primary">Delete</a>
-                    <button onclick="hidePopup()" class="button secondary">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-         <!-- No Selection Popup -->
-    <div class="overlay" id="noSelectionOverlay">
-        <div class="popup" id="noSelectionPopup">
-            <h3>No bookings selected!</h3>
-            <div class="btn-container">
-                <button onclick="hideNoSelectionPopup()" class="button secondary">OK</button>
-            </div>
-        </div>
-    </div>
 
 
     </main>
 
-    <script>
-        function showPopup(bookingId) {
-            console.log("Showing popup for booking ID: " + bookingId); // Debugging line
-            var overlay = document.getElementById("overlay");
-            var popup = document.getElementById("popup");
-            var deleteLink = document.getElementById("deleteLink");
-            deleteLink.href = "/customerDeleteBooking?bookingId=" + bookingId;
-            overlay.style.display = "flex";
-        }
-
-        function hidePopup() {
-            var overlay = document.getElementById("overlay");
-            overlay.style.display = "none";
-        }
-
-        function validateAndProceed() {
-        var checkboxes = document.querySelectorAll('input[name="selectedBookings"]:checked');
-        if (checkboxes.length === 0) {
-            showNoSelectionPopup();
-        } else {
-            // Proceed with making payment
-            location.href = '/makePayment?selectedBookings=' + getSelectedBookingIds();
-        }
-    }
-
-    function showNoSelectionPopup() {
-        var overlay = document.getElementById("noSelectionOverlay");
-        overlay.style.display = "flex";
-    }
-
-    function hideNoSelectionPopup() {
-        var overlay = document.getElementById("noSelectionOverlay");
-        overlay.style.display = "none";
-    }
-
-    function getSelectedBookingIds() {
-        var selectedIds = [];
-        var checkboxes = document.querySelectorAll('input[name="selectedBookings"]:checked');
-        checkboxes.forEach(function(checkbox) {
-            selectedIds.push(checkbox.value);
-        });
-        return selectedIds.join(',');
-    }
-    </script>
-
+    
 </body>
 </body>
 </html>
