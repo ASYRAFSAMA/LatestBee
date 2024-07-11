@@ -2,30 +2,68 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- ... existing head content ... -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .product-list {
+            margin-top: 10px;
+        }
+        .product-item {
+            margin-bottom: 5px;
+        }
+        .product-image {
+            max-width: 50px;
+            max-height: 50px;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Staff Purchase List</h1>
+        <h1>Sales</h1>
         
         <div th:if="${not #lists.isEmpty(purchases)}">
-            <div th:each="purchase : ${purchases}" class="purchase-item">
-                <div class="purchase-details">
-                    <strong>Purchase ID:</strong> <span th:text="${purchase.purchaseId}"></span><br>
-                    <strong>Customer Name:</strong> <span th:text="${purchase.customerName}"></span><br>
-                    <strong>Purchase Date:</strong> <span th:text="${purchase.purchaseDate}"></span><br>
-                    <strong>Total Amount:</strong> RM <span th:text="${#numbers.formatDecimal(purchase.purchaseTotal, 1, 2)}"></span><br>
-                    <strong>Status:</strong> <span th:text="${purchase.purchaseStatus}"></span>
-                </div>
-                <div class="purchase-products">
-                    <h3>Purchased Products</h3>
-                    <div th:each="purchaseProduct : ${purchase.purchaseProducts}" class="product-item">
-                        <img th:if="${purchaseProduct.product.productImage != null}" th:src="@{'data:image/jpeg;base64,' + ${purchaseProduct.product.productImage}}" alt="Product Image">
-                        <strong>Product Name:</strong> <span th:text="${purchaseProduct.product.productName}"></span><br>
-                        <strong>Quantity:</strong> <span th:text="${purchaseProduct.productQuantity}"></span><br>
-                        <strong>Price:</strong> RM <span th:text="${#numbers.formatDecimal(purchaseProduct.product.productPrice, 1, 2)}"></span>
-                    </div>
-                </div>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Purchase ID</th>
+                        <th>Customer Name</th>
+                        <th>Purchase Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <!-- <th>Purchased Products</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="purchase : ${purchases}">
+                        <td th:text="${purchase.purchaseId}"></td>
+                        <td th:text="${purchase.customerName}"></td>
+                        <td th:text="${#dates.format(purchase.purchaseDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${'RM ' + #numbers.formatDecimal(purchase.purchaseTotal, 1, 2)}"></td>
+                        <td th:text="${purchase.purchaseStatus}"></td>
+                        <!-- <td>
+                            <div class="product-list">
+                                <div th:each="purchaseProduct : ${purchase.purchaseProducts}" class="product-item">
+                                    <img th:if="${purchaseProduct != null and purchaseProduct.product != null and purchaseProduct.product.productImage != null}"
+                                         th:src="@{'data:image/jpeg;base64,' + ${purchaseProduct.product.productImage}}"
+                                         alt="Product Image" class="product-image">
+                                    <span th:text="${purchaseProduct.product.productName + ' - Qty: ' + purchaseProduct.productQuantity + ' - RM ' + #numbers.formatDecimal(purchaseProduct.product.productPrice, 1, 2)}"></span>
+                                </div>
+                            </div>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
         <div th:if="${#lists.isEmpty(purchases)}">

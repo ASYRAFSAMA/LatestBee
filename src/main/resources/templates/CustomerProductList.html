@@ -279,7 +279,7 @@ main{
                     <img th:src="@{'data:image/jpeg;base64,' + ${product.productImage}}" alt="Product Image" width="100" height="100"/>
                     <h3 th:text="${product.productName}">Product Name</h3>
                     <p class="product-type" th:text="${product.productType}">Product Type</p>
-                    Quantity<p class="product-type" th:text="${product.productQuantity}"> left</p>
+                    
                     <p>
                         RM<span th:text="${product.productPrice}"></span>
                     </p>

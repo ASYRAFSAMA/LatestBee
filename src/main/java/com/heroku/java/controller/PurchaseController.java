@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.heroku.java.model.Purchase;
 import com.heroku.java.model.Product;
@@ -361,15 +362,20 @@ public String staffPurchaseList(HttpSession session, @RequestParam(value = "stat
                         purchaseMap.put(purchaseId, purchase);
                     }
 
-                    Product product = new Product();
-                    product.setProductId(resultSet.getLong("productid"));
-                    product.setProductName(resultSet.getString("productname"));
-                    product.setProductType(resultSet.getString("producttype"));
-                    product.setProductPrice(resultSet.getDouble("productprice"));
-                    product.setProductImage(resultSet.getString("productimage"));
-
-                    int quantity = resultSet.getInt("productquantity");
-                    purchase.addProduct(product, quantity);
+                    // Product product = new Product();
+                    // product.setProductId(resultSet.getLong("productid"));
+                    // product.setProductName(resultSet.getString("productname"));
+                    // product.setProductType(resultSet.getString("producttype"));
+                    // product.setProductPrice(resultSet.getDouble("productprice"));
+                    // String productImage = resultSet.getString("productimage");
+                    // product.setProductImage(productImage != null ? productImage : "");
+                    // // product.setProductImage(resultSet.getString("productimage"));
+                    // if (product != null) {
+                    //     int quantity = resultSet.getInt("productquantity");
+                    //     purchase.addProduct(product, quantity);
+                    // }
+                    // // int quantity = resultSet.getInt("productquantity");
+                    // // purchase.addProduct(product, quantity);
                 }
 
                 purchases = new ArrayList<>(purchaseMap.values());
@@ -384,6 +390,101 @@ public String staffPurchaseList(HttpSession session, @RequestParam(value = "stat
     }
 
     return "Purchase/StaffPurchaseList";
+}
+
+    @GetMapping("/staffUpdatePurchaseStatus")
+public String staffUpdatePurchaseStatus(HttpSession session, @RequestParam(value = "status", required = false) String status, Model model) {
+    List<Purchase> purchases = new ArrayList<>();
+
+    try (Connection conn = dataSource.getConnection()) {
+        String sql = "SELECT p.purchaseid, p.purchasedate, p.purchasetotal, p.purchasestatus, " +
+                     "c.customername, pp.productid, pp.productquantity, " +
+                     "pr.productname, pr.producttype, pr.productprice, pr.productimage " +
+                     "FROM purchase p " +
+                     "JOIN customer c ON p.customerid = c.customerid " +
+                     "JOIN purchaseproduct pp ON p.purchaseid = pp.purchaseid " +
+                     "JOIN product pr ON pp.productid = pr.productid";
+
+        if (status != null && !status.isEmpty()) {
+            sql += " WHERE p.purchasestatus = ?";
+        }
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            if (status != null && !status.isEmpty()) {
+                statement.setString(1, status);
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Map<Integer, Purchase> purchaseMap = new HashMap<>();
+
+                while (resultSet.next()) {
+                    int purchaseId = resultSet.getInt("purchaseid");
+                    Purchase purchase = purchaseMap.get(purchaseId);
+
+                    if (purchase == null) {
+                        purchase = new Purchase();
+                        purchase.setPurchaseId(purchaseId);
+                        purchase.setPurchaseDate(resultSet.getDate("purchasedate"));
+                        purchase.setPurchaseTotal(resultSet.getDouble("purchasetotal"));
+                        purchase.setPurchaseStatus(resultSet.getString("purchasestatus"));
+                        purchase.setCustomerName(resultSet.getString("customername"));
+                        purchaseMap.put(purchaseId, purchase);
+                    }
+
+                    // Product product = new Product();
+                    // product.setProductId(resultSet.getLong("productid"));
+                    // product.setProductName(resultSet.getString("productname"));
+                    // product.setProductType(resultSet.getString("producttype"));
+                    // product.setProductPrice(resultSet.getDouble("productprice"));
+                    // String productImage = resultSet.getString("productimage");
+                    // product.setProductImage(productImage != null ? productImage : "");
+                    // // product.setProductImage(resultSet.getString("productimage"));
+                    // if (product != null) {
+                    //     int quantity = resultSet.getInt("productquantity");
+                    //     purchase.addProduct(product, quantity);
+                    // }
+                    // // int quantity = resultSet.getInt("productquantity");
+                    // // purchase.addProduct(product, quantity);
+                }
+
+                purchases = new ArrayList<>(purchaseMap.values());
+            }
+        }
+
+        model.addAttribute("purchases", purchases);
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle exception
+    }
+
+    return "Purchase/StaffUpdateStatus";
+}
+
+    @PostMapping("/staffUpdatePurchaseStatus")
+public String staffUpdatePurchaseStatus(@RequestParam("purchaseId") int purchaseId,
+                                        @RequestParam("newStatus") String newStatus,
+                                        RedirectAttributes redirectAttributes) {
+    try (Connection conn = dataSource.getConnection()) {
+        String sql = "UPDATE purchase SET purchasestatus = ? WHERE purchaseid = ?";
+        
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, newStatus);
+            statement.setInt(2, purchaseId);
+            
+            int rowsAffected = statement.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                redirectAttributes.addFlashAttribute("successMessage", "Purchase status updated successfully.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Failed to update purchase status. Purchase not found.");
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while updating the purchase status.");
+    }
+    return "redirect:/staffUpdatePurchaseStatus";
 }
 
 }

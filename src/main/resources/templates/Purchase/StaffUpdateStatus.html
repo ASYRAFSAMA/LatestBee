@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Purchase Status</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .status-form {
+            display: flex;
+            gap: 10px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Update Purchase Status</h1>
+
+        <!-- Display success or error messages -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <table th:if="${not #lists.isEmpty(purchases)}">
+            <thead>
+                <tr>
+                    <th>Purchase ID</th>
+                    <th>Customer Name</th>
+                    <th>Purchase Date</th>
+                    <th>Total Amount</th>
+                    <th>Current Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="purchase : ${purchases}">
+                    <td th:text="${purchase.purchaseId}"></td>
+                    <td th:text="${purchase.customerName}"></td>
+                    <td th:text="${#dates.format(purchase.purchaseDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${'RM ' + #numbers.formatDecimal(purchase.purchaseTotal, 1, 2)}"></td>
+                    <td th:text="${purchase.purchaseStatus}"></td>
+                    <td>
+                        <form th:action="@{/staffUpdatePurchaseStatus}" method="post" class="status-form">
+                            <input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}" />
+                            <select name="newStatus">
+                                <option value="Unpaid" th:selected="${purchase.purchaseStatus == 'Unpaid'}">Unpaid</option>
+                                <option value="Paid" th:selected="${purchase.purchaseStatus == 'Paid'}">Paid</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(purchases)}">
+            <p>No purchases found.</p>
+        </div>
+    </div>
+</body>
+</html>
